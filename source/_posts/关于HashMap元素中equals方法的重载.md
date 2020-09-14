@@ -5,7 +5,7 @@ categories: Java
 tags: [Q&A, java]
 ---
 在使用`HashMap`的时候，尽管重载了`equals`和`hashCode`方法，仍然无法正确比较两个对象是否相等：
-
+<!-- more -->
 ```java
 import java.util.HashMap;
 class test{

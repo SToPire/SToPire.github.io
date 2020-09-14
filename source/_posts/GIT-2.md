@@ -16,7 +16,7 @@ tags: [notes, git]
 
 `git clone`时会自动为远程仓库中的每一个分支，在本地仓库中创建一个远程分支并加以关联。
 
-
+<!-- more -->
 
 `git fetch origin master`从远程仓库下载本地缺失的提交记录并移动本地的`origin/master`远程分支指针；本地仓库不会发生改变，即`master`分支不变，文件不会被修改。
 

@@ -13,7 +13,7 @@ tags: [notes, git]
 存在两种merge操作，分别为fast-forward(`--ff`)和no-fast-forward(`--no-ff`).
 
 前者默认发生在当前分支没有相对于待合并分支的额外结点时，此时不会发生新的commit，只是向前移动当前分支指针。
-
+<!-- more -->
 ![](/images/Git_branch/merge_ff.gif)
 
 后者默认发生在其他情况下，此时会产生一个新的commit，其拥有两个父结点，分别位于两个分支中。如果出现冲突还需要手动解决。
