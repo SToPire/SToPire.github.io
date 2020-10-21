@@ -42,7 +42,7 @@ Arrays.sort(words, (first,second) -> first.length - second.length);
 | -------------- | -------- | --------- | ---------- | ---------------------------- |
 | `Runnable`     | 无       | `void`    | `run`      | 作为无参数或返回值的动作运行 |
 | `Supplier<T>`  | 无       | `T`       | `get`      | 提供一个T类型的值            |
-| `Consumer<T>`  | `T`      | 无        | `accept`   | 返回一个T类型的值            |
+| `Consumer<T>`  | `T`      | 无        | `accept`   | 处理一个T类型的值            |
 | `Predicate<T>` | `T`      | `boolean` | `test`     | 谓词，返回布尔值             |
 
 此外，对于primitive类型还有这些接口的基本类型版本。
