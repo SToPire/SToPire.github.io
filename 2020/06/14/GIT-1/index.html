@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="notes,git," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="参考资料：https:&#x2F;&#x2F;learngitbranching.js.org&#x2F;         https:&#x2F;&#x2F;dev.to&#x2F;lydiahallie&#x2F;cs-visualized-useful-git-commands-37p1 分支merge存在两种merge操作，分别为fast-forward(--ff)和no-fast-forward(--no-ff). 前者默认发生在当前分支没有相对于待合并分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git_分支">
+<meta property="og:url" content="http://yoursite.com/2020/06/14/GIT-1/index.html">
+<meta property="og:site_name" content="SToPire&#39;s Blog">
+<meta property="og:description" content="参考资料：https:&#x2F;&#x2F;learngitbranching.js.org&#x2F;         https:&#x2F;&#x2F;dev.to&#x2F;lydiahallie&#x2F;cs-visualized-useful-git-commands-37p1 分支merge存在两种merge操作，分别为fast-forward(--ff)和no-fast-forward(--no-ff). 前者默认发生在当前分支没有相对于待合并分">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/merge_ff.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/merge_noff.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/rebase.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/interactive-rebase1.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/interactive-rebase2.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/cherry-pick.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/reset-soft.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/reset-hard.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/revert.gif">
+<meta property="og:image" content="http://yoursite.com/images/Git_branch/reflog.gif">
+<meta property="article:published_time" content="2020-06-13T16:03:15.000Z">
+<meta property="article:modified_time" content="2020-11-06T16:32:22.780Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="notes">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/Git_branch/merge_ff.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/14/GIT-1/"/>
+
+
+
+
+
+  <title>Git_分支 | SToPire's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SToPire's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/14/GIT-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="SToPire">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SToPire's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git_分支</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-14T00:03:15+08:00">
+                2020-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>参考资料：<a href="https://learngitbranching.js.org/" target="_blank" rel="noopener">https://learngitbranching.js.org/</a>         <a href="https://dev.to/lydiahallie/cs-visualized-useful-git-commands-37p1" target="_blank" rel="noopener">https://dev.to/lydiahallie/cs-visualized-useful-git-commands-37p1</a></p>
+<h2 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h2><h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p>存在两种merge操作，分别为fast-forward(<code>--ff</code>)和no-fast-forward(<code>--no-ff</code>).</p>
+<p>前者默认发生在当前分支没有相对于待合并分支的额外结点时，此时不会发生新的commit，只是向前移动当前分支指针。</p>
+<a id="more"></a>
+<p><img src="/images/Git_branch/merge_ff.gif" alt=""></p>
+<p>后者默认发生在其他情况下，此时会产生一个新的commit，其拥有两个父结点，分别位于两个分支中。如果出现冲突还需要手动解决。</p>
+<p><img src="/images/Git_branch/merge_noff.gif" alt=""></p>
+<h3 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h3><p>rebase将当前分支的提交复制到另一分支之后。此过程中，被复制的commit会重新生成hash值.</p>
+<p><img src="/images/Git_branch/rebase.gif" alt=""></p>
+<p>interactive rebase可以以当前分支中的commit为参数，并且可以对需要复制的commit进行修改.<br><img src="/images/Git_branch/interactive-rebase1.gif" alt=""><br><img src="/images/Git_branch/interactive-rebase2.gif" alt=""></p>
+<h4 id="cherry-pick"><a href="#cherry-pick" class="headerlink" title="cherry-pick"></a>cherry-pick</h4><p><code>git cherry-pick [commit id]</code>在当前分支下新增一个commit，其内容与指定的commit相同.<br><img src="/images/Git_branch/cherry-pick.gif" alt=""></p>
+<h2 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h2><p><code>HEAD</code>指针是一个symbolic reference(符号引用，快捷方式)，指向分支名或者一次commit. 通常情况下<code>HEAD</code>总是指向分支名，这意味着其指向当前分支最近一次commit.</p>
+<p><code>git checkout [commit id]</code>分离头指针使其指向某次commit而非分支名(commit用其hash值指定，且仅需前6位).</p>
+<p><code>cat .git/HEAD</code>查看当前HEAD指向.</p>
+<p><code>git symbolic-ref HEAD</code>查看当前HEAD指向（仅限HEAD指向分支名时，即HEAD-&gt;master-&gt;Commit_1）</p>
+<h3 id="相对引用"><a href="#相对引用" class="headerlink" title="相对引用"></a>相对引用</h3><p>使用^表示指定引用的父节点，如<code>HEAD^</code> <code>master^</code></p>
+<p>使用<code>~&lt;num&gt;</code>表示向上移动多次，如<code>HEAD~3</code></p>
+<p>配合<code>git branch -f [branch name] [ptr]</code>强制移动（非当前）分支指针位置，如<code>git branch -f master HEAD~3</code></p>
+<h2 id="撤销变更"><a href="#撤销变更" class="headerlink" title="撤销变更"></a>撤销变更</h2><p><code>git reset [ptr]</code>将当前分支HEAD移动到指定位置，如<code>git reset HEAD^</code>.从新位置到旧位置之间的提交仍存在，处于未加入暂存区的状态；但是如果使用<code>--hard</code>参数，这些提交会消失.这种方式往往应用于个人维护的分支.</p>
+<p><img src="/images/Git_branch/reset-soft.gif" alt=""><br><img src="/images/Git_branch/reset-hard.gif" alt=""></p>
+<p><code>git revert [ptr]</code>以添加一个新commit的形式撤销ptr指向的提交，因此添加新提交后的状态与ptr的父节点相同.这种方式往往应用于多人协作分支，因为它不会导致提交历史的改变.</p>
+<p><img src="/images/Git_branch/revert.gif" alt=""></p>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>鉴于分支可以轻易地被移动和更改，引入了tag的概念。tag是一个永久指向某个提交记录的标识，不会随着新的提交而移动.<code>git tag [tagname][ptr]</code>将名为tagname的tag打在ptr指向的commit上.</p>
+<p><code>git describe [ptr]</code> 返回离ptr指向的commit最近的tag，格式为<code>&lt;tag&gt;_&lt;numCommits&gt;_g&lt;hash&gt;</code>，其中<code>&lt;tag&gt;</code>是离ptr最近的标签，<code>&lt;numCommits&gt;</code>表示ptr与这个标签之间相差多少个commit，<code>&lt;hash&gt;</code>是ptr指向的commit的hash值.</p>
+<h2 id="reflog"><a href="#reflog" class="headerlink" title="reflog"></a>reflog</h2><p><code>git reflog</code>展示分支的操作历史，可以配合<code>git reset</code>实现撤销操作。</p>
+<p><img src="/images/Git_branch/reflog.gif" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/notes/" rel="tag"># notes</a>
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/14/GIT-2/" rel="prev" title="Git_远程">
+                Git_远程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">SToPire</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/stopire" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:181250195@smail.nju.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分支"><span class="nav-number">1.</span> <span class="nav-text">分支</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#merge"><span class="nav-number">1.1.</span> <span class="nav-text">merge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rebase"><span class="nav-number">1.2.</span> <span class="nav-text">rebase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cherry-pick"><span class="nav-number">1.2.1.</span> <span class="nav-text">cherry-pick</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HEAD"><span class="nav-number">2.</span> <span class="nav-text">HEAD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相对引用"><span class="nav-number">2.1.</span> <span class="nav-text">相对引用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#撤销变更"><span class="nav-number">3.</span> <span class="nav-text">撤销变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标签"><span class="nav-number">4.</span> <span class="nav-text">标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reflog"><span class="nav-number">5.</span> <span class="nav-text">reflog</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SToPire</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

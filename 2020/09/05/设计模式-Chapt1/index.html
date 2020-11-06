@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="notes,design pattern," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是设计模式设计模式系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计，是对用来在特定场景下解决一般设计问题的类和相互通信的对象的描述。设计模式确定了所包含的类和实例，它们的角色、协作方式以及职责分配。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式-Chapt1">
+<meta property="og:url" content="http://yoursite.com/2020/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt1/index.html">
+<meta property="og:site_name" content="SToPire&#39;s Blog">
+<meta property="og:description" content="什么是设计模式设计模式系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计，是对用来在特定场景下解决一般设计问题的类和相互通信的对象的描述。设计模式确定了所包含的类和实例，它们的角色、协作方式以及职责分配。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-05T15:57:30.000Z">
+<meta property="article:modified_time" content="2020-11-06T16:32:22.780Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="notes">
+<meta property="article:tag" content="design pattern">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/05/设计模式-Chapt1/"/>
+
+
+
+
+
+  <title>设计模式-Chapt1 | SToPire's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SToPire's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="SToPire">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SToPire's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">设计模式-Chapt1</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-05T23:57:30+08:00">
+                2020-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Design-patterns/" itemprop="url" rel="index">
+                    <span itemprop="name">Design_patterns</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="什么是设计模式"><a href="#什么是设计模式" class="headerlink" title="什么是设计模式"></a>什么是设计模式</h3><p>设计模式系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计，是对用来在特定场景下解决一般设计问题的类和相互通信的对象的描述。设计模式确定了所包含的类和实例，它们的角色、协作方式以及职责分配。</p>
+<a id="more"></a>
+<h3 id="设计模式的分类"><a href="#设计模式的分类" class="headerlink" title="设计模式的分类"></a>设计模式的分类</h3><h4 id="按目的"><a href="#按目的" class="headerlink" title="按目的"></a>按目的</h4><p>创建型(creational)与对象的创建有关，结构型(structural)处理类或对象的组合，行为型(behavioral)描述类或对象怎样交互和怎样分配职责。</p>
+<h4 id="按范围"><a href="#按范围" class="headerlink" title="按范围"></a>按范围</h4><p>指定模式主要用于类还是对象。类模式处理类和子类之间的关系，该关系通过继承建立，编译时确定，为静态。对象模式处理对象间的关系，运行时可以变化，为动态。</p>
+<h3 id="复用机制"><a href="#复用机制" class="headerlink" title="复用机制"></a>复用机制</h3><h4 id="1-继承和组合的比较"><a href="#1-继承和组合的比较" class="headerlink" title="1.继承和组合的比较"></a>1.继承和组合的比较</h4><p>类继承又名白箱复用(white-box reuse)，因为在继承中父类的内部细节对子类可见。类继承在编译时静态定义，无法运行时改变。而且继承对子类揭示了父类的实现细节，一定程度上破坏了封装性。此外，子类和父类的依赖性紧密，一旦继承下来的实现不适合解决新的问题，就要重写/替换父类，这种依赖关系限制了灵活性和复用性。</p>
+<p>对象组合又名黑箱复用(black-box reuse)，对象的内部细节不可见，通过组装和组合对象获得新的复杂功能。这样不破坏封装性（对象只能通过接口访问），同时依赖关系较少。对象组合使类和类继承层次保持较小规模，并且这样的设计有更多的对象和更少的类，于是系统行为依赖对象间的关系，而非定义在某个类中。</p>
+<p><strong>原则：优先使用对象组合，而不是类继承。</strong></p>
+<h4 id="2-委托"><a href="#2-委托" class="headerlink" title="2.委托"></a>2.委托</h4><p>在委托方式下，接受请求的对象把操作委托给它的代理者(delegate)，比如<code>Window</code>类中保存一个<code>Rectangle</code>类的实例变量，把求面积请求转发给<code>Rectangle</code>，而不是继承<code>Rectangle</code>这个类。这样做的优点是灵活，可以运行时组合对象操作，改变操作的组合方式。不足之处是动态，参数化的软件比静态软件难以理解，以及运行低效。</p>
+<h4 id="3-参数化类型"><a href="#3-参数化类型" class="headerlink" title="3.参数化类型"></a>3.参数化类型</h4><p>例子：c++中的<code>template</code>，这并非严格的oop技术。它允许改变类用到的类型，但与继承一样，不能在运行时改变。</p>
+<h3 id="关联运行时和编译时的结构"><a href="#关联运行时和编译时的结构" class="headerlink" title="关联运行时和编译时的结构"></a>关联运行时和编译时的结构</h3><p>程序的代码结构在编译时就已经确定，它由继承关系固定的类组成。然而运行时结构是由快速变化的通信对象网络组成的，更多受到设计者而非编程语言的影响。</p>
+<p>聚合(aggregation)指一个对象拥有另一个对象，比如一个对象是另一个对象的成员变量。</p>
+<p>相识(acquaintance)指一个对象“知道”另一个对象，也被称为“关联”或者“引用”。</p>
+<p>聚合和相识是编程者的意图决定的，它们的区别在编译时的结构中很难看出来。</p>
+<h3 id="导致必须重新设计的原因"><a href="#导致必须重新设计的原因" class="headerlink" title="导致必须重新设计的原因"></a>导致必须重新设计的原因</h3><ol>
+<li><p>显式指定一个类来创建对象：导致被特定实现约束，而非特定接口。</p>
+</li>
+<li><p>某一请求被指定为一个特殊操作，产生依赖。</p>
+</li>
+<li><p>对硬件和软件平台的依赖。</p>
+</li>
+<li><p>对对象表示或实现的依赖：应该对客户隐藏对象的表示、保存、定位、实现信息。</p>
+</li>
+<li><p>算法依赖：对象依赖某个特定算法。应该把可能发生变化的算法孤立起来。</p>
+</li>
+<li><p>紧耦合：互相依赖的一堆类，难以改变或删掉其中的一个。设计模式使用抽象耦合和分层技术提高系统的松散耦合性。</p>
+</li>
+<li><p>通过生成子类来扩充功能：可能导致类爆炸，不得不引入很多其他子类。可以用对象组合和委托技术实现新的功能。</p>
+</li>
+<li><p>不能方便的修改类：比如商业类库。设计模式在这种情况下提供对类进行修改的方法。</p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/notes/" rel="tag"># notes</a>
+          
+            <a href="/tags/design-pattern/" rel="tag"># design pattern</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/31/%E5%85%B3%E4%BA%8EHashMap%E5%85%83%E7%B4%A0%E4%B8%ADequals%E6%96%B9%E6%B3%95%E7%9A%84%E9%87%8D%E8%BD%BD/" rel="next" title="关于HashMap元素中equals方法的重载">
+                <i class="fa fa-chevron-left"></i> 关于HashMap元素中equals方法的重载
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt2/" rel="prev" title="设计模式-Chapt2">
+                设计模式-Chapt2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">SToPire</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/stopire" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:181250195@smail.nju.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是设计模式"><span class="nav-number">1.</span> <span class="nav-text">什么是设计模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式的分类"><span class="nav-number">2.</span> <span class="nav-text">设计模式的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#按目的"><span class="nav-number">2.1.</span> <span class="nav-text">按目的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#按范围"><span class="nav-number">2.2.</span> <span class="nav-text">按范围</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复用机制"><span class="nav-number">3.</span> <span class="nav-text">复用机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-继承和组合的比较"><span class="nav-number">3.1.</span> <span class="nav-text">1.继承和组合的比较</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-委托"><span class="nav-number">3.2.</span> <span class="nav-text">2.委托</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-参数化类型"><span class="nav-number">3.3.</span> <span class="nav-text">3.参数化类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关联运行时和编译时的结构"><span class="nav-number">4.</span> <span class="nav-text">关联运行时和编译时的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导致必须重新设计的原因"><span class="nav-number">5.</span> <span class="nav-text">导致必须重新设计的原因</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SToPire</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

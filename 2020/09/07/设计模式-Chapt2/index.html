@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="notes,design pattern," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="文档结构所有对象对应一个抽象基类Glyph（图元），图形元素（字符和图像）以及结构元素（行和列）都是它的子类。这样的设计做到了对文本和图形的一致对待，也没有过分强调单个元素和元素组之间的差别。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式-Chapt2">
+<meta property="og:url" content="http://yoursite.com/2020/09/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt2/index.html">
+<meta property="og:site_name" content="SToPire&#39;s Blog">
+<meta property="og:description" content="文档结构所有对象对应一个抽象基类Glyph（图元），图形元素（字符和图像）以及结构元素（行和列）都是它的子类。这样的设计做到了对文本和图形的一致对待，也没有过分强调单个元素和元素组之间的差别。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-07T13:01:03.000Z">
+<meta property="article:modified_time" content="2020-11-06T16:32:22.780Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="notes">
+<meta property="article:tag" content="design pattern">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/07/设计模式-Chapt2/"/>
+
+
+
+
+
+  <title>设计模式-Chapt2 | SToPire's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SToPire's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="SToPire">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SToPire's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">设计模式-Chapt2</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-07T21:01:03+08:00">
+                2020-09-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Design-patterns/" itemprop="url" rel="index">
+                    <span itemprop="name">Design_patterns</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="文档结构"><a href="#文档结构" class="headerlink" title="文档结构"></a>文档结构</h3><p>所有对象对应一个抽象基类<code>Glyph</code>（图元），图形元素（字符和图像）以及结构元素（行和列）都是它的子类。这样的设计做到了对文本和图形的一致对待，也没有过分强调单个元素和元素组之间的差别。    </p>
+<a id="more"></a>
+<table>
+<thead>
+<tr>
+<th>责任</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>表现</td>
+<td>virtual void Draw(Window*)</td>
+</tr>
+<tr>
+<td>表现</td>
+<td>virtual void Bounds(Rect&amp;)</td>
+</tr>
+<tr>
+<td>点击检测</td>
+<td>virtual bool Intersects(Const Point&amp;)</td>
+</tr>
+<tr>
+<td>结构</td>
+<td>virtual void Insert(Glyph*, int);</td>
+</tr>
+<tr>
+<td>结构</td>
+<td>virtual void Remove(Glyph*)</td>
+</tr>
+<tr>
+<td>结构</td>
+<td>virtual Glyph* Child(int)</td>
+</tr>
+<tr>
+<td>结构</td>
+<td>virtual Glyph* Parent()</td>
+</tr>
+</tbody></table>
+<p><code>Draw</code>负责让图元画出自己，<code>Bounds</code>指出图元占用多大空间，<code>Intersects</code>判断一个指定的点是否与图元相交，结构操作与图元的父图元和子图元相关。</p>
+<h3 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h3><p>格式化文档的算法应该被封装起来，独立于文档结构之外。</p>
+<p><code>Composition</code>是<code>Glyph</code>的子类，拥有<code>Compositor</code>对象，<code>Compositor</code>封装了具体的格式化算法。</p>
+<p>支持文档物理结构的类和支持不同格式化算法的类实现了分离。</p>
+<h3 id="修饰用户界面"><a href="#修饰用户界面" class="headerlink" title="修饰用户界面"></a>修饰用户界面</h3><p>如果想添加边界或滚动条，可以选择创建<code>Composition</code>的子类<code>BorderedComposition</code>和<code>ScrollableComposition</code>，但是组件多了有$2^n$排列组合，显然不可能这么做下去。可以通过对象组合的方式实现。<code>Border</code>应该是一个<code>Glyph</code>的子类，因为客户不应区分图元是否有边界而使用不同的接口。于是可以引入一个抽象基类<code>Monoglyph</code>，它是只有一个子图元的图元，把所有对这个组件的请求转发给它的子图元。这样一来，<code>Border</code>就可以继承<code>MonoGlyph</code>，它先调用<code>MonoGlyph</code>的<code>Draw</code>函数，然后画出边界。</p>
+<h3 id="支持多种视感标准"><a href="#支持多种视感标准" class="headerlink" title="支持多种视感标准"></a>支持多种视感标准</h3><p>如果直接用<code>ScrollBar* sb = new MotifScrollBar</code>来创建实例，相当于编译时定死了视感标准。此时就要用工厂<code>ScrollBar* sb = guiFactory-&gt;CreateScrollBar()</code>.这里<code>guiFactory</code>是<code>MotifFactory</code>的实例，每种Factory都是<code>GUIFactory</code>抽象基类的子类。</p>
+<h3 id="支持多种窗口系统"><a href="#支持多种窗口系统" class="headerlink" title="支持多种窗口系统"></a>支持多种窗口系统</h3><p>我们把不同窗口系统的公共部分抽象出来加以封装成<code>Window</code>类，而不同窗口系统的区别则封装在<code>WindowImp</code>类里。<code>Window</code>类通过调用成员类<code>WindowImp</code>的对应函数实现对应功能，这样一来，不同窗口系统接口的巨大差异就被<code>WindowImp</code>隐藏了。这正是Bridge模式的一个例子，<code>Window</code>支持窗口的逻辑概念，而<code>WindowImp</code>描述了窗口的不同实现，两个独立演化的，分离的类层次一起工作。</p>
+<h3 id="用户操作"><a href="#用户操作" class="headerlink" title="用户操作"></a>用户操作</h3><p>定义一个<code>Command</code>抽象类，它的不同子类按照各自的需求实现<code>execute</code>方法，所有的用户操作（如点击菜单项），只是执行了这个操作的对象的<code>Command-&gt;Execute()</code>方法。同时，维护一个最近执行的<code>Command</code>列表就能方便地实现Undo和Redo操作。</p>
+<h3 id="拼写检查和段字处理"><a href="#拼写检查和段字处理" class="headerlink" title="拼写检查和段字处理"></a>拼写检查和段字处理</h3><h4 id="1-遍历"><a href="#1-遍历" class="headerlink" title="1.遍历"></a>1.遍历</h4><p>我们需要访问子图元中的对象来分析文本，这就需要了解图元存储子图元的内部数据结构。为了保持封装，引入迭代器类<code>Iterator</code>.每种内部数据结构（数组、链表）都对应一个<code>Iterator</code>的子类。图元使用<code>CreateIterator</code>方法创建与其数据结构对应的迭代器，这就保证了遍历算法对用户透明。</p>
+<h4 id="2-分析"><a href="#2-分析" class="headerlink" title="2.分析"></a>2.分析</h4><p>显然，分析工作不能在迭代器类系列中进行，因为我们希望降低耦合。如果把分析工作放在图元类里，似乎是可以的，因为对不同的图元类型，分析工作显然不同。比如，拼写检查应该考虑字符图元，颜色分割应该考虑可见的图元。但是这样一来，每增加一种新的分析，就要改变每一个图元类，并且会导致<code>Glyph</code>的接口越来越大，模糊它的基本接口。</p>
+<p>因此，应该用独立对象封装分析方法。如果我们对某种分析（拼写分析）定义一个类<code>SpellingChecker</code>，那就可以给图元定义一个接口<code>void CheckMe(SpellingChecker&amp;)</code>，遍历图元时使用这个接口即可做到拼写检查。但是这样要为每种分析增加一个<code>Checker</code>，更严重的是，要为图元类增加一个对应的<code>CheckMe</code>接口。</p>
+<p>于是引入<code>Visitor</code>类，它对不同类型的<code>Glyph</code>子类有一个<code>VisitXXX</code>函数。<code>CheckMe</code>也改为一个更加通用的名字<code>Accept(Visitor&amp;)</code>.添加一个新分析类型，只需要建立一个新的<code>Visitor</code>子类。不过一旦图元类有了一个新的子类，就需要对所有的<code>Visitor</code>添加一个对应的<code>VisitXXX</code>函数，对于文字处理应用，增加一个图元不是一个合理需求，所以这样抽象满足我们的需要。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/notes/" rel="tag"># notes</a>
+          
+            <a href="/tags/design-pattern/" rel="tag"># design pattern</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt1/" rel="next" title="设计模式-Chapt1">
+                <i class="fa fa-chevron-left"></i> 设计模式-Chapt1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/16/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt3/" rel="prev" title="设计模式-Chapt3">
+                设计模式-Chapt3 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">SToPire</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/stopire" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:181250195@smail.nju.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#文档结构"><span class="nav-number">1.</span> <span class="nav-text">文档结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化"><span class="nav-number">2.</span> <span class="nav-text">格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修饰用户界面"><span class="nav-number">3.</span> <span class="nav-text">修饰用户界面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持多种视感标准"><span class="nav-number">4.</span> <span class="nav-text">支持多种视感标准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持多种窗口系统"><span class="nav-number">5.</span> <span class="nav-text">支持多种窗口系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户操作"><span class="nav-number">6.</span> <span class="nav-text">用户操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拼写检查和段字处理"><span class="nav-number">7.</span> <span class="nav-text">拼写检查和段字处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-遍历"><span class="nav-number">7.1.</span> <span class="nav-text">1.遍历</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-分析"><span class="nav-number">7.2.</span> <span class="nav-text">2.分析</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SToPire</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
