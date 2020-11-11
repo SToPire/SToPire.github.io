@@ -50,10 +50,10 @@ curl www.google.com/robots.txt
 ##### 6~10
 
 ```shell
-curl httpbin.org/anything -H "User-Agent:elephant" 	# 6a
-curl httpbin.org/anything -A "elephant" 			# 6b
+curl httpbin.org/anything -H "User-Agent:elephant" # 6a
+curl httpbin.org/anything -A "elephant" # 6b
 curl httpbin.org/anything -X DELETE
-curl -I httpbin.org/anything						# -I: show the reference header
+curl -I httpbin.org/anything # -I: show the reference header
 curl -X POST httpbin.org/anything -d '{"value":"panda"}' 
 curl -X POST httpbin.org/anything -d '{"value":"panda"}' -H "Content-Type:application/json"
 ```
