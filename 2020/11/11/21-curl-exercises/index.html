@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="design pattern," />
+  <meta name="keywords" content="curl," />
 
 
 
@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="什么是设计模式设计模式系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计，是对用来在特定场景下解决一般设计问题的类和相互通信的对象的描述。设计模式确定了所包含的类和实例，它们的角色、协作方式以及职责分配。">
+<meta name="description" content="21 curl exercisesReference:https:&#x2F;&#x2F;jvns.ca&#x2F;blog&#x2F;2019&#x2F;08&#x2F;27&#x2F;curl-exercises&#x2F; These exercises are about understanding how to make different kinds of HTTP requests with curl. They’re a little repetitive o">
 <meta property="og:type" content="article">
-<meta property="og:title" content="设计模式-Chapt1">
-<meta property="og:url" content="http://yoursite.com/2020/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt1/index.html">
+<meta property="og:title" content="21 curl exercises">
+<meta property="og:url" content="http://yoursite.com/2020/11/11/21-curl-exercises/index.html">
 <meta property="og:site_name" content="SToPire&#39;s Blog">
-<meta property="og:description" content="什么是设计模式设计模式系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计，是对用来在特定场景下解决一般设计问题的类和相互通信的对象的描述。设计模式确定了所包含的类和实例，它们的角色、协作方式以及职责分配。">
+<meta property="og:description" content="21 curl exercisesReference:https:&#x2F;&#x2F;jvns.ca&#x2F;blog&#x2F;2019&#x2F;08&#x2F;27&#x2F;curl-exercises&#x2F; These exercises are about understanding how to make different kinds of HTTP requests with curl. They’re a little repetitive o">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-09-05T15:57:30.000Z">
-<meta property="article:modified_time" content="2020-11-11T03:13:12.360Z">
+<meta property="article:published_time" content="2020-11-11T03:10:04.000Z">
+<meta property="article:modified_time" content="2020-11-11T03:14:23.450Z">
 <meta property="article:author" content="SToPire">
-<meta property="article:tag" content="design pattern">
+<meta property="article:tag" content="curl">
 <meta name="twitter:card" content="summary">
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/09/05/设计模式-Chapt1/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/11/11/21-curl-exercises/"/>
 
 
 
 
 
-  <title>设计模式-Chapt1 | SToPire's Blog</title>
+  <title>21 curl exercises | SToPire's Blog</title>
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt1/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/11/21-curl-exercises/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="SToPire">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">设计模式-Chapt1</h1>
+          <h1 class="post-title" itemprop="name headline">21 curl exercises</h1>
         
 
         <div class="post-meta">
@@ -282,8 +282,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-05T23:57:30+08:00">
-                2020-09-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-11T11:10:04+08:00">
+                2020-11-11
               </time>
             
 
@@ -305,8 +305,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Notes/" itemprop="url" rel="index">
-                    <span itemprop="name">Notes</span>
+                  <a href="/categories/Tips/" itemprop="url" rel="index">
+                    <span itemprop="name">Tips</span>
                   </a>
                 </span>
 
@@ -342,37 +342,42 @@
       
 
       
-        <h3 id="什么是设计模式"><a href="#什么是设计模式" class="headerlink" title="什么是设计模式"></a>什么是设计模式</h3><p>设计模式系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计，是对用来在特定场景下解决一般设计问题的类和相互通信的对象的描述。设计模式确定了所包含的类和实例，它们的角色、协作方式以及职责分配。</p>
+        <h4 id="21-curl-exercises"><a href="#21-curl-exercises" class="headerlink" title="21 curl exercises"></a>21 curl exercises</h4><p>Reference:<a href="https://jvns.ca/blog/2019/08/27/curl-exercises/" target="_blank" rel="noopener">https://jvns.ca/blog/2019/08/27/curl-exercises/</a></p>
+<p>These exercises are about understanding how to make different kinds of HTTP requests with curl. They’re a little repetitive on purpose. They exercise basically everything I do with curl.</p>
+<p>To keep it simple, we’re going to make a lot of our requests to the same website: <a href="https://httpbin.org/" target="_blank" rel="noopener">https://httpbin.org</a>. httpbin is a service that accepts HTTP requests and then tells you what request you made.</p>
 <a id="more"></a>
-<h3 id="设计模式的分类"><a href="#设计模式的分类" class="headerlink" title="设计模式的分类"></a>设计模式的分类</h3><h4 id="按目的"><a href="#按目的" class="headerlink" title="按目的"></a>按目的</h4><p>创建型(creational)与对象的创建有关，结构型(structural)处理类或对象的组合，行为型(behavioral)描述类或对象怎样交互和怎样分配职责。</p>
-<h4 id="按范围"><a href="#按范围" class="headerlink" title="按范围"></a>按范围</h4><p>指定模式主要用于类还是对象。类模式处理类和子类之间的关系，该关系通过继承建立，编译时确定，为静态。对象模式处理对象间的关系，运行时可以变化，为动态。</p>
-<h3 id="复用机制"><a href="#复用机制" class="headerlink" title="复用机制"></a>复用机制</h3><h4 id="1-继承和组合的比较"><a href="#1-继承和组合的比较" class="headerlink" title="1.继承和组合的比较"></a>1.继承和组合的比较</h4><p>类继承又名白箱复用(white-box reuse)，因为在继承中父类的内部细节对子类可见。类继承在编译时静态定义，无法运行时改变。而且继承对子类揭示了父类的实现细节，一定程度上破坏了封装性。此外，子类和父类的依赖性紧密，一旦继承下来的实现不适合解决新的问题，就要重写/替换父类，这种依赖关系限制了灵活性和复用性。</p>
-<p>对象组合又名黑箱复用(black-box reuse)，对象的内部细节不可见，通过组装和组合对象获得新的复杂功能。这样不破坏封装性（对象只能通过接口访问），同时依赖关系较少。对象组合使类和类继承层次保持较小规模，并且这样的设计有更多的对象和更少的类，于是系统行为依赖对象间的关系，而非定义在某个类中。</p>
-<p><strong>原则：优先使用对象组合，而不是类继承。</strong></p>
-<h4 id="2-委托"><a href="#2-委托" class="headerlink" title="2.委托"></a>2.委托</h4><p>在委托方式下，接受请求的对象把操作委托给它的代理者(delegate)，比如<code>Window</code>类中保存一个<code>Rectangle</code>类的实例变量，把求面积请求转发给<code>Rectangle</code>，而不是继承<code>Rectangle</code>这个类。这样做的优点是灵活，可以运行时组合对象操作，改变操作的组合方式。不足之处是动态，参数化的软件比静态软件难以理解，以及运行低效。</p>
-<h4 id="3-参数化类型"><a href="#3-参数化类型" class="headerlink" title="3.参数化类型"></a>3.参数化类型</h4><p>例子：c++中的<code>template</code>，这并非严格的oop技术。它允许改变类用到的类型，但与继承一样，不能在运行时改变。</p>
-<h3 id="关联运行时和编译时的结构"><a href="#关联运行时和编译时的结构" class="headerlink" title="关联运行时和编译时的结构"></a>关联运行时和编译时的结构</h3><p>程序的代码结构在编译时就已经确定，它由继承关系固定的类组成。然而运行时结构是由快速变化的通信对象网络组成的，更多受到设计者而非编程语言的影响。</p>
-<p>聚合(aggregation)指一个对象拥有另一个对象，比如一个对象是另一个对象的成员变量。</p>
-<p>相识(acquaintance)指一个对象“知道”另一个对象，也被称为“关联”或者“引用”。</p>
-<p>聚合和相识是编程者的意图决定的，它们的区别在编译时的结构中很难看出来。</p>
-<h3 id="导致必须重新设计的原因"><a href="#导致必须重新设计的原因" class="headerlink" title="导致必须重新设计的原因"></a>导致必须重新设计的原因</h3><ol>
-<li><p>显式指定一个类来创建对象：导致被特定实现约束，而非特定接口。</p>
-</li>
-<li><p>某一请求被指定为一个特殊操作，产生依赖。</p>
-</li>
-<li><p>对硬件和软件平台的依赖。</p>
-</li>
-<li><p>对对象表示或实现的依赖：应该对客户隐藏对象的表示、保存、定位、实现信息。</p>
-</li>
-<li><p>算法依赖：对象依赖某个特定算法。应该把可能发生变化的算法孤立起来。</p>
-</li>
-<li><p>紧耦合：互相依赖的一堆类，难以改变或删掉其中的一个。设计模式使用抽象耦合和分层技术提高系统的松散耦合性。</p>
-</li>
-<li><p>通过生成子类来扩充功能：可能导致类爆炸，不得不引入很多其他子类。可以用对象组合和委托技术实现新的功能。</p>
-</li>
-<li><p>不能方便的修改类：比如商业类库。设计模式在这种情况下提供对类进行修改的方法。</p>
-</li>
+
+<ol>
+<li>Request <a href="https://httpbin.org/" target="_blank" rel="noopener">https://httpbin.org</a></li>
+<li>Request <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a>. httpbin.org/anything will look at the request you made, parse it, and echo back to you what you requested. curl’s default is to make a GET request.</li>
+<li>Make a POST request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a></li>
+<li>Make a GET request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a>, but this time add some query parameters (set <code>value=panda</code>).</li>
+<li>Request google’s robots.txt file (<a href="http://www.google.com/robots.txt" target="_blank" rel="noopener">www.google.com/robots.txt</a>)</li>
+<li>Make a GET request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a> and set the header <code>User-Agent: elephant</code>.</li>
+<li>Make a DELETE request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a></li>
+<li>Request <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a> and also get the response headers</li>
+<li>Make a POST request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a> with the JSON body <code>{&quot;value&quot;: &quot;panda&quot;}</code></li>
+<li>Make the same POST request as the previous exercise, but set the Content-Type header to <code>application/json</code> (because POST requests need to have a content type that matches their body). Look at the <code>json</code> field in the response to see the difference from the previous one.</li>
+<li>Make a GET request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a> and set the header <code>Accept-Encoding: gzip</code> (what happens? why?)</li>
+<li>Put a bunch of a JSON in a file and then make a POST request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a> with the JSON in that file as the body</li>
+<li>Make a request to <a href="https://httpbin.org/image" target="_blank" rel="noopener">https://httpbin.org/image</a> and set the header ‘Accept: image/png’. Save the output to a PNG file and open the file in an image viewer. Try the same thing with different <code>Accept:</code> headers.</li>
+<li>Make a PUT request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a></li>
+<li>Request <a href="https://httpbin.org/image/jpeg" target="_blank" rel="noopener">https://httpbin.org/image/jpeg</a>, save it to a file, and open that file in your image editor.</li>
+<li>Request <a href="https://www.twitter.com/" target="_blank" rel="noopener">https://www.twitter.com</a>. You’ll get an empty response. Get curl to show you the response headers too, and try to figure out why the response was empty.</li>
+<li>Make any request to <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a> and just set some nonsense headers (like <code>panda: elephant</code>)</li>
+<li>Request <a href="https://httpbin.org/status/404" target="_blank" rel="noopener">https://httpbin.org/status/404</a> and <a href="https://httpbin.org/status/200" target="_blank" rel="noopener">https://httpbin.org/status/200</a>. Request them again and get curl to show the response headers.</li>
+<li>Request <a href="https://httpbin.org/anything" target="_blank" rel="noopener">https://httpbin.org/anything</a> and set a username and password (with <code>-u username:password</code>)</li>
+<li>Download the Twitter homepage (<a href="https://twitter.com/" target="_blank" rel="noopener">https://twitter.com</a>) in Spanish by setting the <code>Accept-Language: es-ES</code> header.</li>
+<li>Omitted!</li>
 </ol>
+<h5 id="1-5"><a href="#1-5" class="headerlink" title="1~5"></a>1~5</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl httpbin.org</span><br><span class="line">curl httpbin.org/anything</span><br><span class="line">curl -X POST httpbin.org/anything</span><br><span class="line">curl httpbin.org/anything -d value=panda # default:make a GET request</span><br><span class="line">curl www.google.com/robots.txt</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-10"><a href="#6-10" class="headerlink" title="6~10"></a>6~10</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl httpbin.org/anything -H "User-Agent:elephant" 	# 6a</span><br><span class="line">curl httpbin.org/anything -A "elephant" 			# 6b</span><br><span class="line">curl httpbin.org/anything -X DELETE</span><br><span class="line">curl -I httpbin.org/anything						# -I: show the reference header</span><br><span class="line">curl -X POST httpbin.org/anything -d '&#123;"value":"panda"&#125;' </span><br><span class="line">curl -X POST httpbin.org/anything -d '&#123;"value":"panda"&#125;' -H "Content-Type:application/json"</span><br></pre></td></tr></table></figure>
+
+<h5 id="11-15"><a href="#11-15" class="headerlink" title="11~15"></a>11~15</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl httpbin.org/anything -H "Accept-Encoding:gzip"</span><br><span class="line">curl -X POST -d @test.json httpbin.org/anything -H "Content-Type:application/json"</span><br><span class="line">curl httpbin.org/image -H "Accept:image/png" --output test.png</span><br><span class="line">curl httpbin.org/anything -X PUT</span><br><span class="line">curl httpbin.org/image/jpeg --output test.jpeg</span><br></pre></td></tr></table></figure>
+
+<h5 id="16-20"><a href="#16-20" class="headerlink" title="16~20"></a>16~20</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl https://www.twitter.com -I # 303 Moved Permanently</span><br><span class="line">curl httpbin.org/anything -H "panda:elephant"</span><br><span class="line">curl httpbin.org/status/404 -I</span><br><span class="line">curl httpbin.org/anything -u username:password </span><br><span class="line">curl https://twitter.com -H "Accept-Language:zh-CN" --output test.html</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -390,7 +395,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/design-pattern/" rel="tag"># design pattern</a>
+            <a href="/tags/curl/" rel="tag"># curl</a>
           
         </div>
       
@@ -403,8 +408,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/08/31/%E5%85%B3%E4%BA%8EHashMap%E5%85%83%E7%B4%A0%E4%B8%ADequals%E6%96%B9%E6%B3%95%E7%9A%84%E9%87%8D%E8%BD%BD/" rel="next" title="关于HashMap元素中equals方法的重载">
-                <i class="fa fa-chevron-left"></i> 关于HashMap元素中equals方法的重载
+              <a href="/2020/10/15/%E6%B3%9B%E5%9E%8B%EF%BC%8C%E7%B1%BB%E5%9E%8B%E6%93%A6%E9%99%A4%EF%BC%8C%E7%B1%BB%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6/" rel="next" title="泛型，类型擦除，类型通配符">
+                <i class="fa fa-chevron-left"></i> 泛型，类型擦除，类型通配符
               </a>
             
           </div>
@@ -412,10 +417,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/09/07/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Chapt2/" rel="prev" title="设计模式-Chapt2">
-                设计模式-Chapt2 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -563,7 +564,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是设计模式"><span class="nav-number">1.</span> <span class="nav-text">什么是设计模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式的分类"><span class="nav-number">2.</span> <span class="nav-text">设计模式的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#按目的"><span class="nav-number">2.1.</span> <span class="nav-text">按目的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#按范围"><span class="nav-number">2.2.</span> <span class="nav-text">按范围</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复用机制"><span class="nav-number">3.</span> <span class="nav-text">复用机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-继承和组合的比较"><span class="nav-number">3.1.</span> <span class="nav-text">1.继承和组合的比较</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-委托"><span class="nav-number">3.2.</span> <span class="nav-text">2.委托</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-参数化类型"><span class="nav-number">3.3.</span> <span class="nav-text">3.参数化类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关联运行时和编译时的结构"><span class="nav-number">4.</span> <span class="nav-text">关联运行时和编译时的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导致必须重新设计的原因"><span class="nav-number">5.</span> <span class="nav-text">导致必须重新设计的原因</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#21-curl-exercises"><span class="nav-number">1.</span> <span class="nav-text">21 curl exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-5"><span class="nav-number">1.1.</span> <span class="nav-text">1~5</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-10"><span class="nav-number">1.2.</span> <span class="nav-text">6~10</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-15"><span class="nav-number">1.3.</span> <span class="nav-text">11~15</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#16-20"><span class="nav-number">1.4.</span> <span class="nav-text">16~20</span></a></li></ol></li></ol></div>
             
 
           </div>
