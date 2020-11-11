@@ -1,8 +1,8 @@
 ---
 title: 设计模式-Chapt2
 date: 2020-09-07 21:01:03
-categories: Design_patterns
-tags: [notes, design pattern]
+categories: Notes
+tags: [design pattern]
 ---
 ### 文档结构
 

@@ -1,8 +1,8 @@
 ---
 title: lambda表达式，匿名内部类，代理
 date: 2020-10-10 14:33:54
-categories: Java
-tags: [notes, Java核心技术]
+categories: Notes
+tags: [Java, Java核心技术]
 ---
 参考资料：https://www.zhihu.com/question/20794107/answer/658139129
 

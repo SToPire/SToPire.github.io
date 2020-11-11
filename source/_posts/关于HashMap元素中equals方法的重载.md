@@ -1,8 +1,8 @@
 ---
 title: 关于HashMap元素中equals方法的重载
 date: 2020-08-31 22:58:47
-categories: Java
-tags: [Q&A, java]
+categories: Tips
+tags: [Java]
 ---
 在使用`HashMap`的时候，尽管重载了`equals`和`hashCode`方法，遵循了重载`equals`就必须重载`hashCode`的原则，仍然无法正确比较两个对象是否相等：
 <!-- more -->

@@ -1,8 +1,8 @@
 ---
 title: 设计模式-Chapt3
 date: 2020-09-16 21:19:01
-categories: Design_patterns
-tags: [notes, design pattern]
+categories: Notes
+tags: [design pattern]
 ---
 
 创建型模式可以分为两类，一种是生成创建对象的类的子类，对应`Factory Method`模式，另一种方式更多依赖于对象组合，即创建一个“工厂对象”，专门负责创建产品对象，对应`Abstract Factory`,`Builder`和`Prototype`模式。

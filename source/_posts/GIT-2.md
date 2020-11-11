@@ -1,8 +1,8 @@
 ---
 title: Git_远程
 date: 2020-06-14 21:17:04
-categories: Git
-tags: [notes, git]
+categories: Tips
+tags: [git]
 ---
 参考资料：https://learngitbranching.js.org/         https://dev.to/lydiahallie/cs-visualized-useful-git-commands-37p1
 

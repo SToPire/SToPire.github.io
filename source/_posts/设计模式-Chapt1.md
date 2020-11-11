@@ -1,8 +1,8 @@
 ---
 title: 设计模式-Chapt1
 date: 2020-09-05 23:57:30
-categories: Design_patterns
-tags: [notes, design pattern]
+categories: Notes
+tags: [design pattern]
 ---
 ### 什么是设计模式
 
