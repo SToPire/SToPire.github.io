@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="面经," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="后端研发实习生-技术中台 一面 2020.11.19 17:00">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面经_字节跳动_后端开发实习生-技术中台">
+<meta property="og:url" content="http://yoursite.com/2020/12/14/%E9%9D%A2%E7%BB%8F-%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8-%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F-%E6%8A%80%E6%9C%AF%E4%B8%AD%E5%8F%B0/index.html">
+<meta property="og:site_name" content="SToPire&#39;s Blog">
+<meta property="og:description" content="后端研发实习生-技术中台 一面 2020.11.19 17:00">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-13T17:01:35.000Z">
+<meta property="article:modified_time" content="2020-12-13T17:03:08.630Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="面经">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/14/面经-字节跳动-后端开发实习生-技术中台/"/>
+
+
+
+
+
+  <title>面经_字节跳动_后端开发实习生-技术中台 | SToPire's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SToPire's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/14/%E9%9D%A2%E7%BB%8F-%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8-%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F-%E6%8A%80%E6%9C%AF%E4%B8%AD%E5%8F%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="SToPire">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SToPire's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">面经_字节跳动_后端开发实习生-技术中台</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-14T01:01:35+08:00">
+                2020-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Notes/" itemprop="url" rel="index">
+                    <span itemprop="name">Notes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="后端研发实习生-技术中台-一面-2020-11-19-17-00"><a href="#后端研发实习生-技术中台-一面-2020-11-19-17-00" class="headerlink" title="后端研发实习生-技术中台 一面 2020.11.19 17:00"></a>后端研发实习生-技术中台 一面 2020.11.19 17:00</h4><a id="more"></a>
+<p>Q:简单自我介绍。大三的话什么时间方便实习？学过什么专业课程？</p>
+<p>Q:平时基本都是上课的一些项目，还有字节跳动的项目。这个程序设计大赛是什么？(算法比赛）有在比赛中做一些工程项目吗？（无）</p>
+<p>Q:为什么参加的是客户端方向的训练营？（只有客户端方向）</p>
+<p>Q:简单说一下这个数独游戏做了哪些事情？采用了什么样的算法？</p>
+<p>A:大一的课程项目，用了剪枝算法，图形界面用了Qt.</p>
+<p>Q:有没有跑过很多测试用例？</p>
+<p>A:本地自己出题自己做，没有怎么测试过。</p>
+<p>Q:Java, Python都是什么时候用的？</p>
+<p>A:Java目前自己在学，Python用来做一些小脚本之类的。</p>
+<p>Q:Java写过哪些东西？</p>
+<p>A:看过Java编程思想，了解语言基本特性，准备接触框架。</p>
+<p>Q:学习的时候没有自己写一些小项目吗？</p>
+<p>A:主要是书本上的知识，还有就是用来做算法题的。</p>
+<p>Q:问你一些基础知识吧，先聊一下网络吧？</p>
+<p>Q:解释一下Http方法中GET和POST的区别。</p>
+<p>A:在我的理解里，GET是从网页上获取信息的方法，POST是向网页提取表单的方法。GET的话没有副作用，刷新能得到一样的东西；POST多次提交会有副作用，比如Chrome里如果刷新了一个POST请求的话它会问你这个有副作用是否要再次提交。比如网购的话下单返回一个下单页面，这个页面不能被浏览器缓存，否则下次再点没有下单也出现一个成功页面。就是GET可以被浏览器缓存，POST不能；GET没有副作用，POST有。</p>
+<p>Q:那从请求来讲，提交参数的时候有什么区别？</p>
+<p>A:GET的话参数是放在url里面的，有一个问号，什么什么等于什么什么。POST的话放在header的form项这个表单里面。</p>
+<p>Q:如果你开发程序的话会怎么选择GET和POST？</p>
+<p>A:我觉得如果是一个网购，会有不能反复提交的情况，有其他影响就必须用POST；GET的话就是一般情况获取一个网页。</p>
+<p>Q:那要是更新一个，比如更新你的购物车要用什么请求？</p>
+<p>A:我觉得应该用POST，因为它会对网站上的数据产生影响。</p>
+<p>Q:TCP有没有学过呀？（学过）能不能解释一下TCP我们常说的三次握手四次挥手？</p>
+<p>A:三次握手就是有一个Client和一个Server，Client向Server发送一个SYN，Server接收到这个SYN会发送SYNACK报文，客户端回复一个ACK报文。三次握手其实就是客户端和Server在确认他们应该收到的报文号，交换这个信息的过程。四次挥手就是拆除一个TCP连接的过程，如果客户端想要拆除的话，它会发送一个FIN，服务器会对这个FIN回复一个ACK。过了一会服务器觉得它可以拆除这个连接了，它会发送一个FIN给客户端，客户端会回复一个ACK，这个就是四次挥手。</p>
+<p>Q:那么为什么要是四次挥手，为什么不能是两次？</p>
+<p>A:因为TCP本身是一个全双工的连接…</p>
+<p>Q:什么叫全双工？</p>
+<p>A:全双工就是它们两个可以同时发送消息而不会互相干扰。它们同时发送的话如果Client觉得连接可以拆除了，就是没有什么要发的了，它就会发送FIN.那么这个时候如果服务器还有东西想要向Client发送，暂时不能结束这个连接，那么它回复ACK之后会把自己要发的东西发完再发送服务器的FIN.如果是两次握手就不能实现不同时终止连接这个事情。</p>
+<p>Q:那它是怎么实现传输速率的控制的呢？</p>
+<p>A:速率控制的话会有一个…就是TCP发过去会在ACK里有一个滑动窗口一样的，会向另外一端报告它现在缓冲区的余量。会有一个字段表示当前缓冲区能接收的字节数。如果另一端发现缓冲区满了或是将要发送的数据会把它撑满就会停止发送，直到它收到了一个缓冲区比当前待发送长度更大的ACK才会发送。</p>
+<p>Q:那么TCP和UDP有什么区别呢？</p>
+<p>A:UDP的话它是无连接的，没有这个三次握手和挥手建立的过程，就是一个一个的数据包，基本上就是一个IP层的拓展。TCP有握手的过程来建立连接，虽然建立连接的过程需要一定时间，但它通信的可靠性要比UDP高。</p>
+<p>Q:什么情况下要用UDP呢？</p>
+<p>A:比如说对时效性要求比较高的，比如说视频通话这样的。如果你丢了一个包那卡一下就过去了，不影响你聊天。如果是TCP的话就会在聊天过程中产生延迟。所以说视频通话适合使用UDP而不是TCP。</p>
+<p>Q:那你知道Http和Https有什么区别吗？</p>
+<p>A:我了解的不是太多，但我认为Http的包是可以被捕捉到，里面的信息也是明文的。Https会对里面的信息进行加密。</p>
+<p>Q:那你了解加密的机制吗？</p>
+<p>A:具体Https使用什么我可能不太清楚，但我了解加密的形式有对称和非对称两种，比如RSA就是一种加密的方法。</p>
+<p>Q:了解，再问你一些操作系统，能简单解释一下进程和线程的区别吗？</p>
+<p>A:进程的话，它是一种资源分配的单位，不同进程会有自己的地址空间，会有自己的栈和堆。在操作系统提供的虚存管理的抽象之下，它们自己读写自己独立的地址空间。线程是挂载在进程之下的，它没有自己的地址空间，不同线程会共享一个堆，然后有自己的栈，线程不能独立运行而必须依附在进程之下运行。线程是操作系统能够调度的基本单位，而进程是分配资源的基本单位。</p>
+<p>Q:你刚才提到堆和栈有什么区别呢？</p>
+<p>A:栈的话像一些局部变量，包括过程调用也是用栈来实现的，多调用一个函数就是在栈上多加一个栈帧，函数结束的时候消失掉。堆的话主要是分配一些动态内存，比如说Java中的对象，C++中new出来的，C中malloc分配的内存也都是在堆上。它们都是动态分配的而不是编译期决定的静态变量。</p>
+<p>Q:我们有时会遇到内存溢出，那么有什么原因会导致内存溢出呢？</p>
+<p>A:一种可能就是操作指针会移动到一个不合法的位置，进行读写就会产生段错误。</p>
+<p>Q:这个叫内存越界对吧，这个和溢出一样吗？</p>
+<p>A:好像不太一样。</p>
+<p>Q:那你就解释一下什么叫内存溢出吧。</p>
+<p>A:我认为可能就是当前内存空间不足以分配一个新的对象，它就会无法建立新的对象。</p>
+<p>Q:那什么情况下会出现内存溢出？</p>
+<p>A:比如说可能堆区的大小不够，给进程分配的堆区没有那么大，那么建立一个长数组的时候就没有办法分配它发生内存溢出。</p>
+<p>Q:还有什么样的场景，比如代码出现什么样的问题时候会发生溢出呢？</p>
+<p>A:我现在可能不太想得到。</p>
+<p>Q:你刚才说malloc那是堆上的溢出，那么栈上有没有可能？</p>
+<p>A:栈上的话你可能分配一个长数组（就会溢出），因为栈的大小有限制不能让你触及到另外一个栈上，所以它分配局部变量的时候会对大小有限制。</p>
+<p>Q:那么进程的话可以用哪些方式通信？</p>
+<p>A:通信的话我了解可以通过读写一块共享内存空间来实现通信，另外的话也可以通过发送Signal来实现进程间的通信。</p>
+<p>Q:那你知道信号量是什么吗？</p>
+<p>A:信号量是一种同步的原语，它有一个P操作和一个V操作。可以用来实现条件变量或者互斥锁，就是一种实现进程间同步的机制。</p>
+<p>Q:你可以举个实际的例子说明什么是信号量吗？</p>
+<p>A:比如说生产者消费者问题，各自有一个信号量来通信，同步现在到底有多少个生产者/消费者进入临界区。</p>
+<p>Q:问你一些Java的问题，我们先聊一下HashMap，你有看过它的一些原理吗？</p>
+<p>A:我对HashMap的理解就是它是一个哈希表，有一堆桶，它会算出Hash值投入对应的桶，每个桶里的元素是通过链表来组织的。</p>
+<p>Q:除了链表，哈希表这个数据结构还有没有什么其他的数据结构来解决冲突？</p>
+<p>A:就是添加或修改元素会算出Hash值投入对应的桶…</p>
+<p>Q:就是假如我算出来一样，除了链表有没有什么其他的方式来管理哈希值一样的数据？</p>
+<p>A:我觉得除了链表的话用树也是可以的。</p>
+<p>Q:那HashMap是怎么管理的呢？</p>
+<p>A:我认为就是链表的结构。</p>
+<p>Q:Java1.8之后它会有一些优化，这个没有看过吧？（不太了解）（PS：链表长度&gt;8转为红黑树）</p>
+<p>Q:聊一下ArrayList和LinkList吧，插入和查询复杂度有什么区别？</p>
+<p>A:ArrayList本身是一个数组，LinkList是一个链表。数组的话可以随机访问，给定一个下标可以在O(1)时间里返回那个位置上的值。链表不能这样做，必须从头走到那个位置，是O(n)的操作。插入的话链表可以在任何位置O(1)插入，数组如果要在中间插入必须把后面的元素后移，这是O(n)的操作。删除的话和插入差不多，在链表上是O(1)，在数组上是O(n)。</p>
+<p>Q:你的编程思想都看到哪了？（前几章的样子）看到类加载了吗？</p>
+<p>A: 类加载我没有看太多，不过我知道有一个Bootstrap Loader加载基本的类，有一个扩展类加载器加载ext目录下的类。加载的过程就是class文件本身可以由一个parser来解析并读取相应信息。</p>
+<p>Q:那如果涉及变量啊，或者是涉及其他的类先加载哪个后加载哪个这个知道吗？</p>
+<p>A:它会先加载自己的父类，如果创建了一个变量它会要求先加载这个变量的类。如果这个类依赖了别的类会这样传导下去。</p>
+<p>Q:你们学过数据库什么的吗？（正在学还没有学完）都学了些什么东西？（大概是SQL的语法，或理论上的东西，比如范式）那你平时用过吗？（SQLite，其他没有太多接触过）</p>
+<h5 id="算法题"><a href="#算法题" class="headerlink" title="算法题"></a>算法题</h5><p>剑指Offer34，要求输出路径的数目。后要求路径不一定结束于叶子节点，以及不一定开始于根节点（不会）</p>
+<p>反问：岗位的技术栈？</p>
+<p>答：不限制语言，Python/Go/Java都可以。但现在用的最多的是Go，基础服务用Redix，Go的框架是我们公司基于一些开源框架自研的，开发环境也是自研的。</p>
+<p>反问：中台是什么？</p>
+<p>答：很大范围的抽象，在不同业务中找到可以复用的逻辑，抽象成基础服务，这个基础服务是尽可能剔除掉一部分的业务逻辑。</p>
+<h4 id="后端研发实习生-技术中台-二面（挂）-2020-11-25-18-00"><a href="#后端研发实习生-技术中台-二面（挂）-2020-11-25-18-00" class="headerlink" title="后端研发实习生-技术中台 二面（挂） 2020.11.25 18:00"></a>后端研发实习生-技术中台 二面（挂） 2020.11.25 18:00</h4><p>Q:先做个自我介绍。Q:Flutter里面有后端吗（比较简单，网络部分比较少）Q:课程都学完了吗？</p>
+<h5 id="算法题-1"><a href="#算法题-1" class="headerlink" title="算法题"></a>算法题</h5><p>剑指Offer 25 合并两个有序单链表，去重。（磕磕绊绊）</p>
+<p>Q:进程线程的基本概念？</p>
+<p>A:（见上）</p>
+<p>Q:听过用户级线程？（是不是说的协程？）类似，一样的概念。</p>
+<p>A:在我的理解里，进程的调度都是由操作系统控制的。用户级线程据我了解有一个叫coroutine的东西就是协程，就是在用户态工作，可以脱离汇编执行流的操作。就是我可以在某个时刻让用户决定，保存寄存器现场，像发生了一次线程调度一样跳转到另一个线程执行，执行完了再通过读取保存的寄存器现场的方式恢复到原来的执行流。比如C语言中的setjump和longjump就是用这种方式来做的。</p>
+<p>Q:为啥要引入用户级线程？</p>
+<p>A:我的理解就是给用户提供了能够通过保存寄存器现场执行另外一部分的代码的手段。</p>
+<p>Q:有什么好处，理由需要我去用它呢？相比系统级的线程。</p>
+<p>A:我认为用户级的调用不需要进入内核态，速度上会有优势。</p>
+<p>Q:那用户级线程，像你刚才说的那样，什么时候会出现两个用户级线程它需要切换？</p>
+<p>A:（又把longjump和setjump说了一遍）</p>
+<p>Q:你是说用户主动调用longjump就切到另一个进程去，是吗？（是的）</p>
+<p>Q:进程间通信方式？</p>
+<p>A:（见上）</p>
+<p>Q:还知道有哪些吗？</p>
+<p>A:（听错，回答了一个SIGINT信号）</p>
+<p>Q:所有的SIGNAL都可以捕捉吗？</p>
+<p>A:不太清楚，猜测终止是不可被捕捉的。</p>
+<p>Q:除了信号还有什么通信方式吗？</p>
+<p>A:（复读共享内存）</p>
+<p>Q:操作系统怎么实现两个进程共享内存？</p>
+<p>A:让自己地址空间内的某个位置映射到相同的物理地址。</p>
+<p>Q:编程层面，Linux用哪个函数实现共享内存？</p>
+<p>A: mmap?</p>
+<p>Q:线程间有哪些通信方式？</p>
+<p>A:不太清楚，猜测在同样地址空间里可以读写同一片内存？</p>
+<p>Q:同一个进程里哪一个线程会接收处理SIGNAL呢？</p>
+<p>A:前台线程。</p>
+<p>Q:知道死锁是什么概念呢？</p>
+<p>A:两个线程/进程同时等待对方释放资源，都无法推进下去。如上锁顺序不同，先A后B和先B后A.</p>
+<p>Q:死锁的检测，C语言程序在运行，感觉可能死锁了，有什么方式可以发现当前确实死锁了吗？</p>
+<p>A:查看当前进程的内存占用，如果比较高可能是发生了死锁。</p>
+<p>Q:比较高不应该是内存没释放？</p>
+<p>A:就是它一直占用了资源。</p>
+<p>Q:但有时候资源是很轻的，轻到只是一个变量。</p>
+<p>Q:或者你用过mutex锁吗，如果两个线程一个拿A一个拿B，它们占的内存都比较少。</p>
+<p>Q:行，这个可能没实现过。</p>
+<p>Q:你能解释一下hash这个数据结构吗？</p>
+<p>A:（见上）</p>
+<p>Q:Hashmap是什么样的数据结构？</p>
+<p>A:（见上）</p>
+<p>Q:Hash有冲突率的概念知道吗？</p>
+<p>A:如果hash函数比较简单，比如int数模2作为hash函数，hash值取值范围只有两种，冲突率就会比较高。</p>
+<p>Q:如果冲突率高怎么办？</p>
+<p>A:修改hash函数，改成一个hash值取值范围更大的hash函数。</p>
+<p>Q:TCP和UDP的区别？</p>
+<p>A:（见上）</p>
+<p>Q:为啥有连接通信就稳定呢？</p>
+<p>A:通信信道的资源已经预先分配好了，比如UDP就是IP的拓展，传过去的两个包不能保证先后顺序，也可能丢包。TCP作为运输层协议保证丢到的包会被重传。</p>
+<p>Q:所以稳定是通过丢包检测和重传实现的对吗？（对）还是你刚才说的连接建立后信道比较稳定？</p>
+<p>A:应该是通过重传。</p>
+<p>Q:TCP三次握手的过程？</p>
+<p>A:（见上）</p>
+<p>Q:TCP挥手的时候有一个TIME_WAIT标志位是干嘛用的？</p>
+<p>A:（胡说八道）</p>
+<p>Q:它不是时间间隔，是一个标志位，是一种状态。（这个我可能不太清楚）</p>
+<p>Q:使用TCP的有哪些上层的协议？</p>
+<p>A:Http，SMTP等需要稳定传输的协议。</p>
+<p>Q:那UDP呢？</p>
+<p>A:我说不出具体协议的名字，但视频聊天等需要时效性的场合会使用UDP。</p>
+<p>Q:知道Http包由哪几部分组成吗？</p>
+<p>A:我所知道的有请求的类型，GET/POST（对，然后）然后还有header头部信息，确认发送者方的设备/浏览器等信息（然后，还有吗）还有就是former这些，请求的内容。</p>
+<p>Q:Http Response的状态码分别表示啥意思呢？</p>
+<p>A:表示服务器对Http请求的应答状态（大概分几类呢）1,2,3,4,5开头的是五类…【没有说全】</p>
+<p>反问：死锁检测应该是怎么做的？</p>
+<p>答：查看每个线程的调用栈。更复杂的就是在代码里面插入能够打印出函数帧的状态代码，知道哪一个帧消耗的时间最长，有这样的工具。还有就是自己实现一个mutex，每次死锁就打个log.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E9%9D%A2%E7%BB%8F/" rel="tag"># 面经</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/11/21-curl-exercises/" rel="next" title="21 curl exercises">
+                <i class="fa fa-chevron-left"></i> 21 curl exercises
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">SToPire</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/stopire" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:181250195@smail.nju.edu.cn" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#后端研发实习生-技术中台-一面-2020-11-19-17-00"><span class="nav-number">1.</span> <span class="nav-text">后端研发实习生-技术中台 一面 2020.11.19 17:00</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#算法题"><span class="nav-number">1.1.</span> <span class="nav-text">算法题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后端研发实习生-技术中台-二面（挂）-2020-11-25-18-00"><span class="nav-number">2.</span> <span class="nav-text">后端研发实习生-技术中台 二面（挂） 2020.11.25 18:00</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#算法题-1"><span class="nav-number">2.1.</span> <span class="nav-text">算法题</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SToPire</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
