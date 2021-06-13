@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="参考资料：https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903998869209095">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang net&#x2F;http流程">
+<meta property="og:url" content="http://yoursite.com/2021/01/26/Golang-net-http%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="SToPire&#39;s Blog">
+<meta property="og:description" content="参考资料：https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903998869209095">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-26T11:32:42.000Z">
+<meta property="article:modified_time" content="2021-01-26T16:56:36.750Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="Golang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/01/26/Golang-net-http%E6%B5%81%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Golang net/http流程 | SToPire's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">SToPire's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/26/Golang-net-http%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SToPire">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SToPire's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang net/http流程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-26 19:32:42" itemprop="dateCreated datePublished" datetime="2021-01-26T19:32:42+08:00">2021-01-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-27 00:56:36" itemprop="dateModified" datetime="2021-01-27T00:56:36+08:00">2021-01-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tips/" itemprop="url" rel="index"><span itemprop="name">Tips</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>参考资料：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903998869209095">https://juejin.cn/post/6844903998869209095</a></p>
+<a id="more"></a>
+
+<h3 id="简单的http-server"><a href="#简单的http-server" class="headerlink" title="简单的http  server"></a>简单的http  server</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">myHandlerFunc</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span>&#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;myHandlerFunc&quot;</span>)</span><br><span class="line">	w.Write([]<span class="keyword">byte</span>(<span class="string">&quot;From myHandlerFunc&quot;</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> myHandler <span class="keyword">struct</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(handler *myHandler)</span> <span class="title">ServeHTTP</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span>&#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;myHandler&quot;</span>)</span><br><span class="line">	w.Write([]<span class="keyword">byte</span>(<span class="string">&quot;From myHandler&quot;</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/one&quot;</span>,myHandlerFunc)</span><br><span class="line">	http.Handle(<span class="string">&quot;/two&quot;</span>,&amp;myHandler&#123;&#125;)</span><br><span class="line">	http.ListenAndServe(<span class="string">&quot;:9090&quot;</span>,<span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意到注册路由的两种方式，即<code>http.HandleFunc</code>和<code>http.Handle</code></p>
+<p>非成员方法会默认以<code>DefaultServeMux</code>为receiver，可见这两种方式最终都会调用<code>DefaultServeMux.Handle</code>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// server.go</span></span><br><span class="line"><span class="comment">// HandleFunc registers the handler function for the given pattern.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">&quot;http: nil handler&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	mux.Handle(pattern, HandlerFunc(handler))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Handle registers the handler for the given pattern</span></span><br><span class="line"><span class="comment">// in the DefaultServeMux.</span></span><br><span class="line"><span class="comment">// The documentation for ServeMux explains how patterns are matched.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Handle</span><span class="params">(pattern <span class="keyword">string</span>, handler Handler)</span></span> &#123; DefaultServeMux.Handle(pattern, handler) &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// HandleFunc registers the handler function for the given pattern</span></span><br><span class="line"><span class="comment">// in the DefaultServeMux.</span></span><br><span class="line"><span class="comment">// The documentation for ServeMux explains how patterns are matched.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</span><br><span class="line">	DefaultServeMux.HandleFunc(pattern, handler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ServeMux"><a href="#ServeMux" class="headerlink" title="ServeMux"></a>ServeMux</h3><p><code>ServeMux</code>是HTTP request的multiplexer.所谓multiplexer，就是Server会处理对于多个不同url的请求，应该根据最长url匹配的原则把请求转发给指定的handler.<code>DefaultServeMux</code>是一个<code>ServerMux</code>的实例，在上例中调用全局的<code>Handle</code> <code>HandleFunc</code>等函数时，实际是在配置<code>DefaultServeMux</code>。监听时<code>ListenAndServe</code>的第二个参数留空，同样也是默认使用<code>DefaultServeMux</code>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</span><br><span class="line">	mu    sync.RWMutex <span class="comment">// 互斥锁</span></span><br><span class="line">	m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</span><br><span class="line">	es    []muxEntry <span class="comment">// slice of entries sorted from longest to shortest.</span></span><br><span class="line">	hosts <span class="keyword">bool</span>       <span class="comment">// whether any patterns contain hostnames</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> muxEntry <span class="keyword">struct</span> &#123;</span><br><span class="line">	h       Handler</span><br><span class="line">	pattern <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>ServerMux</code>中的<code>mu</code>字段维护了一个从pattern(路由表达式)到<code>muxEntry</code>的映射。<code>muxEntry</code>简单的把路由表达式和handler组合在一起。</p>
+<h3 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h3><p>Handler是一个接口，只有一个方法<code>ServeHTTP()</code>.一个<code>Handler</code>(以及它的唯一方法)的职责是处理Request并构建Response.这也是golang的http服务暴露给开发者的入口，许多web框架自定义实现了<code>Handler</code>.</p>
+<p>值得注意的是，<code>ServeMux</code>也实现了<code>Handler</code>接口，它将请求转发给最匹配的url所对应的handler。也就是说，我们可以使用<code>ServeMux</code>对象或者干脆使用<code>DefaultServeMux</code>来作为<code>Handler</code>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Handler <span class="keyword">interface</span> &#123;</span><br><span class="line">	ServeHTTP(ResponseWriter, *Request)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="小Tip"><a href="#小Tip" class="headerlink" title="小Tip"></a>小Tip</h4><p>回到一开始<code>ServeMux</code>的<code>HandleFunc</code>成员函数：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">&quot;http: nil handler&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	mux.Handle(pattern, HandlerFunc(handler))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意第5行的<code>HandlerFunc(handler)</code>，它的作用是把一个具有<code>func(Response Writer, *Request)</code>签名的函数转变为实现了<code>Handler</code>接口的对象。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The HandlerFunc type is an adapter to allow the use of</span></span><br><span class="line"><span class="comment">// ordinary functions as HTTP handlers. If f is a function</span></span><br><span class="line"><span class="comment">// with the appropriate signature, HandlerFunc(f) is a</span></span><br><span class="line"><span class="comment">// Handler that calls f.</span></span><br><span class="line"><span class="keyword">type</span> HandlerFunc <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ServeHTTP calls f(w, r).</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f HandlerFunc)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</span><br><span class="line">	f(w, r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过一层wrapper优雅地实现了这一点，上述的<code>HandlerFunc(handler)</code>不是函数调用，而是一个类型转换。</p>
+<h3 id="回到DefaultServeMux-Handle"><a href="#回到DefaultServeMux-Handle" class="headerlink" title="回到DefaultServeMux.Handle"></a>回到<code>DefaultServeMux.Handle</code></h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">Handle</span><span class="params">(pattern <span class="keyword">string</span>, handler Handler)</span></span> &#123;</span><br><span class="line">	mux.mu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> mux.mu.Unlock()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> pattern == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">&quot;http: invalid pattern&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">&quot;http: nil handler&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> _, exist := mux.m[pattern]; exist &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">&quot;http: multiple registrations for &quot;</span> + pattern)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> mux.m == <span class="literal">nil</span> &#123;</span><br><span class="line">		mux.m = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry)</span><br><span class="line">	&#125;</span><br><span class="line">	e := muxEntry&#123;h: handler, pattern: pattern&#125;</span><br><span class="line">	mux.m[pattern] = e</span><br><span class="line">	<span class="keyword">if</span> pattern[<span class="built_in">len</span>(pattern)<span class="number">-1</span>] == <span class="string">&#x27;/&#x27;</span> &#123;</span><br><span class="line">		mux.es = appendSorted(mux.es, e)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> pattern[<span class="number">0</span>] != <span class="string">&#x27;/&#x27;</span> &#123;</span><br><span class="line">		mux.hosts = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数主要做了以下工作：</p>
+<ol>
+<li>建立从url模式到对应handler的映射。</li>
+<li>如果模式以’/‘结尾，对应一个子树中所有的url，把它加入es列表中，按照最长有限匹配的原则从长到短排序。</li>
+<li>不以’/‘开头的模式表示只匹配某个主机名下的URL.</li>
+</ol>
+<h3 id="ListenAndServe"><a href="#ListenAndServe" class="headerlink" title="ListenAndServe"></a><code>ListenAndServe</code></h3><p><code>http</code>的<code>ListenAndSere</code>方法创建了一个<code>Server</code>对象并调用了其同名方法。<code>Server</code>的<code>ListenAndServe</code>会初始化监听地址，调用<code>Listen</code>方法设置监听，把<code>Listen</code>返回的监听器对象传入<code>Serve</code>方法。<code>Serve</code>方法对每一个连接创建<code>conn</code>即连接对象，每个连接对象调用自己的<code>serve</code>方法，该方法中实际处理请求的语句是<code>serverHandler&#123;c.server&#125;.ServeHTTP(w, w.req)</code>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// serverHandler delegates to either the server&#x27;s Handler or</span></span><br><span class="line"><span class="comment">// DefaultServeMux and also handles &quot;OPTIONS *&quot; requests.</span></span><br><span class="line"><span class="keyword">type</span> serverHandler <span class="keyword">struct</span> &#123;</span><br><span class="line">	srv *Server</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sh serverHandler)</span> <span class="title">ServeHTTP</span><span class="params">(rw ResponseWriter, req *Request)</span></span> &#123;</span><br><span class="line">	handler := sh.srv.Handler</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		handler = DefaultServeMux</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> req.RequestURI == <span class="string">&quot;*&quot;</span> &amp;&amp; req.Method == <span class="string">&quot;OPTIONS&quot;</span> &#123;</span><br><span class="line">		handler = globalOptionsHandler&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	handler.ServeHTTP(rw, req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>serverHandler</code>开启了一系列调用流程，并最终调用了用户在<code>ListenAndServe</code>中指定的<code>handler</code>，如果为<code>nil</code>则会使用<code>DefaultServeMux</code>.</p>
+<h3 id="Best-Practice"><a href="#Best-Practice" class="headerlink" title="Best Practice"></a>Best Practice</h3><p>我们可以看出，为了把url模式绑定到指定的handler，我们有多种方式：</p>
+<ol>
+<li><p>直接使用<code>http.HandleFunc</code>绑定，<code>ListenAndServe</code>时使用<code>nil</code>作为<code>handler</code>.这是使用了默认的<code>DefaultServeMux</code>.</p>
+</li>
+<li><p>使用<code>HandlerFunc</code>（注意之前提及的，这是一个强制类型转换的adaptor）把一个函数转化为<code>Handler</code>对象并用于<code>ListenAndServe</code>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">foo</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span>&#123;</span><br><span class="line">	<span class="comment">//balabala</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">handler := http.HandlerFunc(foo)</span><br><span class="line">http.ListenAndServe(<span class="string">&quot;:9090&quot;</span>,handler)</span><br></pre></td></tr></table></figure></li>
+<li><p>创建一个自定义的<code>ServeMux</code>，在里面注册handler.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mux := http.NewServeMux()</span><br><span class="line">mux.HandleFunc(<span class="string">&quot;/one&quot;</span>, HandlerOne)</span><br><span class="line">mux.HandleFunc(<span class="string">&quot;/two&quot;</span>, HandlerTwo)</span><br><span class="line">http.ListenAndServe(<span class="string">&quot;:8001&quot;</span>, mux)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>建议使用第三种方式。</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/15/%E9%9D%A2%E7%BB%8F-%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8-%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F-%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83/" rel="prev" title="面经_字节跳动_后端开发实习生-用户中心">
+      <i class="fa fa-chevron-left"></i> 面经_字节跳动_后端开发实习生-用户中心
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/28/%E4%BD%BF%E7%94%A8Goland%E8%BF%9C%E7%AB%AF%E8%B0%83%E8%AF%95%E6%97%B6%E8%87%AA%E5%8A%A8%E6%8B%89%E8%B5%B7%E6%9C%8D%E5%8A%A1%E7%AB%AF/" rel="next" title="使用Goland远端调试时自动拉起服务端">
+      使用Goland远端调试时自动拉起服务端 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84http-server"><span class="nav-number">1.</span> <span class="nav-text">简单的http  server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServeMux"><span class="nav-number">2.</span> <span class="nav-text">ServeMux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler"><span class="nav-number">3.</span> <span class="nav-text">Handler</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8FTip"><span class="nav-number">3.1.</span> <span class="nav-text">小Tip</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E5%88%B0DefaultServeMux-Handle"><span class="nav-number">4.</span> <span class="nav-text">回到DefaultServeMux.Handle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ListenAndServe"><span class="nav-number">5.</span> <span class="nav-text">ListenAndServe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Best-Practice"><span class="nav-number">6.</span> <span class="nav-text">Best Practice</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SToPire</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/SToPire" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SToPire" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:stopire@gmail.com" title="E-Mail → mailto:stopire@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SToPire</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

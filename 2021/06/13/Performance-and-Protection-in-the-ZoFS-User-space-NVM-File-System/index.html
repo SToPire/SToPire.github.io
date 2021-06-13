@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="名词解释NVMNon-volatile memory（非易失性存储），类似硬盘，存储的信息不会随着断电而消失；但又接在内存总线之上，也就是可以按字节寻址，并被load&#x2F;store指令直接读写。Inter的傲腾系列就是NVM的一项商业应用。既然是非易失性存储，就有在其上构建文件系统的意义和动机。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Performance and Protection in the ZoFS User-space NVM File System">
+<meta property="og:url" content="http://yoursite.com/2021/06/13/Performance-and-Protection-in-the-ZoFS-User-space-NVM-File-System/index.html">
+<meta property="og:site_name" content="SToPire&#39;s Blog">
+<meta property="og:description" content="名词解释NVMNon-volatile memory（非易失性存储），类似硬盘，存储的信息不会随着断电而消失；但又接在内存总线之上，也就是可以按字节寻址，并被load&#x2F;store指令直接读写。Inter的傲腾系列就是NVM的一项商业应用。既然是非易失性存储，就有在其上构建文件系统的意义和动机。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-13T04:15:42.000Z">
+<meta property="article:modified_time" content="2021-06-13T04:17:12.880Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="file system">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/06/13/Performance-and-Protection-in-the-ZoFS-User-space-NVM-File-System/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Performance and Protection in the ZoFS User-space NVM File System | SToPire's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">SToPire's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/06/13/Performance-and-Protection-in-the-ZoFS-User-space-NVM-File-System/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SToPire">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SToPire's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Performance and Protection in the ZoFS User-space NVM File System
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-13 12:15:42 / 修改时间：12:17:12" itemprop="dateCreated datePublished" datetime="2021-06-13T12:15:42+08:00">2021-06-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h3><h4 id="NVM"><a href="#NVM" class="headerlink" title="NVM"></a>NVM</h4><p>Non-volatile memory（非易失性存储），类似硬盘，存储的信息不会随着断电而消失；但又接在内存总线之上，也就是可以按字节寻址，并被load/store指令直接读写。Inter的傲腾系列就是NVM的一项商业应用。既然是非易失性存储，就有在其上构建文件系统的意义和动机。</p>
+<a id="more"></a>
+
+<h4 id="User-space-file-system"><a href="#User-space-file-system" class="headerlink" title="User-space file system"></a>User-space file system</h4><p>一般意义上的文件系统是操作系统的一部分，自然工作在内核态。用户态文件系统，顾名思义，指文件系统的data和metadata都由用户态进程提供。这样做方便用户创建和调试自定义的文件系统而不用重新编译内核，缺点就是多次用户态/内核态的切换严重影响性能。</p>
+<p>用户态文件系统并不意味着其工作不需要内核的参与：Linux中对文件的访问都要走VFS的接口，VFS判断出请求的是一个用户态文件系统后，就会转交给名为FUSE(filesystem in userspace)的<strong>内核</strong>模块，它是内核提供给用户态文件系统并与之通信的服务接口，参见<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/106719192">这里</a>。</p>
+<h4 id="User-space-NVMFS"><a href="#User-space-NVMFS" class="headerlink" title="User-space NVMFS"></a>User-space NVMFS</h4><p>现有的现允许直接在用户态读数据，但是写数据尤其是写metadata是受限的，比如要IPC请求一个特权进程来做，或者写下log来消费。</p>
+<h4 id="Memory-Protection-Key"><a href="#Memory-Protection-Key" class="headerlink" title="Memory Protection Key"></a>Memory Protection Key</h4><p>一种管理内存访问权限的方式。每个页表entry被打上region number，另有PKRU寄存器存储每个region number的访问权限。为修改访问权限，进程可以使用指令修改PKRU寄存器，而传统的page permission需要大量的系统调用并会导致TLB失效。这个机制并不是为安全而设计的，因此修改PKRU并不是特权指令。</p>
+<h3 id="面临的问题"><a href="#面临的问题" class="headerlink" title="面临的问题"></a>面临的问题</h3><p>在当前的实现中，NVM之上的user-space FS library不能同时操控data和metadata，这是因为：</p>
+<ol>
+<li>文件系统和应用程序都在用户态地址空间中，应用程序可以绕过文件系统的permission check</li>
+<li>应用程序的bug可能破坏文件系统的metadata，导致整个文件系统的瘫痪。</li>
+</ol>
+<h3 id="本文的工作"><a href="#本文的工作" class="headerlink" title="本文的工作"></a>本文的工作</h3><ol>
+<li>提出了<em>coffer</em>，它是一些NVM page的集合，存储了拥有相同permission的文件。这是基于一项观察：应用往往将相同permission的文件放在一起，且很少修改permission.</li>
+<li>提出了基于coffer的文件系统架构<em>Treasury</em>，将protection和management分开：用户态文件系统library可以在coffer内进行任何修改，而跨coffer的操作受到Treasury内核(KernFS)的保护。KernFS工作在内核态，维护各coffer的metadata并对coffer一级的访问做鉴权。Treasury同时提供了一般文件系统的特性，如文件描述符映射表和符号连接，从而使得应用不用重新编译就能在其上运行。</li>
+<li>提出了基于Treasury的文件系统<em>ZoFS</em>.</li>
+</ol>
+<h4 id="Treasury如何做到隔离和保护"><a href="#Treasury如何做到隔离和保护" class="headerlink" title="Treasury如何做到隔离和保护"></a>Treasury如何做到隔离和保护</h4><ol>
+<li>Stray write，即对错误内存位置的写操作。常用的做法有依赖页表permission位，写窗口等等。Treasury拓展了写窗口的思想，依靠MPK把coffer的页从进程地址空间中标注出来，写coffer之前必须修改PKRU寄存器获得权限，写完再把权限还回去。因为权限是在寄存器（而不是页表permission位）管理的，这个方法也防止了同一进程下多个线程之间的stray write.</li>
+<li>Graceful error return. 内核态的文件系统在系统调用出错时可以返回错误码，但用户态文件系统如果访问了不合法地址（如一个崩溃的coffer）则会触发SIGSEGV导致整个进程被杀死。本文的做法是hook掉segmentation fault handler，把fault翻译回文件系统的业务错误码，用一个setlongjump跳回到文件系统函数里返回错误。</li>
+<li>Fault isolation. 同一时刻，用户空间中至多只有一个coffer是可访问的，这就要求KernFS给映射到同一个进程的coffer分配不同的MPK编号（至多15个）。进程要想访问另一个coffer，只要修改PKRU寄存器。</li>
+<li>保护文件系统metadata. 恶意进程可以修改一个共享coffer的metadata，实现对其他进程的攻击。但是对一个coffer的破坏不会扩散到其他coffer（如企图访问其他coffer的数据），这是因为fault isolation的存在，进程访问不了其他的coffer，除非恶意进程操纵了一条合法的跨coffer引用。为了防御这种攻击，进程遇到coffer引用时，要在改变coffer accessibility之前检查引用的合法性：比如目标coffer的文件系统路径是否符合预期，是否指向一个coffer的root inode等等。</li>
+</ol>
+<h3 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h3><ol>
+<li>维护了一个从用户态file descriptor到内核fd的映射，通过查表确定一个fd指向了FSLib中的文件还是内核文件系统中的文件。</li>
+<li>通过lease lock配合线程本地free pages list的方式实现高争用的页分配器。线程尝试用lease lock获取free page list，在其未过期的时候都可以本地分配，否则从共享池获取一个list到线程本地。但是在分配特别频繁的情况下，一个free page list不够，线程会频繁调用<code>coffer_enlarge</code>向kernel获取更多page，这个操作本身可能会在内核产生争用（见6.1节）。</li>
+<li>ZoFS的目录结构是一个二级哈希表，第一级是指向第二级page的指针，第二级page有一半直接放dentry（针对小目录），另一半是二级哈希表，每个桶里放dentry。这个目录结构对于包含很多文件的大目录也有良好性能。但是对于目录小而路径深的case，ZoFS的性能不佳，因为为了找到一个coffer root page，长路径的每一个前缀（从最长开始）都要被检查。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/file-system/" rel="tag"># file system</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/28/%E4%BD%BF%E7%94%A8Goland%E8%BF%9C%E7%AB%AF%E8%B0%83%E8%AF%95%E6%97%B6%E8%87%AA%E5%8A%A8%E6%8B%89%E8%B5%B7%E6%9C%8D%E5%8A%A1%E7%AB%AF/" rel="prev" title="使用Goland远端调试时自动拉起服务端">
+      <i class="fa fa-chevron-left"></i> 使用Goland远端调试时自动拉起服务端
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A"><span class="nav-number">1.</span> <span class="nav-text">名词解释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NVM"><span class="nav-number">1.1.</span> <span class="nav-text">NVM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#User-space-file-system"><span class="nav-number">1.2.</span> <span class="nav-text">User-space file system</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#User-space-NVMFS"><span class="nav-number">1.3.</span> <span class="nav-text">User-space NVMFS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Memory-Protection-Key"><span class="nav-number">1.4.</span> <span class="nav-text">Memory Protection Key</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%A2%E4%B8%B4%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">面临的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E6%96%87%E7%9A%84%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">本文的工作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Treasury%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0%E9%9A%94%E7%A6%BB%E5%92%8C%E4%BF%9D%E6%8A%A4"><span class="nav-number">3.1.</span> <span class="nav-text">Treasury如何做到隔离和保护</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">4.</span> <span class="nav-text">实现细节</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SToPire</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/SToPire" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SToPire" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:stopire@gmail.com" title="E-Mail → mailto:stopire@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SToPire</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
