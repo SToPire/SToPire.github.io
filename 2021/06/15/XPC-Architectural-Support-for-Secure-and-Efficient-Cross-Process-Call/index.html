@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="名词解释capability文章中多次出现的capability是linux的细粒度权限控制手段，是每个进程（线程）的属性。特权操作被细分成组，进程（线程）执行对应操作需要拥有对应的capability.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XPC Architectural Support for Secure and Efficient Cross Process Call">
+<meta property="og:url" content="http://yoursite.com/2021/06/15/XPC-Architectural-Support-for-Secure-and-Efficient-Cross-Process-Call/index.html">
+<meta property="og:site_name" content="SToPire&#39;s Blog">
+<meta property="og:description" content="名词解释capability文章中多次出现的capability是linux的细粒度权限控制手段，是每个进程（线程）的属性。特权操作被细分成组，进程（线程）执行对应操作需要拥有对应的capability.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-14T16:59:06.000Z">
+<meta property="article:modified_time" content="2021-06-14T17:00:36.870Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="operating system">
+<meta property="article:tag" content="microkernel">
+<meta property="article:tag" content="inter-process communication">
+<meta property="article:tag" content="accelerators">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2021/06/15/XPC-Architectural-Support-for-Secure-and-Efficient-Cross-Process-Call/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>XPC Architectural Support for Secure and Efficient Cross Process Call | SToPire's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">SToPire's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/06/15/XPC-Architectural-Support-for-Secure-and-Efficient-Cross-Process-Call/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SToPire">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SToPire's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          XPC Architectural Support for Secure and Efficient Cross Process Call
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-15 00:59:06 / 修改时间：01:00:36" itemprop="dateCreated datePublished" datetime="2021-06-15T00:59:06+08:00">2021-06-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h3><h4 id="capability"><a href="#capability" class="headerlink" title="capability"></a>capability</h4><p>文章中多次出现的capability是linux的细粒度权限控制手段，是每个进程（线程）的属性。特权操作被细分成组，进程（线程）执行对应操作需要拥有对应的capability.</p>
+<a id="more"></a>
+
+<h4 id="domain"><a href="#domain" class="headerlink" title="domain"></a>domain</h4><p>protected domain是对象和能对其进行的操作(object, {set of operations on object})构成的集合，domain switching就是改变有权操作的对象。比如地址空间切换就是一种domain switch，也可以依赖tagged memory之类的手段在一个地址空间内实现隔离和domain switch：此时domain不再是地址空间隔离出的进程，而是有自己ID的，统一地址空间中的”对象及操作“集合。</p>
+<h4 id="trampoline"><a href="#trampoline" class="headerlink" title="trampoline"></a>trampoline</h4><p>又称indirect jump vectors，喻指跳往函数调用/中断例程等入口点的代码，类似于一个wrapper。进入trampoline执行逻辑后再跳出到原来的入口点，所以得名蹦床。</p>
+<h4 id="TOCTTOU"><a href="#TOCTTOU" class="headerlink" title="TOCTTOU"></a>TOCTTOU</h4><p>朴素的message passing需要两次拷贝，即caller-&gt;kernel-&gt;callee. 如果通过caller-&gt;shared buffer，再将shared buffer共享给callee的方式实现的话，恶意caller可能在callee check完消息之后修改它，即Time Of Check To Time Of Use.</p>
+<h3 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h3><p>进程间通信(IPC)在多数内核中都是一项昂贵的动作，尤其是对微内核的影响尤甚，因为它的很多模块放在用户空间中，依赖IPC通信。IPC中大部分时间都在做两件事：domain switching和message copying：</p>
+<ol>
+<li>现有的大部分实现都要求domain switching陷入内核态来实现地址空间的切换。</li>
+<li>message transfer虽然可以使用共享内存，但是做不到零拷贝，因为在原址上的update不够安全，caller可以观察到callee的动作甚至通过修改共享内存来影响callee. 在现有的实现中，即使采用共享内存，也需要将message重新拷贝到共享内存中。</li>
+</ol>
+<p>基于以上两点，本文提出了XPC(Cross Process Call)，这是一种不依赖陷入内核直接进行domain checking，进行零拷贝的message passing，同时最小化对硬件的修改，从而可以轻松集成到现有内核的操作系统原语。</p>
+<h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><h4 id="domain-switching"><a href="#domain-switching" class="headerlink" title="domain switching"></a>domain switching</h4><ol>
+<li>一条x-entry关联到一个具体的procedure，在server进程完成注册后，x-entry就被存入<strong>全局</strong>的x-entry表中，进程可以通过其id指明调用的x-entry，从而指明调用哪个过程。</li>
+<li>xcall-cap是进程本地的bitmap，指明线程对于哪些x-entry有调用权限。</li>
+<li>linkage record是对调用返回所需信息（用户态拿不到的信息）的统称，在xcall时存放在进程本地的link stack中，xret时根据其信息返回到caller.</li>
+<li>调用xcall时，会先检查xcall-cap，再取出x-entry并检查是否valid，然后保存linkage record供返回使用，最后切换页表寄存器以切换地址空间。<strong>这相当于在client的上下文里运行server的代码。</strong></li>
+<li>鉴于IPC调用的时间局部性和可预测性，可以为x-entry准备一个cache并预取。</li>
+</ol>
+<h4 id="message-passing"><a href="#message-passing" class="headerlink" title="message passing"></a>message passing</h4><ol>
+<li>seg-reg寄存器存着一段连续虚拟内存和连续物理内存之间的映射，称为中继段(relay-seg)。这个寄存器内容可以直接在xcall时传递，实现零拷贝的message passing.</li>
+<li>用户态进程不能随意修改seg-reg，所以它们可以用seg-mask遮盖这一段内存的一部分，如果IPC调用下游进程只需要传递消息的一部分，就可以采用这种方式。</li>
+<li>进程有一个本地的seg-list，可以存多个relay-seg，当进程希望使用另一个relay-seg来发起IPC调用时，可以使用<code>swapseg #reg</code>指令，这是一个交换seg-reg中与seg-list某一位置的relay-seg的原子操作。</li>
+<li>为了防止TOCTTOU出现，内核确保一条relay-seg在同一时刻只在一个CPU核心上活跃。</li>
+<li>callee从xret返回时需要检查seg-reg是否发生了变化，防止恶意callee从自己的seg-list里换了一个不同的relay-seg给caller.</li>
+</ol>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><h4 id="微内核"><a href="#微内核" class="headerlink" title="微内核"></a>微内核</h4><ol>
+<li>引入了名为grant_cap的capability，当进程创建x-entry时，它初始拥有该x-entry的grant权限，这一权限允许它将与该x-entry关联的xcall或者grant权限授予其他进程。</li>
+<li>在用户空间进行的domain switch对内核而言是透明的，比如线程A使用xcall调用B，线程B触发page fault陷入内核。内核不知道当前运行线程是B，于是使用A的页表处理page fault. 为了解决这个问题，我们把线程的状态分裂成scheduling state和runtime state，前者包含线程优先级等调度需要的信息，后者包含地址空间等内核为线程提供服务所需的信息。每个线程关联到唯一的scheduling state，但可以有多个runtime state. 内核根据runtime state（在XPC中，由xcall-cap-reg决定）为线程提供服务。</li>
+<li>server的一条x-entry可以同时被多个client调用。为了实现这一点，创建x-entry时需要指定同时调用者的最大数目，创建好对应数目的XPC context。每个x-entry有一个trampoline，寻找一个空闲的XPC context，切换到它的execution stack上并准备好本地data，然后开始执行x-entry对应procedure的逻辑。invocation结束并返回前，trampoline负责释放XPC context资源。这样的设计容易遭到DoS攻击，所以需要防止恶意client多次调用x-entry，把所有context占满的行为。</li>
+<li>调用链中某个进程可能意外终止，此时需要优雅的方式抛出exception。假设调用链A-&gt;B-&gt;C，在XPC中，如果B意外终止，内核会扫描所有的link stack并把与B相关的条目标为invalid。这样一来，从C返回到B时硬件会抛出异常，内核可以做出处理（如pop出B的linkage record，并返回一个timeout error给A)。另一种做法是把B的页表基地址清零，C返回到B时会产生page fault并由内核处理，避免了扫描所有link stack的过程。</li>
+</ol>
+<h4 id="Android-Binder"><a href="#Android-Binder" class="headerlink" title="Android Binder"></a>Android Binder</h4><ol>
+<li>保持Android Binder Framework提供的<code>transact()</code>和<code>onTransact()</code>接口不变，在Linux Binder driver中添加XPC的相关接口，修改Android Binder Framework使其依靠XPC的接口进行进程间调用。依赖relay-segment来做零拷贝的消息传递。</li>
+<li>ashmem(anonymous shared momory)是Android提供的，用文件指向匿名内存并通过传递文件描述符实现共享内存的接口。这个实现需要一次额外拷贝(shared buffer-&gt;callee)来避免TOCTTOU问题。可以依靠XPC的relay-seg实现ashmem免去这一次拷贝，但是对于应用同时需要使用多个ashmem的情形需要进行relay-seg之间的切换。</li>
+</ol>
+<h4 id="IPC调用链"><a href="#IPC调用链" class="headerlink" title="IPC调用链"></a>IPC调用链</h4><p>以A-&gt;B-&gt;C调用为例，实现零拷贝的handover有一些问题需要解决：</p>
+<ol>
+<li>B可能需要在A传来的relay-seg后面添加内容再传给C.（如网络栈中上层协议给payload加header），这种情况下需要调用链中各进程沟通message size.</li>
+<li>B可能需要把A传来的relay-seg的一部分传给C.（如文件系统把请求分成block传给设备驱动），这种情况下依赖seg-mask寄存器遮盖relay-seg再进行xcall.</li>
+<li>回收一个relay-seg：进程终止时，内核扫描其seg-list并把其caller的relay-seg返回去，回收其他的relay-seg.</li>
+</ol>
+<h3 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h3><ol>
+<li><p>xcall时，linkage record是被保存在(caller/callee)的link stack中？按照3.2节对xcall过程的介绍似乎应该是在caller的栈里，但是link-reg寄存器是怎么在domain switch时保存，恢复时callee又是怎么拿到caller地址空间中的linkage record呢？</p>
+<p>猜想：link stack作为每线程的数据结构，内核在上下文切换时负责保存和恢复它，即保存和恢复link-reg寄存器。既然link stack是由kernel管理的，可能kernel知道各个线程link stack的位置，正如上下文切换时kernel能从各个进程PCB(线程TCB)中保存和读取上下文一样。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/operating-system/" rel="tag"># operating system</a>
+              <a href="/tags/microkernel/" rel="tag"># microkernel</a>
+              <a href="/tags/inter-process-communication/" rel="tag"># inter-process communication</a>
+              <a href="/tags/accelerators/" rel="tag"># accelerators</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/13/Performance-and-Protection-in-the-ZoFS-User-space-NVM-File-System/" rel="prev" title="Performance and Protection in the ZoFS User-space NVM File System">
+      <i class="fa fa-chevron-left"></i> Performance and Protection in the ZoFS User-space NVM File System
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A"><span class="nav-number">1.</span> <span class="nav-text">名词解释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#capability"><span class="nav-number">1.1.</span> <span class="nav-text">capability</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#domain"><span class="nav-number">1.2.</span> <span class="nav-text">domain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#trampoline"><span class="nav-number">1.3.</span> <span class="nav-text">trampoline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TOCTTOU"><span class="nav-number">1.4.</span> <span class="nav-text">TOCTTOU</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#domain-switching"><span class="nav-number">3.1.</span> <span class="nav-text">domain switching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#message-passing"><span class="nav-number">3.2.</span> <span class="nav-text">message passing</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="nav-number">4.1.</span> <span class="nav-text">微内核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Android-Binder"><span class="nav-number">4.2.</span> <span class="nav-text">Android Binder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IPC%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">4.3.</span> <span class="nav-text">IPC调用链</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%96%91%E9%97%AE"><span class="nav-number">5.</span> <span class="nav-text">疑问</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SToPire</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/SToPire" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SToPire" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:stopire@gmail.com" title="E-Mail → mailto:stopire@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SToPire</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
