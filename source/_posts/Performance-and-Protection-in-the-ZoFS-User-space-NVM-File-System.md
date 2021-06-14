@@ -2,7 +2,7 @@
 title: Performance and Protection in the ZoFS User-space NVM File System
 date: 2021-06-13 12:15:42
 categories: paper
-tags: [file system]
+tags: [non-volatile memory, user-space file systems, memory protection keys]
 ---
 
 ### 名词解释
