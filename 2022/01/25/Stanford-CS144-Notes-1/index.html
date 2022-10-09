@@ -1,0 +1,538 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Stanford CS144 Notes(1) | Do not touch fish!</title><meta name="keywords" content="course,network"><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Stanford Introduction to Computer Networking CS144 class notes, Chapter 1 - Chapter 4.(videos)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stanford CS144 Notes(1)">
+<meta property="og:url" content="http://example.com/2022/01/25/Stanford-CS144-Notes-1/index.html">
+<meta property="og:site_name" content="Do not touch fish!">
+<meta property="og:description" content="Stanford Introduction to Computer Networking CS144 class notes, Chapter 1 - Chapter 4.(videos)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/post-cover/cover2.jpg">
+<meta property="article:published_time" content="2022-01-24T17:17:31.000Z">
+<meta property="article:modified_time" content="2022-10-08T11:17:14.630Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="course">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/post-cover/cover2.jpg"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="http://example.com/2022/01/25/Stanford-CS144-Notes-1/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: 
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Stanford CS144 Notes(1)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-10-08 19:17:14'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover2.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Do not touch fish!</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Stanford CS144 Notes(1)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-01-24T17:17:31.000Z" title="发表于 2022-01-25 01:17:31">2022-01-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-08T11:17:14.630Z" title="更新于 2022-10-08 19:17:14">2022-10-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Notes/">Notes</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">6.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Stanford CS144 Notes(1)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>Stanford Introduction to Computer Networking <a
+target="_blank" rel="noopener" href="https://cs144.github.io/">CS144</a> class notes, Chapter 1 -
+Chapter 4.<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV137411Z7LR">(videos)</a></p>
+<span id="more"></span>
+<h3 id="chapter-1-intro">Chapter 1 Intro</h3>
+<h4 id="the-ip-service-model">1-3 The IP service model</h4>
+<p>IP: unreliable, best effort, connectionless datagrams, why?</p>
+<ul>
+<li>简单更可靠</li>
+<li>在端设备而不是网络上实现复杂功能（不同于电话网络：端设备简单而网络复杂）</li>
+<li>允许上层根据需要实现功能，比如视频聊天对可靠要求不高（UDP）</li>
+<li>对链路层不做任何假设，要求低</li>
+</ul>
+<p>然而IP也在easy和functional中做权衡，因此还具有以下特点：</p>
+<ol type="1">
+<li>防止packet在网络中无限循环（hop-count(TTL) in IP header）</li>
+<li>对太大的packet分片传输</li>
+<li>header
+checksum，防止packet被传输到错误的位置（？为什么不是保证packet的完整性）</li>
+<li>可以更新版本，IPv4和IPv6</li>
+<li>header中允许加入新option。但这要求整个网络的路由器都支持新选项，某种程度上违背了simple的原则，实际上很少用</li>
+</ol>
+<h4 id="packet-switching-principle">1-5 Packet switching principle</h4>
+<p>packet:
+一段自含(self-contained)的数据，所谓自含，即packet本身包含了足以将它送到目的地的元信息。</p>
+<p>packet switching: 对每个到达的packet独立地选择outgoing link。If the
+link is free, send it. Else holding the packet for later.</p>
+<ul>
+<li>源路由，packet包含一路上每个hop地址。理论上可行，但是不安全，不用。</li>
+<li>packet只包含目的地址，一路上的路由器根据目的地址做转发决定。</li>
+</ul>
+<p>packet
+switching使路由器不需要维护流的状态，实现更简单，也让link更容易被复用。</p>
+<h4 id="byte-order">1-8 byte order</h4>
+<p>网络领域的协议都使用<strong>大端</strong>序，需要注意network
+order与host order之间的转换问题。</p>
+<h4 id="address-resolution-protocol">1-11 Address Resolution
+Protocol</h4>
+<p>设备与局域网内另一设备（如网关）通信时需要知道其MAC地址，它会在链路层广播ARP请求，包含该设备的IP地址。该设备接收到请求后将自己的MAC地址单播/广播给请求者，请求者将IP与MAC地址的映射关系存在本地cache中。</p>
+<ul>
+<li>只有被请求的设备会回复ARP请求，局域网中其他设备即使知道该映射关系也不会回复请求者。这样做使得只有设备A自己才能更新其他主机关于A的映射关系缓存，其好处是一旦某个设备离开网络，等到所有设备的cache中关于它的信息都过期了，它的状态就从网络中被清除了。</li>
+<li>但是，ARP请求包含请求者的IP和MAC地址，它被广播出去后，接收到请求的各设备会更新本地关于请求者的IP-MAC映射缓存。</li>
+<li>按照ARP的specification，response应该被单播给请求者。但是现在的实现更多是把response广播出去，让全局域网的设备都可以更新关于自己（被请求者）的IP-MAC映射缓存。</li>
+</ul>
+<p>ARP还有一种被称为gratuitous
+ARP（免费/无理由ARP？）的用法，在这种情境下，设备发出ARP请求，但dest
+IP是自己的IP，即试图查询自己的MAC地址。这样做可以：</p>
+<ul>
+<li>检查局域网中是否有IP冲突：如果请求者收到了对gratuitous
+ARP的回复，证明存在IP冲突。</li>
+<li>让网络中的其他主机收到该广播，强制更新自己在局域网中的其他主机那里的IP-MAC映射缓存。</li>
+</ul>
+<h3 id="chapter-2-transportintro">Chapter 2 Transport(intro)</h3>
+<h4 id="tcp-service-model">2-1 TCP service model</h4>
+<p>唯一标识一个TCP连接的是一个五元组：（源IP，目的IP，源端口号，目的端口号，协议名(TCP)），其中协议名就是IP
+header里表明上层（传输层）协议是TCP的字段。如果没有协议名，仅靠两个端口号和两个IP无法确定这是个TCP连接，也可能是其他的传输层协议。</p>
+<h4 id="udp-service-model">2-2 UDP service model</h4>
+<p>UDP像是在IP层上做了一个简单包装的传输层协议，在IP的基础上提供了多路复用，即将packet根据端口号转交给对应的应用。</p>
+<p>应用使用UDP不一定是不关注可靠性，也可能是不想依赖TCP的可靠传输机制而自己实现。</p>
+<p>UDP
+header里有一个可选的checksum，只当网络层是IPv4时可用。这个checksum计算时不仅包含UDP报文的内容，也包含网络层IP
+header的部分内容（源和目的IP，协议号等）。这种行为某种程度上破坏了层间隔离，其目的是让checksum能够校验出报文被传输到了错误的主机的情形（即目的IP不对）。TCP的checksum也会包含部分IP
+header的内容一起参与计算。</p>
+<h4 id="icmp-service-model">2-3 ICMP service model</h4>
+<p>ICMP主要用作网络层的error reporting，但它的报文又是放在IP
+packet里传输的，因此它可以看作介于网络层和传输层之间的协议。</p>
+<p>ICMP的报文内容包括其回复的IP
+packet的头部和内容前8字节，这样源主机可以判断这个ICMP报文是对哪个IP
+packet的回复。</p>
+<p>ICMP报文直接封装在IP packet里，所以它和UDP一样是不可靠的。</p>
+<p>ping和traceroute是两个直接使用ICMP的例子。ping使用了ICMP协议中的echo
+request和echo
+response，traceroute发出TTL从1开始逐渐递增（用于获取跳数），且UDP目的端口号不合法的IP
+packet，通过router回应的TTL超时ICMP报文和目的主机回应的“端口不可达”ICMP报文得到他们的IP。</p>
+<h4 id="error-detection">2-5 Error Detection</h4>
+<p>error
+dection都是通过在报文中附加冗余信息完成的，可以放在头部或尾部。</p>
+<p>三种error dection模式：</p>
+<ul>
+<li>checksum，最快最简单，检错能力差，只能确保检出1位错。TCP和IP使用。</li>
+<li>Cyclic Redundancy
+Code(CRC)，计算比checksum复杂（但硬件实现的计算还是比较快），检错能力更强。以太网使用。</li>
+<li>Message Authentication
+Code(MAC)，不同于CRC的设计目的是对抗传输过程中自然产生的错误，MAC是密码学方法，对抗人为的恶意攻击。MAC不保证检出任何错误，只是以相当大的概率检出错误。TLS使用。</li>
+</ul>
+<p>在error
+detection中，“确保检出错误”是非常强的保证，实际上能做到以相当大的概率检出错误已经能满足使用了。</p>
+<p>关于MAC“不保证检出任何错误”，我的理解是MAC从数学上不保证两个相近（比如只差1位）的串加密后的密文不一样（尽管大概率如此），不像checksum和CRC能保证某一范围内的错误一定会导致校验值的变化。</p>
+<h4 id="flow-control">2-7 ~ 2-9 Flow Control</h4>
+<p>两种流量控制：停等(stop and wait)和滑动窗口(sli</p>
+<p>ding
+window)，前者可看作发送窗口大小SWS和接收窗口大小RWS都为1的滑动窗口。</p>
+<p>滑动窗口中，一次失败导致整个窗口都需要重传称为"go back
+N"，只需要重传失败的packet称为"selective
+repeat(SR)"，这是由RWS的大小决定的，使用"go back
+N"策略的RWS为1，使用“selective repeat”策略时的RWS=SWS。</p>
+<p>序列号空间的大小不能小于SWS和RWS之和，否则无法区分ACK是确认新报文还是重传的报文。使用"go
+back N"策略需要<span
+class="math inline">\(SWS+1\)</span>个序列号；使用“selective
+repeat”策略需要<span
+class="math inline">\(2*SWS\)</span>个序列号；使用停等策略需要2个序列号。</p>
+<h4 id="tcp-setup-and-teardown">2-11 TCP Setup and Teardown</h4>
+<p>TCP连接的建立和拆除除一般流程外，还有同步建立(simultaneous
+open)和同步拆除(simultaneous close)的特殊情况。</p>
+<ul>
+<li>simultaneous
+open中，两台主机几乎同时向对方发送SYN。发完SYN后处于SYN_SENT状态下的主机接收到对方发来的SYN后会直接进入SYN_RCVD状态并回复SYN/ACK，收到对方发来的SYN/ACK后连接建立，因此发生了4次握手。注意在正常流程中，SYN_SENT是active
+opener的状态，而SYN_RCVD是passive opener的状态。</li>
+<li>simultaneous
+close中，两台主机几乎同时向对方发送FIN。发完FIN后处于FIN_WAIT1状态下的主机接收到对方发来的FIN后会进入CLOSING状态并回复ACK，收到对方发来的ACK后进入TIME_WAIT状态，仍然是4次挥手。注意在正常流程中没有CLOSING这个状态，它是simultaneous
+close特有的。</li>
+</ul>
+<h3 id="chapter-3-packet-switching">Chapter 3 Packet Switching</h3>
+<h4 id="principles-what-is-packet-switching">3-2 Principles What is
+packet switching</h4>
+<p>因特网不使用电路交换的原因有：</p>
+<ol type="1">
+<li>计算机之间的通信大多具有突发性（bursty），比如通过ssh打字时，单词与单词之间会有停顿；打开网页时可能请求一系列资源，但浏览时没有网络请求，等等。对于大量的突发请求，使用专用信道无法让通信链路得到充分利用。</li>
+<li>计算机通信时的速率差异很大。服务器可能以MB级的速率传输视频，用户可能以一秒一个字符的速率打字。使用固定速率的信道不合适，带来浪费。</li>
+<li>健壮性不高，一旦专用信道中某一设备崩溃，整个信道就无法使用。但对于包交换网络，某台路由器发生故障，依然可以使用其他路径把包发到目的地。</li>
+</ol>
+<h4 id="end-to-end-delay">3-3 End-to-end Delay</h4>
+<p>传播时延（propagation delay）：<span class="math inline">\(t_p =
+\frac{l}{c}\)</span>，其中<span
+class="math inline">\(l\)</span>为链路长度，<span
+class="math inline">\(c\)</span>为传播速度（一般和光速在一个数量级）。传播时延和链路的速率无关。</p>
+<p>传输时延（transmission/packetization delay）：<span
+class="math inline">\(t_t=\frac{p}{r}\)</span>，其中<span
+class="math inline">\(p\)</span>为包大小，<span
+class="math inline">\(r\)</span>为链路传输速率。传输时延是将一个包完全推到链路上的时间。</p>
+<p>网络上两台主机间的端到端时延（end-to-end delay）可以表示为<span
+class="math inline">\(t=\sum\limits_i (\frac{p}{r}+\frac{l}{c} +
+Q_i(t))\)</span>，<span
+class="math inline">\(i\)</span>是路径上的每台路由器，多出来的<span
+class="math inline">\(Q_i(t)\)</span>项是排队时延，它是造成端到端时延不稳定的主要因素。</p>
+<p>一台路由器必须完整接收到一个包才能开始向下一跳发送它，因此减小包的大小可以降低端到端时延。</p>
+<h4 id="queueing-model-properties">3-6 Queueing Model Properties</h4>
+<p>排队论：</p>
+<ul>
+<li><p>Burstiness increases delay；Determinism minimizes delay</p></li>
+<li><p>利特尔法则（Little’s
+Raw）：稳定系统中，长期的平均顾客人数（L），等于长期的有效抵达率（λ），乘以顾客在这个系统中平均的等待时间（W），即<span
+class="math inline">\(L=\lambda W\)</span></p></li>
+<li><p>M/M/1 排队模型：</p>
+<ul>
+<li>前提：
+<ul>
+<li>顾客到达时间是泊松过程（等价于：到达时间间隔满足指数分布），记到达速率为<span
+class="math inline">\(\lambda\)</span></li>
+<li>服务时间满足指数分布，记服务速率为<span
+class="math inline">\(\mu\)</span></li>
+<li>只有一个服务窗口</li>
+</ul></li>
+<li>隐含了<span class="math inline">\(\lambda \lt
+\mu\)</span>，否则队列无限增长</li>
+<li>结论：
+<ul>
+<li>顾客平均排队时间<span class="math inline">\(d=\frac1{\mu -
+\lambda}\)</span></li>
+<li>平均队列长度<span class="math inline">\(L=\frac{\lambda}{\mu -
+\lambda}\)</span>（利特尔法则）</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="switching-and-forwarding">3-7 &amp; 3-8 Switching and
+Forwarding</h4>
+<h5 id="tcam">TCAM</h5>
+<ul>
+<li><p>CAM（content-addressable
+memory）可以看作RAM的反面，不是给定地址取数据，而是向CAM给定要查询的数据，CAM返回数据所在的地址。
+CAM可以并行地对所有存储单元进行比较查找操作，从而在一个时钟周期内返回结果。</p></li>
+<li><p>TCAM（Ternary
+CAM）是三进制版的CAM，除了0和1外还允许储存'X'匹配任意值，从而实现最长前缀匹配，可用于路由器中对路由表的查询。</p></li>
+</ul>
+<h5 id="input-and-output-queueing">Input and Output Queueing</h5>
+<p>ref:<a target="_blank" rel="noopener" href="https://cs.nyu.edu/~anirudh/lectures/lec12.pdf">Lecture
+12: Input and output queueing</a></p>
+<p>路由器必须维护一个缓存队列，来应对packet的输入速率大于输出速率的情形。缓存队列的实现有几种方式：</p>
+<ol type="1">
+<li>只有一大块共享内存，N个输入端口和N个输出端口都从这里读写packet。最坏情况下2N个端口都在读写同一块内存，也即内存的速率必须是端口链路速率的2N倍。</li>
+<li>output
+queue，在每个输出端口处维护一个队列。最坏情况下N个输入端口进来的packet全都要去同一个输出端口，加上输出端口自己，内存速率必须是端口链路速率的(N+1)倍。</li>
+<li>input
+queue，在每个输入端口处维护一个队列，该队列单位时间内只要完成1次入队和1次出队，内存速率只需要达到端口链路速率的2倍。</li>
+</ol>
+<p>然而input queue会带来head-of-line
+blocking的问题：假如输入端口1，2，3的头部都有发往输出端口4的packet，端口4随机选择端口1向它发包。此时即使端口2的队列中全是发往输出端口5的packet，它们也必须等队列头部那个发往端口4的包被随机选择并发走之后才能被发出。</p>
+<p>解决这一问题的方式是virtual output queue，每个input
+queue由N个VOQ组成，每个VOQ对应一个输出端口。input
+queue把发往特定输出端口的packet存在对应的VOQ里，这样输出端口就能看到每个输入端口那里要发到自己这里来的packet了。</p>
+<h4 id="rate-guarantees">3-9 Rate guarantees</h4>
+<p>上面所说的路由器“队列”都是FIFO队列，它区分不了不同优先级的packet（控制报文&gt;数据报文，视频流量&gt;email流量，给钱多的用户&gt;给钱少的用户，等等）。</p>
+<p>于是我们引入了机制，为不同链接的传输速率做出保证：</p>
+<ol type="1">
+<li>strict
+priorities，简单说就是队列分不同优先级，只有在没有更高优先级的队列需要服务时，才会服务低优先级队列。这样做高优先级的队列感知不到低优先级队列的存在（低影响不了高），但是低优先级队列可能会被饿死。</li>
+<li>rate
+guarantee，不同优先级的队列权重不同，按照权重服务不同队列，guarantee就是权重<span
+class="math inline">\(w_i\)</span>的队列能分到<span
+class="math inline">\(\frac{w_i}{\sum\limits_jw_j
+}\)</span>比例的带宽。</li>
+</ol>
+<p>rate
+guarantee实现起来看似很简单，只有不停按顺序扫所有队列，扫到权重<span
+class="math inline">\(w_i\)</span>的队列就读出<span
+class="math inline">\(w_i\)</span>位即可。但考虑到路由器处理的是packet，只有攒到一个完整的包才能发出去，不能几位几位地发，因此还得把读了一半的包存起来；如果按packet为单位读，不同packet的长度差距很大，这样做又会破坏权重模型对带宽分配的保证。所以有一种被称为WFQ（Weighted
+Fair Queueing）的策略。</p>
+<p>WFQ的思想就是按packet为单位去读队列，一次就把一个packet读完，而不是按位去读。为了保证带宽分配比例，WFQ的调度器会选择SN（sequence
+number）最小的包去读。</p>
+<p>SN可以看作该packet在应有的带宽保证下（即该队列有一个恒定的带宽），预计被读完的时间。（有点像CFS里的vruntime）</p>
+<ul>
+<li>记队列<span class="math inline">\(i\)</span>中第<span
+class="math inline">\(k\)</span>个包在<span
+class="math inline">\(S_{i,k}\)</span>时间开始被读出，在<span
+class="math inline">\(F_{i,k}\)</span>时间被读完。队列权重<span
+class="math inline">\(w_i\)</span>可以看作单位时间读取的大小，则有<span
+class="math inline">\(F_{i,k} = S_{i,k} +
+\frac{L_k}{w_i}\)</span>，其中<span
+class="math inline">\(L_k\)</span>为包大小。</li>
+<li>如果队列带宽有恒定保证，显然有<span class="math inline">\(S_{i,k} =
+max(F_{i,k-1},t_{now})\)</span>（服务完前一个包立刻服务下一个包，除非它还没到）。</li>
+</ul>
+<p>由以上的式子可以推出每个包的<span
+class="math inline">\(F_{i,k}\)</span>，它就是SN。</p>
+<p>不难看出，优先级越高的队列<span
+class="math inline">\(F_{i,k}\)</span>越小，因此越早得到服务；所有队列优先级相等的情况下，较小的包更容易得到优先服务。</p>
+<p>关于WFQ可以参考<a
+target="_blank" rel="noopener" href="https://blog.51cto.com/u_7658423/1587658">这里</a>。</p>
+<h4 id="delay-guarantees">3-10 Delay guarantees</h4>
+<p>end-to-end
+delay中不可控的是排队时延，但假如路径中每台路由器都使用了WFQ策略，即有了速率保证<span
+class="math inline">\(R_i\)</span>，那排队时延也有了上限<span
+class="math inline">\(\frac{B_i}{R_i}\)</span>，其中<span
+class="math inline">\(B_i\)</span>是缓冲区的大小。只要源端的瞬时发送速率不要太高而把缓冲区打爆，就可以提供一个端到端时延的上限保证。</p>
+<p>控制瞬时发送速率可以使用令牌桶（token bucket/leacky bucket）。</p>
+<h3 id="chapter-4-congestion-control">Chapter 4 Congestion Control</h3>
+<h4 id="congestion-control---basics">4-1 &amp; 4-2 Congestion Control -
+Basics</h4>
+<h5 id="max-min-fairness">Max-min fairness</h5>
+<p>考虑网络中对不同数据流分配带宽，它们各自对带宽大小的请求不同。如果无法在不降低其他流速率的情况下提升某一流的速率，这种分配就达到了max-min
+fairness（不考虑所有请求加起来都没有链路总速率大的trivial情况）。这个问题不局限于带宽分配，可以一般化成资源分配的问题。</p>
+<p>直观来看，max-min
+fairness认为所有请求者应该平均（或按指定的权重）分配资源（配额），如果某个请求者的请求小于配额，可以满足它的请求，并把配额中多出来的部分平均（或按指定的权重）分配给其他“贪婪”（即请求大于配额）的请求者。</p>
+<p>Max-min这个名字是因为该算法使得：请求未被完全满足的请求者中获得份额的最小值最大。(maximizes
+the minimum share of a source whose demand is not fully satisfied)</p>
+<p><a
+target="_blank" rel="noopener" href="https://www.ece.rutgers.edu/~marsic/Teaching/CCN/minmax-fairsh.html">Example</a></p>
+<h5 id="拥塞控制的分类">拥塞控制的分类</h5>
+<p>按照网络层是否为拥塞控制提供帮助，可以分为end-to-end和network
+based两类。</p>
+<p>在需要网络层支持的拥塞控制中，路由器可以提供网络中拥塞状况的反馈信息，它可以直接反馈给发送方，也可以放在packet里传输到接收方，再由接收方反馈给发送方。ECN(Explicit
+Congestion Notification)就是一个这样的协议。</p>
+<p>端到端的拥塞控制不需要网络层支持，端系统通过观察网络层的行为（丢包，时延）推断出发生了拥塞。IP层不提供拥塞控制的网络层支持，所以TCP的拥塞控制就是实现在端上的。</p>
+<p>TCP的拥塞控制复用了流量控制里滑动窗口的机制，实际发送窗口的大小取接收窗口（rwnd，用于流量控制，由接收方控制）和拥塞窗口（cwnd，用于拥塞控制，由发送方控制）的最小值。</p>
+<h4 id="aimd">4-3 &amp; 4-4 AIMD</h4>
+<p>AIMD（Additive-Increase
+Multiplicative-Decrease）算法控制拥塞窗口的变化：</p>
+<ul>
+<li>每当一个包被成功传输（收到ACK），令<span
+class="math inline">\(W=W+\frac1W\)</span>。因此一整个窗口被成功传输会使得<span
+class="math inline">\(W=W+1\)</span>。</li>
+<li>每当一个包丢失，令<span
+class="math inline">\(W=\frac{W}2\)</span>。</li>
+</ul>
+<p>AIMD在只有一条连接的single flow模型，和真实网络的multi
+flow模型下性质有所不同：</p>
+<p><img src="/images/CS144/1.png" /></p>
+<h5 id="single-flow">single flow</h5>
+<p><img src="/images/CS144/2.png" /></p>
+<p>这种情况下，随着W变大，缓冲区中的包数目变多，最终装满缓冲区导致丢包，使得AIMD将窗口大小减半，缓冲区积压的包开始变少，如此循环。RTT和缓冲区中包的数目密切相关，缓冲区越满，排队时延会导致RTT越大。</p>
+<p>对于single flow的情形，式<span
+class="math inline">\(R=\frac{W(t)}{RTT(t)}\)</span>中的W和RTT同步变化，吞吐量R近似一个常数。</p>
+<h5 id="multi-flow">multi flow</h5>
+<p>在真实网络的multi
+flow情况下，一个缓冲区里有来自成千上万条链接的数据包，某一条链接窗口大小W的变动对整体而言微不足道，不会导致缓冲区中包的数目大幅变化，因此RTT可以看作一个常数。</p>
+<p>对于multi flow的情形，根据式<span
+class="math inline">\(R=\frac{W(t)}{RTT}\)</span>可以得出吞吐量与窗口大小成正比变化的结论。</p>
+<p>此外，从图1中还能看出：single
+flow情况下加性增的过程是一个上凸函数，而multi
+flow时加性增是一条直线。这还是RTT是否为常数导致的，图1右边的锯齿就是“直线”的局部放大图。</p>
+<h5 id="aimd下网络吞吐量计算">AIMD下网络吞吐量计算</h5>
+<p>AIMD下W的变化可以看作一个周期函数，从<span
+class="math inline">\(\frac{W_{max}}2\)</span>线性增长到<span
+class="math inline">\(W_{max}\)</span>，再骤降回到<span
+class="math inline">\(\frac{W_{max}}2\)</span>，这个周期的长度是<span
+class="math inline">\(\frac{W_{max}}2*RTT\)</span>（因为每个RTT窗口大小+1）。因此一个周期发送的数据包数目是：
+<span class="math display">\[
+A=0.75W_{max}*\frac{W_{max}}2*RTT = \frac{3}{8}W_{max}^2
+\]</span> 一个周期只丢一个包（导致窗口大小减半的那个），因此丢包率<span
+class="math inline">\(L=\frac1A\)</span>。</p>
+<p>由上可以计算吞吐率R（单位时间发出的数据包数目）： <span
+class="math display">\[
+R=\frac{A}{T}=\frac{\frac{3}{8}W_{max}^2}{\frac{W_{max}}2*RTT}=\frac34*\frac{W_{max}}{RTT}=\sqrt{\frac32}
+* \frac1{RTT*\sqrt L}
+\]</span> 从上式可以看出，AIMD下吞吐率R对丢包率<span
+class="math inline">\(L\)</span>敏感，对往返时延RTT更敏感。</p>
+<h4 id="tcp-congestion-control">4-5 ~ 4-8 TCP Congestion Control</h4>
+<h5 id="tcp-tahoe">TCP Tahoe</h5>
+<p>Slow
+start：对每个ACK，将cwnd增加一个MSS的大小。因此每个RTT内cwnd翻倍，是指数增加。</p>
+<p>Congestion avoidance：对每个ACK，将cwnd增加<span
+class="math inline">\(MSS*\frac{MSS}{cwnd}\)</span>大小，由于一个RTT发送了<span
+class="math inline">\(\frac{cwnd}{MSS}\)</span>个包，每个RTT内cwnd加一，是线性增加。</p>
+<p>当cwnd超过阈值ssthresh时，TCP从慢启动转入拥塞避免；当出现丢包/重复ACK时，TCP回到慢启动状态，并将cwnd置为1，ssthresh减半。</p>
+<p>直观来看，慢启动用于探测网络的容量，拥塞避免在接近容量时缓慢进行探测。</p>
+<h6 id="fast-retransmit">Fast Retransmit</h6>
+<p>如果一个包超时了，TCP认为发生了丢包并进行重传。其实可以通过收到重复的ACK来判断发生了丢包并重传，不需要等到超时。在TCP
+Tahoe中，收到3个重复的ACK视同于超时，也会导致回到慢启动状态。</p>
+<h5 id="tcp-reno">TCP Reno</h5>
+<p>TCP Reno在Tahoe的基础上引入了快速恢复（Fast
+revocery）状态。Tahoe认为重复ACK等于超时，但Reno认为重复ACK是比超时稍弱一点的证明网络存在拥塞的证据（因为一个ACK就说明网络中少了一个包，它已经进了目的路由器的buffer），因此会在收到3个重复ACK时进入快速恢复状态：将ssthresh减半，但cwnd不被置为1，而是减半。</p>
+<p>快速恢复这个名字指的是TCP连接不一定要经过慢启动的指数增加过程就能回到拥塞避免状态。在快速恢复状态下，发生超时会导致TCP回到慢启动状态，收到正确的ACK会使得TCP回到拥塞避免状态，同时将cwnd设置为ssthresh的值。</p>
+<h6 id="congestion-window-inflation">Congestion Window Inflation</h6>
+<p>在快速恢复状态下，收到重复的ACK会让cwnd增加一个MSS，这一行为称为Congestion
+Window Inflation。</p>
+<p>为什么会有这样的设计呢？重复ACK意味着丢的包之后的所有包都需要重传，而重传的包的ACK至少需要一个RTT才能到达。如果这个过程中cwnd保持不变，意味着TCP连接在一个RTT内无法发送任何包（因为窗口的头部已经被固定住了）。而一个ACK（不管是否重复）就说明网络中少了一个包，收到重复ACK时（包括引起快速恢复状态的3个重复ACK），我们应该向网络中发送/重传一个新包。在窗口头部被固定住的情况下，这只能通过暂时增大cwnd来实现。</p>
+<p>例子：设<span
+class="math inline">\(cwnd_{old}=16\)</span>，包1丢失，进入快速恢复状态，且<span
+class="math inline">\(cwnd_{new}=8\)</span>。此时上一个cwnd的16个包会导致15个重复ACK，因此<span
+class="math inline">\(cwnd_{new}\)</span>可以增长到23，允许我们在重传包1的ACK到来之前这一个RTT的时间里，在重传剩余15个包的情况下再发送7个新包。重传包1的ACK到来后，窗口已经可以移动了，cwnd回缩到8，就像Tahoe里从慢启动回到拥塞控制时的状态一样。</p>
+<p>PS：TCP的重传机制有点像Go Back N（累积确认）和Selective
+Repeat（会缓存失序包）的混合。</p>
+<p>完整的TCP Reno状态机如图：</p>
+<p><img src="/images/CS144/3.jpg" /></p>
+<h5 id="rtt-estimation">RTT Estimation</h5>
+<p>设置包的超时间隔来进行重传，需要对RTT进行估计。RTT是经常变化的值，可以通过指数加权移动平均（EWMA）从采样值维护估计值。EWMA的特点就是越新的样本在加权平均时的权值越大。
+<span class="math display">\[
+EstimatedRTT = (1- \alpha)EstimatedRTT + \alpha SampleRTT
+\]</span>
+只有平均值是不够的，它不能体现RTT取值的分布情况，需要有一个值衡量采样值一般会偏离估计值的程度：
+<span class="math display">\[
+DevRTT = (1-\beta)DevRTT + \beta \left| SampleRTT-EstimatedRTT\right|
+\]</span>
+我们的目的是保证超时间隔大于RTT，但又不能大得太多，因此这个差值就可以用DevRTT来定义。
+<span class="math display">\[
+TimeoutInterval = EstimatedRTT + 4 \cdot DevRTT
+\]</span>
+超时间隔加倍：大部分TCP实现中，在超时重传后会把超时间隔加倍，直到收到ACK时才恢复到根据上式计算超时间隔。这是防止网络拥塞时大量包被重传，反过来又加重了拥塞情况。</p>
+<h5 id="aimd的公平性">AIMD的公平性</h5>
+<p>TCP中拥塞控制算法的公平性可以用下图来说明：加性增阶段两条链接每过一个RTT，cwnd都增加一个RSS，因此沿斜率=1的直线移动；乘性减阶段两条链接的cwnd等比缩减。因此最后两条链接的带宽占用量会收敛到中间的公平位置。</p>
+<p><img src="/images/CS144/4.png" /></p>
+<p>上述讨论基于所有链接的MSS和RTT相同，事实上如果两条链接共享同一个瓶颈链路，RTT小的那个可以更快让自己的cwnd涨上去，导致不公平。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/01/25/Stanford-CS144-Notes-1/">http://example.com/2022/01/25/Stanford-CS144-Notes-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/course/">course</a><a class="post-meta__tags" href="/tags/network/">network</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover2.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/02/13/QEMU%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E7%9A%84archlinux%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/"><img class="prev-cover" src="/images/post-cover/cover5.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">QEMU虚拟机上的archlinux安装记录</div></div></a></div><div class="next-post pull-right"><a href="/2022/01/23/CMU-15-445-Notes-2/"><img class="next-cover" src="/images/post-cover/cover5.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CMU 15-445 Notes(2)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/03/01/Stanford-CS144-Notes-2/" title="Stanford CS144 Notes(2)"><img class="cover" src="/images/post-cover/cover1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-01</div><div class="title">Stanford CS144 Notes(2)</div></div></a></div><div><a href="/2022/04/05/15-445-Lab-Report/" title="15-445 Lab Report"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-05</div><div class="title">15-445 Lab Report</div></div></a></div><div><a href="/2022/01/23/CMU-15-445-Notes-2/" title="CMU 15-445 Notes(2)"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-23</div><div class="title">CMU 15-445 Notes(2)</div></div></a></div><div><a href="/2021/12/15/CMU-15-445-Notes/" title="CMU 15-445 Notes(1)"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-15</div><div class="title">CMU 15-445 Notes(1)</div></div></a></div><div><a href="/2022/04/11/CMU-15-445-Notes-3/" title="CMU 15-445 Notes(3)"><img class="cover" src="/images/post-cover/cover1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-11</div><div class="title">CMU 15-445 Notes(3)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#chapter-1-intro"><span class="toc-number">1.</span> <span class="toc-text">Chapter 1 Intro</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#the-ip-service-model"><span class="toc-number">1.1.</span> <span class="toc-text">1-3 The IP service model</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#packet-switching-principle"><span class="toc-number">1.2.</span> <span class="toc-text">1-5 Packet switching principle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#byte-order"><span class="toc-number">1.3.</span> <span class="toc-text">1-8 byte order</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#address-resolution-protocol"><span class="toc-number">1.4.</span> <span class="toc-text">1-11 Address Resolution
+Protocol</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chapter-2-transportintro"><span class="toc-number">2.</span> <span class="toc-text">Chapter 2 Transport(intro)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp-service-model"><span class="toc-number">2.1.</span> <span class="toc-text">2-1 TCP service model</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#udp-service-model"><span class="toc-number">2.2.</span> <span class="toc-text">2-2 UDP service model</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#icmp-service-model"><span class="toc-number">2.3.</span> <span class="toc-text">2-3 ICMP service model</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#error-detection"><span class="toc-number">2.4.</span> <span class="toc-text">2-5 Error Detection</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#flow-control"><span class="toc-number">2.5.</span> <span class="toc-text">2-7 ~ 2-9 Flow Control</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp-setup-and-teardown"><span class="toc-number">2.6.</span> <span class="toc-text">2-11 TCP Setup and Teardown</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chapter-3-packet-switching"><span class="toc-number">3.</span> <span class="toc-text">Chapter 3 Packet Switching</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#principles-what-is-packet-switching"><span class="toc-number">3.1.</span> <span class="toc-text">3-2 Principles What is
+packet switching</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#end-to-end-delay"><span class="toc-number">3.2.</span> <span class="toc-text">3-3 End-to-end Delay</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#queueing-model-properties"><span class="toc-number">3.3.</span> <span class="toc-text">3-6 Queueing Model Properties</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#switching-and-forwarding"><span class="toc-number">3.4.</span> <span class="toc-text">3-7 &amp; 3-8 Switching and
+Forwarding</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#tcam"><span class="toc-number">3.4.1.</span> <span class="toc-text">TCAM</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#input-and-output-queueing"><span class="toc-number">3.4.2.</span> <span class="toc-text">Input and Output Queueing</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rate-guarantees"><span class="toc-number">3.5.</span> <span class="toc-text">3-9 Rate guarantees</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#delay-guarantees"><span class="toc-number">3.6.</span> <span class="toc-text">3-10 Delay guarantees</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chapter-4-congestion-control"><span class="toc-number">4.</span> <span class="toc-text">Chapter 4 Congestion Control</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#congestion-control---basics"><span class="toc-number">4.1.</span> <span class="toc-text">4-1 &amp; 4-2 Congestion Control -
+Basics</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#max-min-fairness"><span class="toc-number">4.1.1.</span> <span class="toc-text">Max-min fairness</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">4.1.2.</span> <span class="toc-text">拥塞控制的分类</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#aimd"><span class="toc-number">4.2.</span> <span class="toc-text">4-3 &amp; 4-4 AIMD</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#single-flow"><span class="toc-number">4.2.1.</span> <span class="toc-text">single flow</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#multi-flow"><span class="toc-number">4.2.2.</span> <span class="toc-text">multi flow</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#aimd%E4%B8%8B%E7%BD%91%E7%BB%9C%E5%90%9E%E5%90%90%E9%87%8F%E8%AE%A1%E7%AE%97"><span class="toc-number">4.2.3.</span> <span class="toc-text">AIMD下网络吞吐量计算</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp-congestion-control"><span class="toc-number">4.3.</span> <span class="toc-text">4-5 ~ 4-8 TCP Congestion Control</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#tcp-tahoe"><span class="toc-number">4.3.1.</span> <span class="toc-text">TCP Tahoe</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#fast-retransmit"><span class="toc-number">4.3.1.1.</span> <span class="toc-text">Fast Retransmit</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#tcp-reno"><span class="toc-number">4.3.2.</span> <span class="toc-text">TCP Reno</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#congestion-window-inflation"><span class="toc-number">4.3.2.1.</span> <span class="toc-text">Congestion Window Inflation</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#rtt-estimation"><span class="toc-number">4.3.3.</span> <span class="toc-text">RTT Estimation</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#aimd%E7%9A%84%E5%85%AC%E5%B9%B3%E6%80%A7"><span class="toc-number">4.3.4.</span> <span class="toc-text">AIMD的公平性</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/10/08/EXT4-extent/" title="EXT4-extent"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EXT4-extent"/></a><div class="content"><a class="title" href="/2022/10/08/EXT4-extent/" title="EXT4-extent">EXT4-extent</a><time datetime="2022-10-08T11:01:27.000Z" title="发表于 2022-10-08 19:01:27">2022-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Optimistic crash consistency"/></a><div class="content"><a class="title" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency">Optimistic crash consistency</a><time datetime="2022-09-25T11:32:55.000Z" title="发表于 2022-09-25 19:32:55">2022-09-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SplitFS: reducing software overhead in file systems for persistent memory"/></a><div class="content"><a class="title" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory">SplitFS: reducing software overhead in file systems for persistent memory</a><time datetime="2022-07-28T12:15:34.000Z" title="发表于 2022-07-28 20:15:34">2022-07-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"/></a><div class="content"><a class="title" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory">ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory</a><time datetime="2022-07-23T10:16:16.000Z" title="发表于 2022-07-23 18:16:16">2022-07-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Strata: A Cross Media File System"/></a><div class="content"><a class="title" href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System">Strata: A Cross Media File System</a><time datetime="2022-07-16T08:36:16.000Z" title="发表于 2022-07-16 16:36:16">2022-07-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

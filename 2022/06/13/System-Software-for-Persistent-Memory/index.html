@@ -1,0 +1,363 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>System Software for Persistent Memory | Do not touch fish!</title><meta name="keywords" content="file system,NVM,PM"><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="PMFS(Eurosys&#39;14)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="System Software for Persistent Memory">
+<meta property="og:url" content="http://example.com/2022/06/13/System-Software-for-Persistent-Memory/index.html">
+<meta property="og:site_name" content="Do not touch fish!">
+<meta property="og:description" content="PMFS(Eurosys&#39;14)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/post-cover/cover5.jpeg">
+<meta property="article:published_time" content="2022-06-13T05:43:08.000Z">
+<meta property="article:modified_time" content="2022-10-08T12:07:22.253Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="file system">
+<meta property="article:tag" content="NVM">
+<meta property="article:tag" content="PM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/post-cover/cover5.jpeg"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="http://example.com/2022/06/13/System-Software-for-Persistent-Memory/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: 
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'System Software for Persistent Memory',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-10-08 20:07:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover5.jpeg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Do not touch fish!</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">System Software for Persistent Memory</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-06-13T05:43:08.000Z" title="发表于 2022-06-13 13:43:08">2022-06-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-08T12:07:22.253Z" title="更新于 2022-10-08 20:07:22">2022-10-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Papers/">Papers</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="System Software for Persistent Memory"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>PMFS(Eurosys'14)</p>
+<span id="more"></span>
+<h3 id="intro">Intro</h3>
+<p>在引言部分，本文讨论了系统软件管理PM的三种不同方式，它们是：</p>
+<ol type="1">
+<li>完全摒弃文件系统，由操作系统的Virtual Memory
+Manager像管理内存那样管理PM。</li>
+<li>为PM实现块设备接口，用传统文件系统加以抽象。</li>
+<li>实现没有block layer的PM专用文件系统。</li>
+</ol>
+<p>本文提出的PMFS选择了第三种方式，基于下列几个理由：</p>
+<ol type="1">
+<li>实现文件系统接口可以支持一系列传统应用。</li>
+<li>PM文件系统可以实现得很轻量，抛弃传统的block
+layer，不需要以块粒度将数据在持久化存储设备和DRAM直接拷贝。</li>
+<li>可以通过MMIO，让应用用访问内存的语义访问PM。然而传统文件系统的MMIO会把被访问的页从持久化存储设备拷贝到DRAM，而实现PM专有文件系统可以避免这些拷贝，直接将PM映射到用户地址空间。</li>
+</ol>
+<h3 id="system-architecure">System Architecure</h3>
+<h4 id="new-hardware-primitive">New Hardware Primitive</h4>
+<p>本文的贡献之一是提出了一种硬件原语<em>pm_wbarrier</em>(<em>pcommit</em>)，来保证PM写操作的持久性。</p>
+<p>PMFS依赖PM写操作被持久化的顺序保证来实现consistency，之前的工作通常依靠3种方式：</p>
+<ol type="1">
+<li>把整个PM按write-through映射到地址空间</li>
+<li>限制PM只使用<a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/37070/what-is-the-meaning-of-non-temporal-memory-accesses-in-x86">non-temporal</a>
+store指令，绕过CPU缓存</li>
+<li>使用epoch based ordering这一新的缓存架构</li>
+</ol>
+<p>以上方式分别存在以下问题：</p>
+<ol type="1">
+<li>write-through带来overhead，同时PM写带宽较小，不适合采用write-through</li>
+<li>non-temporal store指令和temporal load指令不兼容，而且影响性能</li>
+<li>需要大量改硬件</li>
+</ol>
+<p>Q：那如果把PM按照write-back映射到地址空间，并使用CPU提供的<code>clflush</code>/<code>clwb</code>指令显式地将CPU
+cache持久化到PM上，是否可行呢？</p>
+<p>A：事实上，这样做也无法达到我们所需要的持久化保证。因为在现在的体系结构中，出于性能考虑，写入内存被当作一个posted
+transaction（请求被提交并接受，即被认为完成）。此时待写入的数据还在memory
+controller的Write Pending
+Queue（WPQ）里排着队，实际到PM的写入发生在之后的某个时刻。在ADR出现之前，WPQ不属于power-failure
+safe区域。如果在数据被写入PM之前发生了power
+failure，就会造成数据丢失。</p>
+<p><a
+target="_blank" rel="noopener" href="https://www.intel.com/content/www/us/en/developer/articles/technical/deprecate-pcommit-instruction.html">如图</a>，大小虚线红框分别代表使用ADR和不使用ADR的power-fail
+safe persistence domain。Asynchronous DRAM
+Refresh（ADR）能在断电后自动将WPQ中的数据刷写到PM上。</p>
+<p><img src="/images/PMFS/1.png" /></p>
+<p>综上，本文引入了<em>pm_wbarrier</em>这一硬件原语（就是日后Intel的<em>pcommit</em>，由于ADR的普及现已废弃），用来确保写入的数据已经进入了power-fail
+safe persistence domain。于是，一次PM写入操作的典型流程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mov [X], rax     ;Store</span><br><span class="line"></span><br><span class="line">;Here the store has started moving to the store buffer</span><br><span class="line"></span><br><span class="line">clwb [X]</span><br><span class="line"></span><br><span class="line">;Here the store has moved to the cache (CLWB is ordered with previous stores) </span><br><span class="line">;and then starting moving to the memory controller WPQ </span><br><span class="line">;(the line containing X has been written back)</span><br><span class="line"></span><br><span class="line">sfence           ;Wait for CLWB to become globally visible</span><br><span class="line"></span><br><span class="line">;Here the store is in the WPQ</span><br><span class="line"></span><br><span class="line">pcommit         </span><br><span class="line"></span><br><span class="line">;The store is being committed</span><br><span class="line"></span><br><span class="line">sfence          ;Wait for pcommit to become globally visible</span><br><span class="line"></span><br><span class="line">;The store is committed</span><br></pre></td></tr></table></figure>
+<p>最后需要指出，本文这一实现需要软件来追踪哪些cache
+line是脏的，并使用上述流程来刷写它们，这带来了额外开销。</p>
+<h4 id="pmfs">PMFS</h4>
+<p>PMFS使用上述硬件原语和软件实现构成的workflow实现大部分功能（consistency，logging），在streaming
+write（连续大量写入？）等场景下少量使用了non-temporal store指令。</p>
+<p>PMFS没有考虑磨损均衡（wear-leveling），并假设这是由硬件实现的。</p>
+<h3 id="pmfs-design-implementation">PMFS Design &amp;
+Implementation</h3>
+<p>PMFS的设计目标包括：</p>
+<ol type="1">
+<li>充分利用PM的字节粒度访问特性。比如使用更加细粒度的logging。</li>
+<li>使应用程序高效访问PM。比如修改文件系统API实现，bypass page
+cache，使read/write只需要一次数据拷贝，mmap通过直接映射访问PM，完全避免数据拷贝。</li>
+<li>PM被直接映射到内核地址空间，因此需要防止来自操作系统/驱动的stray
+write意外写坏文件系统。</li>
+</ol>
+<h4 id="layout">Layout</h4>
+<p>PMFS的布局如图所示。整个PM空间被分为超级块、PMFS
+log和数据页三个部分。包括inode在内的所有文件系统数据都被组织成B+树的形式，每个inode有一根指针指向实际存储dentry（目录文件）或文件数据（普通文件）的B+树。</p>
+<p><img src="/images/PMFS/2.png" /></p>
+<p>PM分配器和Virtual Memory
+Manager类似，以数据页为单位分配PM空间。分配器使用的数据结构维护在DRAM中，并在PMFS挂载时建立。文件系统正常umount时，这些数据结构被写回PM；当发生crash之后，需要在recovery阶段扫描文件系统重建这些结构。</p>
+<p>在数据页大小的选择上，PMFS对元数据使用4KB页，对文件数据允许使用4KB/2MB/1GB页。使用大页无疑能降低虚拟地址翻译开销，减少页表大小，但是会带来更严重的内部碎片。因此PMFS默认使用4KB数据页，但是可以在挂载时指定页大小，也可以由应用程序通过fallocate/ftruncate显式提示PMFS使用大页。对于mmap，如果文件被只读打开/<code>MAP_SHARED</code>映射（不会导致copy-on-write），PMFS会使用大页进行映射，否则使用4KB页。这样做是为了导致大页被CoW带来的巨大开销。注意这里的CoW是页表机制，和下文consistency提及的CoW不是一回事。</p>
+<h4 id="consistency">Consistency</h4>
+<p>PMFS需要实现原子更新以保证consistency，现代FS/DB保证原子性的方式主要有：</p>
+<ol type="1">
+<li>Copy-on-Write</li>
+<li>日志（journaling）</li>
+<li>Log-structured File System</li>
+</ol>
+<p>对于元数据的更新操作（一般写入长度较小），CoW和日志结构文件系统都会导致比较严重的写放大；但对于文件数据的更新（可能写入长度较大），journaling因为需要把数据写两次而性能不够理想。本文通过测试，选择了atomic
+in-place update和以cache
+line大小（64字节）为粒度的journaling来保证元数据更新的consistency，并使用CoW保证文件数据更新的consistency。</p>
+<h5 id="undo-vs.-redo">Undo vs. Redo</h5>
+<p>Undo日志保存的是待更新地址上的旧值，如果发生crash，恢复时将日志中的旧值还原。因为Undo日志不保存写入的新值，因此对事务中每个更新，保存旧值后就要原址写入新值并持久化。</p>
+<p>Redo日志保存待写入的新值，crash之后可以根据日志重做更改。使用Redo日志时，对每个事务只需要做两次<em>pm_wbarrier</em>操作，分别持久化所有日志和所有in-place的更改，与事务中update次数无关。但Redo日志更难实现，而且事务中读取被修改位置上的数据开销会变大，因为需要到日志里去找新值。尤其对于本文的细粒度日志，这种情况会更严重。</p>
+<p>基于以上考虑，PMFS选择了Undo日志。</p>
+<h5 id="atomic-in-place-updates">Atomic in-place updates</h5>
+<p>对于元数据更新，PMFS尽可能地多使用原子更新来降低journaling的负担，只有在原子更新不能满足要求时才fall
+back到Undo日志。处理器原生支持不跨cache
+line的8字节原子更新，除此之外，本文还支持16字节和64字节的原子更新。</p>
+<ul>
+<li>16字节：使用<code>LOCK-COMPXCHG16B</code>指令支持</li>
+<li>64字节：使用Restricted Transaction
+Memory（RTM）支持。RTM试图在一个事务中原子更新一系列dirty cache
+line，如果RTM失败，说明试图更新的数据大小超出了RTM支持的范围，此时需要fall
+back到以Undo日志的方式进行更新。</li>
+</ul>
+<h5 id="journaling-for-metadata-consistency">Journaling for Metadata
+Consistency</h5>
+<p>在实现中，PMFS
+log区域用作journaling，它是一个循环数组，由head和tail指针标识出起止位置。</p>
+<p>每个元素都是64字节大小的log entry，记录了一次update：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">	u64 addr;</span><br><span class="line">	u32 trans_id;</span><br><span class="line">	u16 gen_id;</span><br><span class="line">	u8 type;</span><br><span class="line">	u8 size;</span><br><span class="line">	<span class="type">char</span> data[<span class="number">48</span>];</span><br><span class="line">&#125; <span class="type">pmfs_logentry_t</span>;</span><br></pre></td></tr></table></figure>
+<p><code>gen_id</code>这个字段用于区分日志条目的版本，只有当某日志条目的<code>gen_id</code>与全局记录的<code>gen_id</code>一致时，才被视为有效。当循环数组绕回或者刚完成一次crash
+recovery时，递增全局的<code>gen_id</code>，用以区分新日志和已经失效的日志。</p>
+<p>为了保证日志条目的完整性（即不发生partial
+write），可以在写入每条日志时通过两次<em>pm_wbarrier</em>先后持久化日志条目的内容和valid
+bit，也可以通过校验和加以保证，但这样都会带来额外开销。本文利用了对同一cache
+line（log entry恰好对齐到cache
+line）的多次写入不会被重新排序这一硬件特性，将<code>gen_id</code>作为valid
+bit，仅在完成一条日志条目内容写入以后，才会写入它的<code>gen_id</code>。这就保证了有效的<code>gen_id</code>不会早于日志内容被持久化：要么<code>gen_id</code>和整个日志条目一起被持久化，要么发生partial
+write，该日志条目因为<code>gen_id</code>不对而被视为无效条目。为了实现这个目的，本文指示编译器不要重排对同一条日志条目的写入操作。</p>
+<p>在一个原子操作（事务）开始时，PMFS通过原子递增PMFS
+log区域的tail指针分配足够多的log
+entry。对每个元数据更新操作，PMFS在日志中记录该位置上的原值，并将其持久化（<code>clwb</code>+fense+<em>pm_wbarrier</em>），然后in-place更新新值（不持久化）。完成该事务中所有元数据更新以后，PMFS刷写所有的dirty
+cache
+line（<code>clwb</code>+fense），并使用一条<em>pm_wbarrier</em>指令保证其持久化。最后，PMFS记录并持久化（<code>clwb</code>+fense+<em>pm_wbarrier</em>）一条特殊的COMMIT日志，标志事务已经完成。</p>
+<p>作为优化，可以把持久化COMMIT日志的那条<em>pm_wbarrier</em>省掉，让后续的某个<em>pm_wbarrier</em>帮它保证持久化。作为代价，这样做可能导致最后一个提交成功的事务的COMMIT日志并没有成功初始化，导致其在crash
+recovery中被回滚。后续的某个<em>pm_wbarrier</em>可能来自后续某个事务，也可能来自异步的log
+cleaner线程。该线程的任务就是将成功提交的事务的日志标为无效：先补一个<em>pm_wbarrier</em>，然后原子递增PMFS
+log区域的head指针。</p>
+<h5 id="data-consistency">Data Consistency</h5>
+<p>文件数据的一致性是通过CoW（shadow-paging）保证的，修改文件时对被修改的页创建新副本，然后原子地将被修改的新副本关联到原文件。PMFS保证文件数据一定在相应的元数据之前被持久化，以此保证文件系统的一致性。</p>
+<h4 id="write-protection">Write Protection</h4>
+<p>因为PMFS直接将PM整个映射到地址空间中，需要有相应的手段避免stray
+write破坏文件系统。</p>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 53%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>来自用户空间的stray write</th>
+<th>来自内核空间的stray write</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>映射到用户地址空间</td>
+<td>进程隔离</td>
+<td>Supervisor Mode Access Prevention（SMAP）</td>
+</tr>
+<tr class="even">
+<td>映射到内核地址空间</td>
+<td>特权级</td>
+<td>？？？</td>
+</tr>
+</tbody>
+</table>
+<p>如表所示，只有当PM被映射到内核地址空间，且stray
+write也来自内核态时，没有现有的手段进行write
+protection。本文通过仅在将要进行写操作时打开写窗口（write
+window）来做到写保护。</p>
+<p>对于写窗口的实现，最自然的想法就是通过页表中的write
+permission位来做，正常情况下PM被映射为只读，只在写操作时改permission位允许写入。但是对页表条目的修改会导致大量TLB失效，影响性能。</p>
+<p>本文利用了x86处理器中的CR0.WP页表访问控制位，它能override页表权限：仅当该位为1时，处理器不能在内核态访问只读的内存页；当该位为0时，即使页表中将该页标记为只读，处理器也能在内核态下访问。</p>
+<p>于是，通过翻转CR0.WP就可以实现写窗口。但是CR0.WP的值不会在中断或者上下文切换时被保存和恢复，因此打开/关闭写窗口时还要关闭/打开中断。因为关了中断的原因，PMFS控制每个写窗口的写入次数和写入大小，让窗口尽可能小，避免过多影响性能。</p>
+<p>对于原生支持在不修改页表项的情况下（即不会导致TLB失效）修改页访问权限的处理器，PMFS可以利用它们的这一特性实现性能更优的写窗口。</p>
+<h3 id="evaluation-setup">Evaluation Setup</h3>
+<p>本文写作时，PM硬件还没有商业化使用，因此evaluation是在PM
+Emulator上进行的。它的原理是用DRAM模拟PM，通过在Last-Level
+Cache（LLC）miss后插入额外的stall来模拟PM的latency，在memory
+controller中限制单位时间DDR事务的数量来模拟PM的带宽。</p>
+<h3 id="extra-knowledge">Extra Knowledge</h3>
+<h4 id="术语解释">术语解释</h4>
+<p><a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Persistent_memory">NVDIMM</a>指插在内存插槽上的，能在断电后持久化保存数据的设备。</p>
+<ul>
+<li>最早的NVDIMM-F需要用户将一个传统DRAM和一个flash storage
+DIMM配对来实现持久化。</li>
+<li>后来出现了NVDIMM-N，一个插在内存插槽上的设备上有flash
+storage和传统DIMM，断电后有备用供电将DIMM中的数据持久化到flash
+storage上。</li>
+<li>Optane属于NVDIMM-P，技术原理和DRAM不同，原生支持持久化存储数据。</li>
+</ul>
+<h4 id="三种cache-line刷新指令">三种cache line刷新指令</h4>
+<ul>
+<li><code>clflush</code>不会与store指令或者其他的<code>clflush</code>发生重新排序，并且只能串行执行。</li>
+<li><code>clflushopt</code>可能会与store指令（不包括对同一cache
+line的older
+store）或者<code>clflush</code>/<code>clflushopt</code>/<code>clwb</code>发生重新排序，并且对不同cache
+line的<code>clflushopt</code>操作可以并行执行。</li>
+<li><code>clwb</code>和<code>clflushopt</code>类似，只是不会让被flush的cache
+line失效。如果后续还需要访问被flush的数据，应该使用<code>clwb</code>以提升性能。</li>
+</ul>
+<h4 id="clwbfense才能保证写入次序">clwb+fense才能保证写入次序</h4>
+<p><code>clwb</code>指令可能会被与store指令被重新排序（当older
+store和<code>clwb</code>的是同一cache
+line时不会重排），也就是说以下的指令序列：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">write(A)</span><br><span class="line">clwb(A)</span><br><span class="line">write(B)</span><br><span class="line">clwb(B)</span><br></pre></td></tr></table></figure>
+<p>其中只有write(A) → clwb(A)和write(B) →
+clwb(B)两对先后次序会得到保证，也即实际执行次序可能是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">write(A)</span><br><span class="line">write(B)</span><br><span class="line">clwb(B)</span><br><span class="line">clwb(A)</span><br></pre></td></tr></table></figure>
+<p>此时，如果上层应用要求A的写入必须在B的写入之前完成，就会发生错误。要保证这种依赖关系，要加入<code>fense</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">write(A)</span><br><span class="line">clwb(A)</span><br><span class="line">sfence()</span><br><span class="line">write(B)</span><br><span class="line">clwb(B)</span><br></pre></td></tr></table></figure>
+<hr />
+<ol type="1">
+<li><p><a
+target="_blank" rel="noopener" href="https://wangziqi2013.github.io/paper/2020/06/24/pmfs.html">Ziqi
+Wang's Blog</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/LuoboLiam/p/13901206.html">LuoboLiam's
+Blog</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/41878147/what-does-the-pcommit-instruction-do">What
+does the PCOMMIT instruction do?</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/67579562/clwbsfence-can-we-remove-sfence-if-writes-are-cache-line-aligned">clwb+sfence,
+can we remove sfence if writes are cache-line aligned?</a></p></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/06/13/System-Software-for-Persistent-Memory/">http://example.com/2022/06/13/System-Software-for-Persistent-Memory/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/file-system/">file system</a><a class="post-meta__tags" href="/tags/NVM/">NVM</a><a class="post-meta__tags" href="/tags/PM/">PM</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover5.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/06/15/The-Design-and-Implementation-of-a-Log-Structured-File-System/"><img class="prev-cover" src="/images/post-cover/cover3.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">The Design and Implementation of a Log-Structured File System</div></div></a></div><div class="next-post pull-right"><a href="/2022/06/03/Linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-2/"><img class="next-cover" src="/images/post-cover/cover3.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux内存管理-2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/07/04/Efficient-Persistent-Memory-File-Systems-using-Virtual-Superpages-with-Multi-Level-Allocator/" title="Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator"><img class="cover" src="/images/post-cover/cover2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-04</div><div class="title">Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator</div></div></a></div><div><a href="/2022/06/21/NOVA-A-Log-structured-File-System-for-Hybrid-Volatile-Non-volatile-Main-Memories/" title="NOVA: A Log-structured File System for Hybrid Volatile&#x2F;Non-volatile Main Memories"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-21</div><div class="title">NOVA: A Log-structured File System for Hybrid Volatile&#x2F;Non-volatile Main Memories</div></div></a></div><div><a href="/2021/06/13/Performance-and-Protection-in-the-ZoFS-User-space-NVM-File-System/" title="Performance and Protection in the ZoFS User-space NVM File System"><img class="cover" src="/images/post-cover/cover2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-13</div><div class="title">Performance and Protection in the ZoFS User-space NVM File System</div></div></a></div><div><a href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory"><img class="cover" src="/images/post-cover/cover3.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-28</div><div class="title">SplitFS: reducing software overhead in file systems for persistent memory</div></div></a></div><div><a href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-16</div><div class="title">Strata: A Cross Media File System</div></div></a></div><div><a href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"><img class="cover" src="/images/post-cover/cover3.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-23</div><div class="title">ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#system-architecure"><span class="toc-number">2.</span> <span class="toc-text">System Architecure</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#new-hardware-primitive"><span class="toc-number">2.1.</span> <span class="toc-text">New Hardware Primitive</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pmfs"><span class="toc-number">2.2.</span> <span class="toc-text">PMFS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pmfs-design-implementation"><span class="toc-number">3.</span> <span class="toc-text">PMFS Design &amp;
+Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#layout"><span class="toc-number">3.1.</span> <span class="toc-text">Layout</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#consistency"><span class="toc-number">3.2.</span> <span class="toc-text">Consistency</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#undo-vs.-redo"><span class="toc-number">3.2.1.</span> <span class="toc-text">Undo vs. Redo</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#atomic-in-place-updates"><span class="toc-number">3.2.2.</span> <span class="toc-text">Atomic in-place updates</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#journaling-for-metadata-consistency"><span class="toc-number">3.2.3.</span> <span class="toc-text">Journaling for Metadata
+Consistency</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#data-consistency"><span class="toc-number">3.2.4.</span> <span class="toc-text">Data Consistency</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#write-protection"><span class="toc-number">3.3.</span> <span class="toc-text">Write Protection</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#evaluation-setup"><span class="toc-number">4.</span> <span class="toc-text">Evaluation Setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#extra-knowledge"><span class="toc-number">5.</span> <span class="toc-text">Extra Knowledge</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E8%A7%A3%E9%87%8A"><span class="toc-number">5.1.</span> <span class="toc-text">术语解释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%A7%8Dcache-line%E5%88%B7%E6%96%B0%E6%8C%87%E4%BB%A4"><span class="toc-number">5.2.</span> <span class="toc-text">三种cache line刷新指令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#clwbfense%E6%89%8D%E8%83%BD%E4%BF%9D%E8%AF%81%E5%86%99%E5%85%A5%E6%AC%A1%E5%BA%8F"><span class="toc-number">5.3.</span> <span class="toc-text">clwb+fense才能保证写入次序</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/10/08/EXT4-extent/" title="EXT4-extent"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EXT4-extent"/></a><div class="content"><a class="title" href="/2022/10/08/EXT4-extent/" title="EXT4-extent">EXT4-extent</a><time datetime="2022-10-08T11:01:27.000Z" title="发表于 2022-10-08 19:01:27">2022-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Optimistic crash consistency"/></a><div class="content"><a class="title" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency">Optimistic crash consistency</a><time datetime="2022-09-25T11:32:55.000Z" title="发表于 2022-09-25 19:32:55">2022-09-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SplitFS: reducing software overhead in file systems for persistent memory"/></a><div class="content"><a class="title" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory">SplitFS: reducing software overhead in file systems for persistent memory</a><time datetime="2022-07-28T12:15:34.000Z" title="发表于 2022-07-28 20:15:34">2022-07-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"/></a><div class="content"><a class="title" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory">ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory</a><time datetime="2022-07-23T10:16:16.000Z" title="发表于 2022-07-23 18:16:16">2022-07-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Strata: A Cross Media File System"/></a><div class="content"><a class="title" href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System">Strata: A Cross Media File System</a><time datetime="2022-07-16T08:36:16.000Z" title="发表于 2022-07-16 16:36:16">2022-07-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

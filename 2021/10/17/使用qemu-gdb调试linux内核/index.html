@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>使用qemu+gdb调试linux内核 | Do not touch fish!</title><meta name="keywords" content="linux,qemu,kernel,gdb"><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Env:  Ubuntu 20.04 with kernel version 5.13.0-30-generic gcc v9.3.0  compiling kernel v5.16">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用qemu+gdb调试linux内核">
+<meta property="og:url" content="http://example.com/2021/10/17/%E4%BD%BF%E7%94%A8qemu-gdb%E8%B0%83%E8%AF%95linux%E5%86%85%E6%A0%B8/index.html">
+<meta property="og:site_name" content="Do not touch fish!">
+<meta property="og:description" content="Env:  Ubuntu 20.04 with kernel version 5.13.0-30-generic gcc v9.3.0  compiling kernel v5.16">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/post-cover/cover4.png">
+<meta property="article:published_time" content="2021-10-16T16:40:28.000Z">
+<meta property="article:modified_time" content="2022-10-08T12:07:54.680Z">
+<meta property="article:author" content="SToPire">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="qemu">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="gdb">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/post-cover/cover4.png"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="http://example.com/2021/10/17/%E4%BD%BF%E7%94%A8qemu-gdb%E8%B0%83%E8%AF%95linux%E5%86%85%E6%A0%B8/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: 
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用qemu+gdb调试linux内核',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-10-08 20:07:54'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover4.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Do not touch fish!</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用qemu+gdb调试linux内核</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-10-16T16:40:28.000Z" title="发表于 2021-10-17 00:40:28">2021-10-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-08T12:07:54.680Z" title="更新于 2022-10-08 20:07:54">2022-10-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Notes/">Notes</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用qemu+gdb调试linux内核"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>Env:</p>
+<ul>
+<li><p>Ubuntu 20.04 with kernel version 5.13.0-30-generic</p></li>
+<li><p>gcc v9.3.0</p></li>
+</ul>
+<p>compiling kernel v5.16</p>
+<span id="more"></span>
+<h3 id="编译内核">编译内核</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">保持默认，但需要打开调试信息和gdb script</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Kernel hacking -&gt;</span> </span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">	Compile-time checks and compiler options -&gt;</span> </span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">		[*]Compile the kernel with debug info</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">		[*]Provide GDB scripts <span class="keyword">for</span> kernel debugging</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"><span class="comment"># 关闭SYSTEM_TRUSTED_KEYS和SYSTEM_REVOCATION_KEYS</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">	Cryptographic API -&gt;</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">		Certificates <span class="keyword">for</span> signature checking -&gt;</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">			[ ]Provide system-wide ring of revocation certificates</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">			()Additional X.509 keys <span class="keyword">for</span> default system keyring</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">	</span>		</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">optional:关闭KASLR，否则无法添加断点；也可以在运行kernel时关闭。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Processor <span class="built_in">type</span> and features -&gt;</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">	[ ]Randomize the address of the kernel image (KASLR)</span></span><br><span class="line">make -j8</span><br></pre></td></tr></table></figure>
+<p>编译完成后的内核镜像为<code>arch/x86_64/boot/bzImage</code>(<strong>b</strong>ig
+<strong>z</strong>ip <strong>Image</strong>).</p>
+<h3 id="准备根文件系统">准备根文件系统</h3>
+<p>内核需要一个根文件系统，initramfs本义是一个内存中的临时文件系统，它的主要使命就是挂载磁盘上的根文件系统，并具有完成此任务所需要的相关module。如果我们不需要持久化存储，也可以直接用initramfs作为根文件系统。</p>
+<h4
+id="选项1使用busybox创建initramfs">选项1：使用busybox创建initramfs</h4>
+<p>busybox将一些简化的常用UNIX工具集成进了一个可执行文件，可以用它构建最小化的rootfs.</p>
+<ol type="1">
+<li><p>配置和编译busybox，通过<code>make install</code>把busybox展开成UNIX目录结构，可以发现所有的工具都是到busybox的soft
+link.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">静态编译</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Settings -&gt;</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">	[*]Build static binary (no shared libs)</span></span><br><span class="line">make -j8</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>（重要）</strong>kernel默认使用<code>/init</code>作为一个进程，创建一个<code>init</code>文件，让它去调有实现的<code>/sbin/init</code>即可。顺便可以挂一下procfs和sysfs。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cd _install</span><br><span class="line"></span><br><span class="line">cat &gt; init &lt;&lt; EEOOFF</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/sh</span></span><br><span class="line">/bin/mount -t proc none /proc</span><br><span class="line">/bin/mount -t sysfs sysfs /sys</span><br><span class="line">echo &quot;Your own /init is used!&quot;</span><br><span class="line">exec /sbin/init</span><br><span class="line">EEOOFF</span><br><span class="line"></span><br><span class="line">chmod a+x init</span><br></pre></td></tr></table></figure></li>
+<li><p>准备一些文件的空实现，否则内核引导时找不到这些文件会一直报错：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir proc dev sys</span><br><span class="line">mkdir -p etc/init.d</span><br><span class="line">touch etc/init.d/rcS</span><br><span class="line">chmod a+x rcS</span><br><span class="line">touch dev/&#123;tty1,tty2,tty3,tty4&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用<code>cpio</code>打包成initrd.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find . -print0 | cpio --null -ov --format=newc| gzip -9 &gt; somewhere/initramfs.cpio.gz</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>这里得到的initramfs并没有承担挂载磁盘文件系统的责任，它自身就会成为kernel的根文件系统。</p>
+<h4
+id="选项2推荐使用busybox创建boot-floppy">选项2（推荐）：使用busybox创建boot
+floppy</h4>
+<p>我们也可以不使用<code>initramfs</code>，而是使用busybox创建一个持久化的boot
+floppy供kernel使用，在<code>busybox-source-code/examples/bootfloppy</code>目录下有相关脚本及文档，大致步骤如下：</p>
+<ol type="1">
+<li><p>创建一个大小为1k*4000=4M的空镜像，并在其上构建文件系统。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dd if=/dev/zero of=mybootfloppy bs=1k count=4000</span><br><span class="line">mkfs.ext4 mybootfloppy </span><br></pre></td></tr></table></figure></li>
+<li><p>将这个img作为回环设备挂载到文件系统，使我们可以像访问块设备一样访问它。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /mnt/mybootfloppy</span><br><span class="line">sudo mount -o loop mybootfloppy /mnt/mybootfloppy</span><br></pre></td></tr></table></figure></li>
+<li><p>在该img上安装（已经静态编译的）busybox.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make CONFIG_PREFIX=/mnt/mybootfloppy install</span><br></pre></td></tr></table></figure></li>
+<li><p>创建最小文件系统所需的<code>dev</code>和<code>proc</code>，将busybox提供的<code>etc</code>下部分文件也放入img，解除挂载。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /mnt/mybootfloppy/&#123;dev,proc,etc&#125;</span><br><span class="line">sudo cp -r examples/bootfloppy/etc/* /mnt/mybootfloppy/etc</span><br><span class="line">sudo umount /mnt/mybootfloppy</span><br></pre></td></tr></table></figure>
+<p><code>etc</code>下的文件基本都是被<code>init</code>程序使用的空实现。</p></li>
+</ol>
+<h3 id="使用qemu运行kernel">使用QEMU运行kernel</h3>
+<p>参数说明：</p>
+<ul>
+<li><code>-kernel</code>指定内核二进制文件</li>
+<li><code>-nographic</code>无图形界面，以命令行运行qemu</li>
+<li><code>-initrd</code>指定init ram disk，即装有initramfs的img文件</li>
+<li><code>-hda</code>设置虚拟硬盘0，并指定装入的img及相关参数</li>
+<li><code>-append</code>用于向kernel传入额外的参数</li>
+<li><code>-m</code>指定使用的内存大小</li>
+<li><code>-s</code>指定qemu在某端口监听，默认1234</li>
+<li><code>-S</code>使虚拟cpu在执行首条指令前暂停</li>
+</ul>
+<p>注意：<code>nokaslr</code>参数是必须的（如果编译内核时开启了kaslr），否则地址空间被随机化，gdb的断点无法生效。</p>
+<h4 id="基于initramfs">基于initramfs</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 -kernel arch/x86_64/boot/bzImage \</span><br><span class="line">-nographic -initrd path/to/your/initramfs_img \</span><br><span class="line">-append &quot;console=ttyS0 nokaslr&quot;</span><br></pre></td></tr></table></figure>
+<p>参数<code>console=ttyS0</code>使我们有一个终端可以观察输出。</p>
+<h4 id="基于hard-drive">基于hard drive</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 -kernel arch/x86_64/boot/bzImage \</span><br><span class="line">-nographic -hda path/to/your/bootfloppy_img \</span><br><span class="line">-append &quot;root=/dev/sda console=ttyS0 nokaslr&quot; \</span><br><span class="line">-m 512</span><br></pre></td></tr></table></figure>
+<p>额外的参数<code>root</code>指定了根文件系统的位置。这种启动方式不需要initramfs，似乎是因为qemu承担了挂载硬盘的责任。</p>
+<p>当然，也可以同时添加<code>-initrd</code>和<code>-hda</code>参数，如果initramfs会去加载硬盘文件系统的话（比如是由<code>mkinitramfs</code>创建的），也能正常进入boot
+floppy上的root file system.</p>
+<p>对硬盘上的文件所做的更改会被持久化保存，不过rootfs默认会被只读挂载，可以通过<code>mount -o remount rw /</code>重新挂载。</p>
+<h3 id="使用gdb调试kernel">使用gdb调试kernel</h3>
+<p>因为编译内核时打开了调试选项和gdb支持，源码根目录下的<code>vmlinux</code>文件已经包含了符号信息，此外也生成了便于调试的gdb脚本，在gdb中有很多命令可供使用，可用<code>apropos word</code>查找与word有关的命令。</p>
+<p>执行<code>gdb vmlinux</code>会读入符号表并载入相关的script，如果被安全机制阻拦，可以在<code>~/.gdbinit</code>中使用<code>add-auto-load-safe-path</code>允许脚本执行。</p>
+<p>令QEMU运行kernel（额外添加<code>-s -S</code>参数），在gdb中连接到qemu：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(gdb)target remote :1234</span><br><span class="line">Remote debugging using :1234</span><br><span class="line">0x000000000000fff0 in exception_stacks ()</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+<p>设置断点并运行，qemu在断点处暂停，符合预期。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b start_kernel</span><br><span class="line">Breakpoint 1 at 0xffffffff82b44b33: file init/main.c, line 931.</span><br><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 1, start_kernel () at init/main.c:931</span><br><span class="line">931     &#123;</span><br><span class="line">(gdb)</span><br></pre></td></tr></table></figure>
+<h4 id="在vscode中使用gdb调试kernel">在vscode中使用gdb调试kernel</h4>
+<p>配置<code>launch.json</code>并在代码中设置断点即可。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#launch.json</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debugging kernel&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;/vmlinux&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/usr/bin/gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;miDebuggerServerAddress&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost:1234&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="讨论">讨论</h3>
+<ol type="1">
+<li>initrd/initramfs是可选而不是必需的，kernel镜像本身如果包含了所需的driver和module也可以直接从硬盘加载rootfs.[3]</li>
+<li>（未经考证）似乎基于kvm进行调试需要使用硬件断点<code>hbreak</code>，基于qemu使用<code>break</code>就足够了。[2]</li>
+<li>[5]指出mmu启动前的符号因为直接使用了物理地址，而无法被gdb定位并打断点，这个现象在xv6中也存在。目前未确定kernel被加载到的物理地址，暂未尝试给出的解决方案。</li>
+</ol>
+<hr />
+<ol type="1">
+<li><p><a target="_blank" rel="noopener" href="https://www.v4ler1an.com/2020/12/qemu/">QEMU + Busybox
+模拟 Linux 内核环境</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="http://nickdesaulniers.github.io/blog/2018/10/24/booting-a-custom-linux-kernel-in-qemu-and-debugging-it-with-gdb/">Booting
+a Custom Linux Kernel in QEMU and Debugging It With GDB</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/6405083/is-it-possible-to-boot-the-linux-kernel-without-creating-an-initrd-image">Is
+it possible to boot the Linux kernel without creating an initrd
+image?</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://freemandealer.github.io/2015/10/04/debug-kernel-with-qemu-2/">用QEMU来调试内核
+-- 亲身体验篇</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/363827057">linux内存子系统
+- qemu调试linux 内核启动</a></p></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/10/17/%E4%BD%BF%E7%94%A8qemu-gdb%E8%B0%83%E8%AF%95linux%E5%86%85%E6%A0%B8/">http://example.com/2021/10/17/%E4%BD%BF%E7%94%A8qemu-gdb%E8%B0%83%E8%AF%95linux%E5%86%85%E6%A0%B8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/linux/">linux</a><a class="post-meta__tags" href="/tags/qemu/">qemu</a><a class="post-meta__tags" href="/tags/kernel/">kernel</a><a class="post-meta__tags" href="/tags/gdb/">gdb</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover4.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/11/22/xv6-%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4/"><img class="prev-cover" src="/images/post-cover/cover3.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">xv6-地址空间</div></div></a></div><div class="next-post pull-right"><a href="/2021/10/02/xv6%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B-2/"><img class="next-cover" src="/images/post-cover/cover2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">xv6启动过程(2)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/03/06/Linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-1/" title="Linux内存管理-1"><img class="cover" src="/images/post-cover/cover1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-06</div><div class="title">Linux内存管理-1</div></div></a></div><div><a href="/2022/06/03/Linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-2/" title="Linux内存管理-2"><img class="cover" src="/images/post-cover/cover3.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-03</div><div class="title">Linux内存管理-2</div></div></a></div><div><a href="/2021/12/19/QEMU-KVM%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-CPU/" title="QEMU&#x2F;KVM部分源码分析-CPU"><img class="cover" src="/images/post-cover/cover1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-19</div><div class="title">QEMU&#x2F;KVM部分源码分析-CPU</div></div></a></div><div><a href="/2022/02/13/QEMU%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E7%9A%84archlinux%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" title="QEMU虚拟机上的archlinux安装记录"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-13</div><div class="title">QEMU虚拟机上的archlinux安装记录</div></div></a></div><div><a href="/2021/12/04/%E4%BD%BF%E7%94%A8QEMU%E6%A8%A1%E6%8B%9F%E9%9D%9E%E6%98%93%E5%A4%B1%E6%80%A7%E5%86%85%E5%AD%98/" title="使用QEMU模拟非易失性内存"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-04</div><div class="title">使用QEMU模拟非易失性内存</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8"><span class="toc-number">1.</span> <span class="toc-text">编译内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E6%A0%B9%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.</span> <span class="toc-text">准备根文件系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%89%E9%A1%B91%E4%BD%BF%E7%94%A8busybox%E5%88%9B%E5%BB%BAinitramfs"><span class="toc-number">2.1.</span> <span class="toc-text">选项1：使用busybox创建initramfs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%89%E9%A1%B92%E6%8E%A8%E8%8D%90%E4%BD%BF%E7%94%A8busybox%E5%88%9B%E5%BB%BAboot-floppy"><span class="toc-number">2.2.</span> <span class="toc-text">选项2（推荐）：使用busybox创建boot
+floppy</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8qemu%E8%BF%90%E8%A1%8Ckernel"><span class="toc-number">3.</span> <span class="toc-text">使用QEMU运行kernel</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8Einitramfs"><span class="toc-number">3.1.</span> <span class="toc-text">基于initramfs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8Ehard-drive"><span class="toc-number">3.2.</span> <span class="toc-text">基于hard drive</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8gdb%E8%B0%83%E8%AF%95kernel"><span class="toc-number">4.</span> <span class="toc-text">使用gdb调试kernel</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8gdb%E8%B0%83%E8%AF%95kernel"><span class="toc-number">4.1.</span> <span class="toc-text">在vscode中使用gdb调试kernel</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A8%E8%AE%BA"><span class="toc-number">5.</span> <span class="toc-text">讨论</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/10/08/EXT4-extent/" title="EXT4-extent"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EXT4-extent"/></a><div class="content"><a class="title" href="/2022/10/08/EXT4-extent/" title="EXT4-extent">EXT4-extent</a><time datetime="2022-10-08T11:01:27.000Z" title="发表于 2022-10-08 19:01:27">2022-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Optimistic crash consistency"/></a><div class="content"><a class="title" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency">Optimistic crash consistency</a><time datetime="2022-09-25T11:32:55.000Z" title="发表于 2022-09-25 19:32:55">2022-09-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SplitFS: reducing software overhead in file systems for persistent memory"/></a><div class="content"><a class="title" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory">SplitFS: reducing software overhead in file systems for persistent memory</a><time datetime="2022-07-28T12:15:34.000Z" title="发表于 2022-07-28 20:15:34">2022-07-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"/></a><div class="content"><a class="title" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory">ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory</a><time datetime="2022-07-23T10:16:16.000Z" title="发表于 2022-07-23 18:16:16">2022-07-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Strata: A Cross Media File System"/></a><div class="content"><a class="title" href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System">Strata: A Cross Media File System</a><time datetime="2022-07-16T08:36:16.000Z" title="发表于 2022-07-16 16:36:16">2022-07-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
