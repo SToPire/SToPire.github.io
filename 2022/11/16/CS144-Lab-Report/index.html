@@ -1,0 +1,368 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CS144 Lab Report | Do not touch fish!</title><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Stanford Introduction to Computer Networking (CS144) 2021 lab report.  Lab0 webget 首先实现的webget是一个对socket api的简单应用，依靠封装好的TCPSocket()类和send()系统调用即可完成。 B"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="https://stopire.github.io/2022/11/16/CS144-Lab-Report/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CS144 Lab Report',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-11-17 13:46:40'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover2.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Do not touch fish!</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">CS144 Lab Report</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-16T07:25:07.000Z" title="发表于 2022-11-16 15:25:07">2022-11-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-11-17T05:46:40.230Z" title="更新于 2022-11-17 13:46:40">2022-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Notes/">Notes</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CS144 Lab Report"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>Stanford Introduction to Computer Networking (<a
+target="_blank" rel="noopener" href="https://cs144.github.io/">CS144</a>) 2021 lab report.</p>
+<hr />
+<h3 id="lab0">Lab0</h3>
+<h4 id="webget">webget</h4>
+<p>首先实现的webget是一个对socket
+api的简单应用，依靠封装好的<code>TCPSocket()</code>类和<code>send()</code>系统调用即可完成。</p>
+<h4 id="byte-stream">Byte Stream</h4>
+<p>Lab0需要实现一个字节流的抽象。字节流可以看作是有容量限制的双端队列：读者和写者分别从两端读出和写入数据，但是任何时候字节流中暂存的字节数目不能超过给定的上限。</p>
+<p>实现这个抽象看起来需要一个<code>std::list&lt;char&gt;</code>的数据结构，可以在字节流推进的时候避免移动字符。但是这样做需要把输入字符串拆成字符放进链表，可能得不偿失，此外实现起来也更复杂。其实<code>std::string</code>就足以完成这个任务。</p>
+<hr />
+<h3 id="lab1">Lab1</h3>
+<h4 id="实验要求">实验要求</h4>
+<p>Lab1实现一个字节流重组器，其输入是字节流的碎片（字符串），输出是有序的字节流。这些碎片可能相互重叠。</p>
+<p>重组器接受到乱序的字节后，需要在自己的辅助数据结构中暂存它们，直到前面缺失的字节抵达，才能把它们放进字节流。并不是所有的乱序字节都应该被存储的，因为重组器也有容量限制，其大小等于底层字节流和辅助存储的大小之和，如实验手册中的图所示。</p>
+<p><img src="/images/CS144/lab.png" /></p>
+<p>例如：假设重组器容量为10，字节流中存储着3个字节，且第一个未被读取的字节下标是2。则字节[2,4]位于字节流中，字节[5,11]可以被存放在重组器的辅助存储中。第12个及以后的字节应该被丢弃，因为这落在了重组器的滑动窗口之外。</p>
+<h4 id="实现">实现</h4>
+<p>需要维护字节流写入端的下标，以判断新字符串是否按序。</p>
+<p>我使用一个链表作为辅助存储，链表元素是字符串和其头尾下标，这些字符串不会重叠并有序存放。这样做可以避免把字符串拆成字符进行存储，也不需要在字节流推进时把辅助存储中的元素也向后移动。</p>
+<p>对于每个传入的字符串，需要先掐头去尾，截取其可以存进重组器的部分。之后遍历链表中每个元素，判断其与新字符串的位置关系，并进行可能的合并。完成处理后，如果字符串刚好按序，则放入字节流；否则存入链表。</p>
+<hr />
+<h3 id="lab2">Lab2</h3>
+<h4 id="wrappingint">WrappingInt</h4>
+<p>Lab2首先需要实现一个工具类，将TCP序列号（32位，可能wrap
+around）与64位整型数互相转换。实现时不需要记录序列号wrap
+around的次数，因为我们不需要根据这个次数从一个序列号唯一确定u64整型数，而是根据接口中提供的<code>checkpoint</code>参数选择最接近的。</p>
+<p>这个接口似乎有些迷惑，因为可能有两个u64整型数和<code>checkpoint</code>一样接近，比如<span
+class="math inline">\(n=0,isn=0,checkpoint=2^{16}\)</span>时，返回<span
+class="math inline">\(0\)</span>或者<span
+class="math inline">\(2^{32}\)</span>都满足要求。</p>
+<h4 id="tcpreceiver">TcpReceiver</h4>
+<p>在<code>TCPReceiver</code>类中需要实现3个函数。注意SYN和FIN位各自需要占据一个序列号即可。按照讲义中（第5页）的提示，<code>unwrap</code>时使用last
+reassembled byte作为checkpoint（约等于ackno，它们只相差1）。</p>
+<p>疑惑：讲义中提示用<code>TCPSegment::length_in_sequence_space()</code>（可能是维护ackno？），但看起来维护ackno最方便的方法是直接用下层<code>StreamReassembler</code>的当前指针，注意考虑SYN和FIN的额外偏移即可。</p>
+<hr />
+<h3 id="lab3">Lab3</h3>
+<p>本实验实现TCP的sender部分。<code>TCPSender</code>需要提供4个接口：</p>
+<table>
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>接口</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fill_window()</code></td>
+<td>从输入字节流中尽可能多的读取数据并发送，直至填满窗口或字节流为空</td>
+</tr>
+<tr class="even">
+<td><code>ack_received(ackno, window)</code></td>
+<td>更新ackno和窗口大小</td>
+</tr>
+<tr class="odd">
+<td><code>tick(time)</code></td>
+<td>更新当前时间</td>
+</tr>
+<tr class="even">
+<td><code>send_empty_segment()</code></td>
+<td>发送一个长度为0的数据段</td>
+</tr>
+</tbody>
+</table>
+<p>手册里已经很清楚地描述了这些接口具体的行为，因此这个实验大部分是面向用例编程。尽管如此，用例覆盖的也不甚全面，很可能当前的一些实现并不符合设计目的。</p>
+<p>一些注意点：</p>
+<ol type="1">
+<li>实验手册规定的行为并不和RFC6298完全符合。在这个实验中，重传计时器的RTO的初值是给定的（而非动态测定）。RTO指数后退的逻辑存在，但是实验手册要求在窗口大小为0时不进行指数后退，这个行为暂时没有在RFC标准中找到依据。</li>
+<li>为了实现简单，本实验不要求待确认的数据段被部分确认，即只当<span
+class="math inline">\(ackno &gt;= segno +
+seg.length\)</span>才认为整个数据段被确认接收。不存在部分确认会导致<code>bytes_in_flight()</code>
+超过窗口大小，需要考虑特判这种情况（或许后续实验还要修改）。</li>
+<li><code>MAX_PAYLOAD_SIZE</code>只是限制了载荷的大小，并不是序列号空间的大小，不会影响SYN和FIN位。</li>
+<li>发送空数据段的方式：正常设置序列号（即设为ackno），不设置SYN和FIN位，载荷为空。</li>
+<li>ackno必须满足<span class="math inline">\(SND.UNA &lt; SEG.ACK &lt;=
+SND.NXT\)</span>，其中UNA是oldest unacknowledged sequence
+number，NXT是next sequence number to be
+sent。不满足条件的ackno应该被直接丢弃，不能影响其他状态。</li>
+</ol>
+<hr />
+<h3 id="lab4">Lab4</h3>
+<h4 id="实验要求-1">实验要求</h4>
+<p>本实验实现完整的<code>TCPConnection</code>，TCP通信的每一端都由Lab2/3中实现的<code>TCPReceiver</code>和<code>TCPSender</code>组成。按照实验要求，<code>TCPConnection</code>需要提供以下接口：</p>
+<table>
+<thead>
+<tr class="header">
+<th>接口</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>connect()</code></td>
+<td>发起一条TCP链接</td>
+</tr>
+<tr class="even">
+<td><code>write(data)</code></td>
+<td>通过sender发送数据</td>
+</tr>
+<tr class="odd">
+<td><code>end_input_stream()</code></td>
+<td>结束数据发送（仍然可以接收）</td>
+</tr>
+<tr class="even">
+<td><code>segment_received(seg)</code></td>
+<td>通过receiver接收一个数据段 ()</td>
+</tr>
+<tr class="odd">
+<td><code>active()</code></td>
+<td>判断TCP连接是否仍然处于活跃状态</td>
+</tr>
+</tbody>
+</table>
+<h4 id="实现-1">实现</h4>
+<p>Lab4的实现主要就是调用前面实验中实现的接口：例如<code>segment_received()</code>接分别调用receiver的<code>segment_received()</code>和sender的<code>ack_received()</code>方法，询问sender是否有数据需要发送，如果没有则生成空数据段准备发送。向待发送的数据段中填入receiver一侧的ackno和win字段，然后发送。</p>
+<p>一些注意点：</p>
+<ol type="1">
+<li><p>我一开始以为本部分需要根据TCP状态机设计所有的状态转移，事实上没有必要这么做。只要各部分接口的逻辑正确，TCP实现就会正确表现出状态机的行为。只有一些特例需要判断：如<code>LISTEN</code>下，TCP连接应该丢弃所有不含有SYN的数据段。</p></li>
+<li><p>TCP连接在TIME-WAIT下需要继续存活一段时间，体现为实现中的<code>_linger_after_streams_finish</code>变量。这个变量初始值为true，只在TCP连接确认不需要进入TIME-WAIT状态的时候被置为false。</p></li>
+<li><p>TCP连接的状态可以用四元组<code>(_sender.state, _receiver.state, active(), _linger_after_streams_finish)</code>表示，其中<code>active()==false &amp;&amp; _linger_after_streams_finish==true</code>这种情况是不合法的，不应存在，这种情况体现在框架代码<code>TCPState()</code>的构造函数中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">TCPState::TCPState(<span class="type">const</span> TCPSender &amp;sender, <span class="type">const</span> TCPReceiver &amp;receiver, <span class="type">const</span> <span class="type">bool</span> active, <span class="type">const</span> <span class="type">bool</span> linger)</span><br><span class="line">    : _sender(state_summary(sender))</span><br><span class="line">    , _receiver(state_summary(receiver))</span><br><span class="line">    , _active(active)</span><br><span class="line">    , _linger_after_streams_finish(active ? linger : <span class="literal">false</span>) &#123;&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>不能假设<code>end_input_stream()</code>一定会在输出流开启时被调用，从而断言会发送含有FIN的数据段。上层应用可能会对已经被关闭的输出流调用<code>end_input_stream()</code>。</p></li>
+<li><p>本实验除了和之前类似的模拟测试用例以外，还引入了真实应用场景进行测试。框架提供的<code>txrx.sh</code>创建了一个tun虚拟网卡设备，为我们的TCP实现提供了socket
+wrapper，然后让我们的实现分别作为通信的两端互相发送消息。</p></li>
+</ol>
+<h4 id="心得">心得</h4>
+<p>本实验使我对TCP协议有了更深的理解：</p>
+<ol type="1">
+<li><p>我们熟悉的四次挥手只是主动关闭方所经历的<code>FIN_WAIT_1</code><span
+class="math inline">\(\rightarrow\)</span><code>FIN_WAIT_2</code><span
+class="math inline">\(\rightarrow\)</span><code>TIME_WAIT</code>这条状态转移路径。事实上，主动关闭方还存在其他的状态转移方式：</p>
+<ol type="1">
+<li>发送FIN之后，对端在发送ACK之前就发来了对端的FIN，这种情况可以理解为通信双方近乎同时想要终止连接。在这种情况下，通信双方都会从<code>FIN_WAIT_1</code>进入<code>CLOSING</code>状态，收到对方的ACK之后即可进入<code>TIME_WAIT</code>状态。</li>
+<li>发送FIN之后，对端把ACK和对端的FIN合在一个数据段中发送。这种情况是四次挥手中的第二步和第三步被合并进行了，此时主动关闭方可以直接从<code>FIN_WAIT_1</code>进入<code>TIME_WAIT</code>状态。</li>
+</ol></li>
+<li><p><code>TIME_WAIT</code>的存在意义：通信的一方在关闭连接前，需要确认对方已经把要发送的数据全发出去了，并且已经完全收到了自己对这段数据的ack。为了确认这件事情，需要满足两者其一：</p>
+<ol type="1">
+<li>该通信方是被动关闭连接的一方，即在自己发送FIN之前，对方主动发来了FIN。此时由于己方数据还没发完，己方的ACK会和数据一起被发出去。这个长度不为0的数据段受到重传机制的保护，从而可以确保对方一定收到。这种情况下，己方不需要进入<code>TIME_WAIT</code>状态。</li>
+<li>该通信方已经等待了足够久，并且确信对方没有重传任何数据段过来，即<code>TIME_WAIT</code>状态。如果对方没有收到自己对FIN的ACK，一定会重传FIN。如果没有观测到这样的重传，可以确信对方已经收到了ACK。</li>
+</ol>
+<p>一言蔽之，<code>TIME_WAIT</code>就是为了确保对方收到了自己的ACK，这个ACK确认己方收到了对方发来的FIN。</p></li>
+<li><p>TCP Keep-Alives机制。根据RFC
+9293的描述，TCP实现可以发送一个探活数据段判断一个idle的连接是否仍然存活。这个探活数据段的seq是不合法的，并且恰好满足<span
+class="math inline">\(SEG.SEQ =
+SND.NXT-1\)</span>。收到探活数据段的一方需要发送ACK加以回应。</p></li>
+</ol>
+<hr />
+<h3 id="lab5">Lab5</h3>
+<p>本实验实现了<code>NetworkInterface</code>中的ARP协议，作为沟通链路层和网络层的桥梁，主要涉及3个接口。</p>
+<table>
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>接口</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>send_datagram(datagram, next_hop)</code></td>
+<td>将IP数据报发往下一跳指定的IP地址</td>
+</tr>
+<tr class="even">
+<td><code>recv_frame(frame)</code></td>
+<td>接收到一份链路层帧</td>
+</tr>
+<tr class="odd">
+<td><code>tick(time)</code></td>
+<td>更新当前时间</td>
+</tr>
+</tbody>
+</table>
+<p>ARP的实现总体来说比较简单：</p>
+<ol type="1">
+<li><code>send_datagram()</code>查询转发表，如果IP地址对应的mac地址已知，则直接发送数据报。否则广播一个ARP
+request，并将待发送的报文暂存起来。</li>
+<li><code>recv_frame()</code>查看收到的frame中的负载类型。如果是IP数据报则将其返回，如果是ARP报文，则根据其类型做出对应的处理。</li>
+<li><code>tick()</code>更新时间，同时删除过时（30秒）的转发表条目。</li>
+</ol>
+<p>注意点：</p>
+<ol type="1">
+<li>为了防止ARP请求在网络中洪泛，如果已经发出了对某个IP的ARP请求，后续（5秒内）对相同IP发送的数据报都应该被暂存起来，等查到了mac地址再发送。</li>
+<li>在ARP协议中，某设备只要接收到一个ARP报文，不管报文target中指定的目标是不是自己（如报文是被广播的），都应该在自己的转发表中记录该报文来源设备的(IP,
+MAC)映射关系。</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://stopire.github.io">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://stopire.github.io/2022/11/16/CS144-Lab-Report/">https://stopire.github.io/2022/11/16/CS144-Lab-Report/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://stopire.github.io" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/course/">course</a><a class="post-meta__tags" href="/tags/network/">network</a><a class="post-meta__tags" href="/tags/CS144/">CS144</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover2.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/10/08/EXT4-extent/"><img class="next-cover" src="/images/post-cover/cover1.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">EXT4-extent</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/01/25/Stanford-CS144-Notes-1/" title="Stanford CS144 Notes(1)"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-25</div><div class="title">Stanford CS144 Notes(1)</div></div></a></div><div><a href="/2022/03/01/Stanford-CS144-Notes-2/" title="Stanford CS144 Notes(2)"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-01</div><div class="title">Stanford CS144 Notes(2)</div></div></a></div><div><a href="/2022/04/05/15-445-Lab-Report/" title="15-445 Lab Report"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-05</div><div class="title">15-445 Lab Report</div></div></a></div><div><a href="/2022/01/23/CMU-15-445-Notes-2/" title="CMU 15-445 Notes(2)"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-23</div><div class="title">CMU 15-445 Notes(2)</div></div></a></div><div><a href="/2022/04/11/CMU-15-445-Notes-3/" title="CMU 15-445 Notes(3)"><img class="cover" src="/images/post-cover/cover2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-11</div><div class="title">CMU 15-445 Notes(3)</div></div></a></div><div><a href="/2021/12/15/CMU-15-445-Notes/" title="CMU 15-445 Notes(1)"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-15</div><div class="title">CMU 15-445 Notes(1)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">41</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#lab0"><span class="toc-number">1.</span> <span class="toc-text">Lab0</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#webget"><span class="toc-number">1.1.</span> <span class="toc-text">webget</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#byte-stream"><span class="toc-number">1.2.</span> <span class="toc-text">Byte Stream</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lab1"><span class="toc-number">2.</span> <span class="toc-text">Lab1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E8%A6%81%E6%B1%82"><span class="toc-number">2.1.</span> <span class="toc-text">实验要求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lab2"><span class="toc-number">3.</span> <span class="toc-text">Lab2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#wrappingint"><span class="toc-number">3.1.</span> <span class="toc-text">WrappingInt</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tcpreceiver"><span class="toc-number">3.2.</span> <span class="toc-text">TcpReceiver</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lab3"><span class="toc-number">4.</span> <span class="toc-text">Lab3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lab4"><span class="toc-number">5.</span> <span class="toc-text">Lab4</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E8%A6%81%E6%B1%82-1"><span class="toc-number">5.1.</span> <span class="toc-text">实验要求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">5.2.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%83%E5%BE%97"><span class="toc-number">5.3.</span> <span class="toc-text">心得</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lab5"><span class="toc-number">6.</span> <span class="toc-text">Lab5</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/11/16/CS144-Lab-Report/" title="CS144 Lab Report"><img src="/images/post-cover/cover2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CS144 Lab Report"/></a><div class="content"><a class="title" href="/2022/11/16/CS144-Lab-Report/" title="CS144 Lab Report">CS144 Lab Report</a><time datetime="2022-11-16T07:25:07.000Z" title="发表于 2022-11-16 15:25:07">2022-11-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/10/08/EXT4-extent/" title="EXT4-extent"><img src="/images/post-cover/cover1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EXT4-extent"/></a><div class="content"><a class="title" href="/2022/10/08/EXT4-extent/" title="EXT4-extent">EXT4-extent</a><time datetime="2022-10-08T11:01:27.000Z" title="发表于 2022-10-08 19:01:27">2022-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency"><img src="/images/post-cover/cover1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Optimistic crash consistency"/></a><div class="content"><a class="title" href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency">Optimistic crash consistency</a><time datetime="2022-09-25T11:32:55.000Z" title="发表于 2022-09-25 19:32:55">2022-09-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SplitFS: reducing software overhead in file systems for persistent memory"/></a><div class="content"><a class="title" href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory">SplitFS: reducing software overhead in file systems for persistent memory</a><time datetime="2022-07-28T12:15:34.000Z" title="发表于 2022-07-28 20:15:34">2022-07-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"><img src="/images/post-cover/cover3.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"/></a><div class="content"><a class="title" href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory">ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory</a><time datetime="2022-07-23T10:16:16.000Z" title="发表于 2022-07-23 18:16:16">2022-07-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
