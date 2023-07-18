@@ -4,16 +4,43 @@
   <url>
     <loc>https://stopire.github.io/2022/12/02/MIT-6-S081-Lab-Report/</loc>
     
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://stopire.github.io/2022/11/16/CS144-Lab-Report/</loc>
+    <loc>https://stopire.github.io/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</loc>
     
-    <lastmod>2022-11-21</lastmod>
+    <lastmod>2023-07-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://stopire.github.io/2022/10/08/EXT4-extent/</loc>
+    
+    <lastmod>2023-07-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://stopire.github.io/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/</loc>
+    
+    <lastmod>2023-07-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://stopire.github.io/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/</loc>
+    
+    <lastmod>2023-04-18</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -21,6 +48,15 @@
   
   <url>
     <loc>https://stopire.github.io/2022/11/21/CS149-Lab-Report/</loc>
+    
+    <lastmod>2023-03-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://stopire.github.io/2022/11/16/CS144-Lab-Report/</loc>
     
     <lastmod>2022-11-21</lastmod>
     
@@ -50,15 +86,6 @@
     <loc>https://stopire.github.io/2022/04/05/15-445-Lab-Report/</loc>
     
     <lastmod>2022-10-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://stopire.github.io/2022/10/08/EXT4-extent/</loc>
-    
-    <lastmod>2022-10-09</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -409,7 +436,7 @@
 
   <url>
     <loc>https://stopire.github.io/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -417,259 +444,273 @@
   
   <url>
     <loc>https://stopire.github.io/tags/database/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/course/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/15-445/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/curl/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/archlinux/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/file-system/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/ext4/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/NVM/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/PM/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/operating-system/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/system-call/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/git/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/Golang/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/linux/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/memory/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/LFS/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/crash-consistency/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/memory-protection-keys/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/qemu/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/kvm/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/network/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/microkernel/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/inter-process-communication/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/accelerators/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/eulerfs/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/Java/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/Java%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/xv6/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/non-volatile-memory/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/kernel/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/gdb/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/design-pattern/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/CS144/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/parallel-computing/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/CS149/</loc>
-    <lastmod>2022-12-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://stopire.github.io/tags/operation-system/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/tags/6-S081/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://stopire.github.io/tags/EROFS/</loc>
+    <lastmod>2023-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://stopire.github.io/tags/SSD/</loc>
+    <lastmod>2023-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://stopire.github.io/tags/HPB/</loc>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -678,21 +719,21 @@
   
   <url>
     <loc>https://stopire.github.io/categories/Notes/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/categories/Tips/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://stopire.github.io/categories/Papers/</loc>
-    <lastmod>2022-12-05</lastmod>
+    <lastmod>2023-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
