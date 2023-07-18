@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NOVA: A Log-structured File System for Hybrid Volatile/Non-volatile Main Memories | Do not touch fish!</title><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="NOVA(FAST&amp;#39;16)  Intro NOVA是一种为NVM+DRAM组成的混合系统设计的日志结构文件系统。与传统LFS不同的是：  NOVA为每个inode维护一个独立的log，保证inode内修改的原子性。对于涉及多个inode的修改，通过轻量级journaling加以保证。 NOVA不在l"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="https://stopire.github.io/2022/06/21/NOVA-A-Log-structured-File-System-for-Hybrid-Volatile-Non-volatile-Main-Memories/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NOVA: A Log-structured File System for Hybrid Volatile/Non-volatile Main Memories',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-10-08 20:06:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover3.jpeg')"><nav id="nav"><span id="blog-info"><a href="/" title="Do not touch fish!"><span class="site-name">Do not touch fish!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">NOVA: A Log-structured File System for Hybrid Volatile/Non-volatile Main Memories</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-06-21T02:45:12.000Z" title="发表于 2022-06-21 10:45:12">2022-06-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-08T12:06:48.253Z" title="更新于 2022-10-08 20:06:48">2022-10-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Papers/">Papers</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="NOVA: A Log-structured File System for Hybrid Volatile/Non-volatile Main Memories"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>NOVA(FAST'16)</p>
+<span id="more"></span>
+<h3 id="intro">Intro</h3>
+<p>NOVA是一种为NVM+DRAM组成的混合系统设计的日志结构文件系统。与传统LFS不同的是：</p>
+<ul>
+<li>NOVA为每个inode维护一个独立的log，保证inode内修改的原子性。对于涉及多个inode的修改，通过轻量级journaling加以保证。</li>
+<li>NOVA不在log里记录文件数据，减少了log大小，从而降低了recovery和GC负担。</li>
+</ul>
+<h3 id="design-overview">Design Overview</h3>
+<p>NOVA的设计考虑了3个observation：</p>
+<ol type="1">
+<li>在NVM上实现支持原子更新的log比较容易，但是实现能快速查找的数据结构（树）比较困难。</li>
+<li>NVM的随机访问不比顺序访问慢很多，因此不用像LFS那样花大代价保证log的物理连续。</li>
+<li>机械硬盘只有一个磁头，所以LFS使用了一个全局log。NVM支持快速和高并发的随机访问，NOVA完全可以维护多个log结构。</li>
+</ol>
+<p>于是，NOVA做出了以下设计决定：</p>
+<ul>
+<li>在NVM中（顺序）记录日志和文件数据，在DRAM中建立基数树索引，加速对日志的访问。</li>
+<li>为每个inode维护单独的log，提高并发度。</li>
+<li>涉及单个inode的操作通过log保证原子性；涉及多个inode的操作通过轻量级journaling保证原子性。轻量级journaling只记录每个inode
+log的尾指针，不管修改再多，记在journal里的不过是几个（<code>rename</code>操作最多，4个）指针而已。</li>
+<li>将log实现为单链表，链表元素是4KB页，不需要使用连续的NVM空间。这使得分配log空间变得简单，也能支持细粒度的log
+GC。</li>
+<li>log中不记录文件数据，只记录关于每个写操作的元数据，并指向对应的数据页。数据页更新的原子性通过CoW保证。这使得log更小，GC更简单（不涉及文件数据）。</li>
+</ul>
+<h3 id="implementation">Implementation</h3>
+<h4 id="general">General</h4>
+<p><img src="/images/NOVA/1.png" /></p>
+<p>NOVA将NVM分为super block、recovery inode、journal、inode
+table和log/data page，其中recovery
+inode在umount时保存DRAM中的数据结构，inode table和journal都是per
+cpu的结构以提高并发度。除此之外，NOVA还在DRAM中维护了用于分配空闲页的freelist（实现为红黑树），这同样是一个per
+cpu的结构。</p>
+<p>Inode
+table是一个由若干2MB块链接成的数组，用于保存大小为128字节的inode，因此可以直接通过inode号找到inode结构。NOVA在所有cpu的inode
+table之间round
+robin分配，以保证inode分布尽量均匀。每个inode维护指向其log头尾的指针。</p>
+<p>Journal是一个4KB的循环数组，用&lt;enqueue,
+dequeue&gt;标示，用于保证涉及多inode操作的原子性。对这类操作，NOVA先追加写入各inode的log，然后把所有（尚未更新的）log
+tail记录在journal的enqueue处，标志事务开始。之后NOVA更新每个log
+tail，完成所有更新后前移dequeue指针表示事务结束。对于<code>create()</code>这类新增inode的操作，journal记录的是directory
+inode的log tail和新inode的valid
+bit。在recovery时，NOVA回滚enqueue和dequeue指针之间记录的操作。</p>
+<p>Log和文件数据不占用固定的空间，而是使用分配器分配的4KB数据页。分配器使用DRAM中的per
+cpu
+freelist（红黑树）结构追踪NVM中的空闲页，这个结构会在shutdown时保存到NVM上。但如果发生了crash，就需要扫描日志重建分配器的状态。</p>
+<h4 id="目录操作">目录操作</h4>
+<p><img src="/images/NOVA/2.png" /></p>
+<p>NOVA中每个目录同样由NVM和DRAM中的两部分组成：NVM中保存各个dir
+inode的log；DRAM中保存一个radix
+tree结构，以文件名为key，该文件名的dentry为value，加速目录访问。</p>
+<p>NOVA的dentry包括create和delete两类，分别表示创建和删除文件。Dentry中记录了文件名和inode号。在dir
+inode的log中，除了两种dentry外，还会包含一种inode update
+entry，它的用途是为同时修改inode中多个字段的操作（如<code>chmod</code>）提供原子性保证。</p>
+<p>图中的目录曾经保存过，后来删除了"foo"文件。它还经历过一次<code>chmod</code>操作。</p>
+<p>如图，对文件创建操作，NOVA首先在inode
+table中分配并初始化文件inode，并在父目录的log中记录一条create
+dentry；随后，NOVA使用journal，原子更新父目录inode的log
+tail指针并设置文件inode的valid bit；最后更新DRAM中的radix tree。</p>
+<h4 id="文件操作">文件操作</h4>
+<p><img src="/images/NOVA/3.png" /></p>
+<p>NOVA中每个文件包括NVM中的inode和DRAM中的radix tree（file
+offset映射到file write entry）。文件inode log中的entry包括file write
+entry（以&lt;pgoff,
+pgcnt&gt;记录每一次写入操作，指向其写入的page）和inode update
+entry（作用同目录inode）。</p>
+<p>对于读操作，NOVA原子更新文件inode中的access time字段，并利用radix
+tree定位需要读取的file write
+entry，进而获得存储文件数据的页，并将内容复制到用户buffer。</p>
+<p>如图所示，对于写操作，NOVA首先分配NVM页并写入数据，然后将指向新页的file
+write entry追加到inode log；随后NOVA更新log tail指针，并更新radix
+tree让相应offset指向新的file write entry（CoW）；最后回收被换下来的old
+data page。</p>
+<h4 id="atomic-mmap">Atomic Mmap</h4>
+<p><img src="/images/NOVA/5.png" /></p>
+<p>Mmap为应用提供了一种直接访问文件的手段，但代价是原子更新更难保证。NOVA使用<em>atomic-mmap</em>，将file
+data拷贝到replica
+page再映射到地址空间。应用调用<code>msync()</code>写回dirty
+page时，NOVA像处理<em>write</em>请求那样，通过CoW原子更新file
+data，再更新log tail提交更改。</p>
+<h4 id="garbage-collection">Garbage collection</h4>
+<p><img src="/images/NOVA/4.png" /></p>
+<p>NOVA中的GC主要是回收无用的log entry，实现了两种策略。Fast
+GC更注重性能，只将不含有任何有效log
+entry的page从链表中删除并回收；Through GC更注重效果，如果Fast
+GC后有效log
+entry占比小于一半就会触发。它会拷出数据紧凑放置，再回收这些页。</p>
+<h4 id="shutdown-and-recovery">Shutdown and Recovery</h4>
+<p>NOVA在挂载时需要建立DRAM中的数据结构，如free page
+list。鉴于应用程序可能只会访问文件系统的一部分，对inode的加载是lazy的：第一次访问某个inode时，NOVA才会在DRAM中建立其radix
+tree。</p>
+<p>正因如此，NOVA在故障恢复时只需要重建free page
+list，这需要扫描所有inode log。由于NOVA的log是per
+inode的，这个过程可以并发进行；此外log中不包含文件数据。这两个原因使得recovery只需要扫描NVM的一小部分，速度较快。</p>
+<p>故障恢复时，NOVA首先扫描journal并回滚未完成的事务，使文件系统恢复到一致的状态；随后在每个CPU上起recovery线程，扫描每个inode
+table，找到每个有效inode并扫描inode
+log。对于目录inode，NOVA通过组成日志的链表获知哪些页被占用，不看日志内容；对于文件inode，NOVA通过读日志内容获知哪些页被文件数据占用。通过扫描，NOVA建立起关于哪些页正被使用的bitmap，并根据此信息重建分配器状态。</p>
+<h4 id="nvmm-protection">NVMM Protection</h4>
+<p>在将NVM直接映射到地址空间时，NOVA使用和PMFS相同的write
+window策略，利用CR0.WP位保护NVM不被来自内核的stray write破坏。</p>
+<h3 id="思考">思考</h3>
+<ol type="1">
+<li>对Sprite
+LFS而言，整个文件系统都由log构成。如果要修改一个inode中的一个字段，也要创建出一个新的inode结构和新的inode
+table并加入日志中。但对于NOVA，inode的log只是用来记录对文件数据的写入操作，以及保证修改多个字段的原子性，修改一个inode中的一个字段（如access
+time）可以直接用原子写入指令完成。</li>
+</ol>
+<hr />
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://www.usenix.org/system/files/conference/fast16/fast16-papers-xu.pdf">Xu's
+Slides</a></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://stopire.github.io">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://stopire.github.io/2022/06/21/NOVA-A-Log-structured-File-System-for-Hybrid-Volatile-Non-volatile-Main-Memories/">https://stopire.github.io/2022/06/21/NOVA-A-Log-structured-File-System-for-Hybrid-Volatile-Non-volatile-Main-Memories/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://stopire.github.io" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/file-system/">file system</a><a class="post-meta__tags" href="/tags/NVM/">NVM</a><a class="post-meta__tags" href="/tags/PM/">PM</a><a class="post-meta__tags" href="/tags/LFS/">LFS</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover3.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/07/04/Efficient-Persistent-Memory-File-Systems-using-Virtual-Superpages-with-Multi-Level-Allocator/" title="Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator"><img class="cover" src="/images/post-cover/cover1.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator</div></div></a></div><div class="next-post pull-right"><a href="/2022/06/15/The-Design-and-Implementation-of-a-Log-Structured-File-System/" title="The Design and Implementation of a Log-Structured File System"><img class="cover" src="/images/post-cover/cover4.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">The Design and Implementation of a Log-Structured File System</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/07/04/Efficient-Persistent-Memory-File-Systems-using-Virtual-Superpages-with-Multi-Level-Allocator/" title="Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator"><img class="cover" src="/images/post-cover/cover1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-04</div><div class="title">Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator</div></div></a></div><div><a href="/2021/06/13/Performance-and-Protection-in-the-ZoFS-User-space-NVM-File-System/" title="Performance and Protection in the ZoFS User-space NVM File System"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-13</div><div class="title">Performance and Protection in the ZoFS User-space NVM File System</div></div></a></div><div><a href="/2022/07/28/SplitFS-reducing-software-overhead-in-file-systems-for-persistent-memory/" title="SplitFS: reducing software overhead in file systems for persistent memory"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-28</div><div class="title">SplitFS: reducing software overhead in file systems for persistent memory</div></div></a></div><div><a href="/2022/07/16/Strata-A-Cross-Media-File-System/" title="Strata: A Cross Media File System"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-16</div><div class="title">Strata: A Cross Media File System</div></div></a></div><div><a href="/2022/06/13/System-Software-for-Persistent-Memory/" title="System Software for Persistent Memory"><img class="cover" src="/images/post-cover/cover3.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-13</div><div class="title">System Software for Persistent Memory</div></div></a></div><div><a href="/2022/07/23/ctFS-Replacing-File-Indexing-with-Hardware-Memory-Translation-through-Contiguous-File-Allocation-for-Persistent-Memory/" title="ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory"><img class="cover" src="/images/post-cover/cover3.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-23</div><div class="title">ctFS: Replacing File Indexing with Hardware Memory Translation through Contiguous File Allocation for Persistent Memory</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#design-overview"><span class="toc-number">2.</span> <span class="toc-text">Design Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#implementation"><span class="toc-number">3.</span> <span class="toc-text">Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#general"><span class="toc-number">3.1.</span> <span class="toc-text">General</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9C"><span class="toc-number">3.2.</span> <span class="toc-text">目录操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="toc-number">3.3.</span> <span class="toc-text">文件操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#atomic-mmap"><span class="toc-number">3.4.</span> <span class="toc-text">Atomic Mmap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#garbage-collection"><span class="toc-number">3.5.</span> <span class="toc-text">Garbage collection</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#shutdown-and-recovery"><span class="toc-number">3.6.</span> <span class="toc-text">Shutdown and Recovery</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#nvmm-protection"><span class="toc-number">3.7.</span> <span class="toc-text">NVMM Protection</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">思考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS压缩文件格式和读取流程分析"/></a><div class="content"><a class="title" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析">EROFS压缩文件格式和读取流程分析</a><time datetime="2023-07-05T10:42:52.000Z" title="发表于 2023-07-05 18:42:52">2023-07-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"/></a><div class="content"><a class="title" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices">EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices</a><time datetime="2023-05-07T14:14:04.000Z" title="发表于 2023-05-07 22:14:04">2023-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"/></a><div class="content"><a class="title" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones">Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones</a><time datetime="2023-03-23T05:51:24.000Z" title="发表于 2023-03-23 13:51:24">2023-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MIT 6.S081 Lab Report"/></a><div class="content"><a class="title" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report">MIT 6.S081 Lab Report</a><time datetime="2022-12-01T18:01:19.000Z" title="发表于 2022-12-02 02:01:19">2022-12-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CS149 Lab Report"/></a><div class="content"><a class="title" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report">CS149 Lab Report</a><time datetime="2022-11-20T17:08:17.000Z" title="发表于 2022-11-21 01:08:17">2022-11-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones | Do not touch fish!</title><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本篇文章发表在FAST&amp;#39;23，作者是来自韩国首尔大学和大邱庆北科学技术院（DGIST）的 Yoona Kim 等，研究了智能手机中高效管理Host Performance Booster（HPB）的挑战和机遇， 提出了一种以用户体验（UX）为中心的HPB管理机制，在不产生额外内存压力的同时，缩短了"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="https://stopire.github.io/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-18 12:54:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover5.jpeg')"><nav id="nav"><span id="blog-info"><a href="/" title="Do not touch fish!"><span class="site-name">Do not touch fish!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-23T05:51:24.000Z" title="发表于 2023-03-23 13:51:24">2023-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-18T04:54:04.570Z" title="更新于 2023-04-18 12:54:04">2023-04-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Papers/">Papers</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="/images/HPBvalve/title.png" /></p>
+<p>本篇文章发表在FAST'23，作者是来自韩国首尔大学和大邱庆北科学技术院（DGIST）的
+Yoona Kim 等，研究了智能手机中高效管理Host Performance
+Booster（HPB）的挑战和机遇，
+提出了一种以用户体验（UX）为中心的HPB管理机制，在不产生额外内存压力的同时，缩短了与用户体验相关的应用程序的启动时间。</p>
+<h2 id="background">Background</h2>
+<p>使用智能手机时，影响用户体验的一大因素是应用程序的启动时间。在安卓智能手机上，大约有超过一半的应用程序启动时间被花在读取闪存（如UFS）上。
+导致这一现状的一大原因是：基于Flash的存储设备存在Flash Translation
+Layer（FTL）层，对上层暴露的逻辑地址与实际物理地址可能不同，因此需要Logical-to-Physical（L2P）映射表存储二者之间的映射关系。
+访问Flash时，必须先根据该映射表获得物理地址才能进行访问。然而，由于Flash容量的增长速度远快于SRAM容量的增长速度，移动设备的SRAM无法完全存下L2P映射表，而只能作为其缓存。
+一旦需要使用未被缓存的L2P映射表项，就需要从Flash中读取，导致访问延迟大幅增加。</p>
+<p><img src="/images/HPBvalve/HPBpath.jpg" /></p>
+<p>为了缓解这一问题，Host Performance
+Booster（HPB）技术应运而生。该技术使用一部分Host内存作为L2P映射表的缓存，以减少Flash的访问次数。
+如Figure1所示，蓝色路径展示了没有使用HPB时的Flash读取路径：</p>
+<ol type="1">
+<li>Host发起读取请求，请求的逻辑地址被传递给FTL层。</li>
+<li>FTL层根据逻辑地址，在SRAM中查找L2P映射表条目。</li>
+<li>如果没有找到，FTL层逐出LRU链表尾部的旧条目，从Flash中读取新条目，并将其写入SRAM。</li>
+<li>FTL层根据L2P映射表条目获得物理地址，从Flash中读取数据。</li>
+<li>FTL层将数据返回给Host。</li>
+</ol>
+<p>红色路径则是使用HPB时的Flash读取路径：</p>
+<ol type="1">
+<li>Host根据请求的逻辑地址，首先试图在Host
+memory中的HPB里寻找L2P映射表条目。如果条目不存在，则与蓝色路径相同。</li>
+<li>如果条目存在，Host获得物理地址，并和读取请求一起发送给FTL层。</li>
+<li>FTL层根据物理地址从Flash中读取数据。</li>
+<li>FTL层将数据返回给Host。</li>
+</ol>
+<h2 id="motivation">Motivation</h2>
+<p>现有的HPB技术没有从用户体验的角度进行考虑，比如：</p>
+<ol type="1">
+<li>用户所感知到的响应时间来自于前台应用。但现有的HPB没有区分前台/后台应用，只是根据引用计数确定需要缓存的L2P条目项。</li>
+<li>如果HPB占用了过多的Host内存，可能导致应用被Low Memory Killer
+Daemon（LMKD）杀死，用户体验反而下降。现有实现没有动态调整HPB占用的Host内存大小。</li>
+</ol>
+<h2 id="observation">Observation</h2>
+<p>作者开展了一系列实验，研究L2P映射表缓存和HPB对前台应用的性能影响。
+实验在一台骁龙888设备上进行，通过修改Android内核收集HPB相关的统计信息，并使用Ultra-Low
+Latency
+SSD模拟UFS设备。作者研究了9个代表性应用，包括游戏、社交软件和工具软件。
+&gt; 之所以使用ULL-SSD模拟UFS设备，是因为修改UFS固件比较困难。</p>
+<h3 id="impact-of-l2p-cache-misses-on-ux">Impact of L2P Cache Misses on
+UX</h3>
+<p><img src="/images/HPBvalve/obs-1.png" /></p>
+<p>如图所示：</p>
+<ul>
+<li>UFS使用约512KB的较小空间作为L2P cache.</li>
+<li>UFS+HPB使用约256MB的Host内存作为L2P cache.</li>
+<li>Optimal是理想情况，假设UFS有充足的空间存下整个L2P映射表，因此不会出现L2P
+cache miss，也不需要占用Host内存。</li>
+</ul>
+<p>作者的结论：</p>
+<ul>
+<li>Optimal相对UFS和UFS+HPB取得了40-50%的性能提升，说明L2P cache
+miss对用户感知到的时延确实有很大的影响。</li>
+<li>UFS+HPB相对UFS取得的性能提升并不明显，因为HPB缓存的L2P条目和前台应用无关，对改善用户感知到的时延没有帮助。</li>
+<li>UFS+HPB甚至在某些应用上表现不如UFS，这是因为UFS+HPB占用了Host内存，导致应用程序被LMKD杀死。</li>
+</ul>
+<h3 id="impact-of-hpb-management-policy-on-ux">Impact of HPB Management
+Policy on UX</h3>
+<p><img src="/images/HPBvalve/obs-2.png" /></p>
+<p>如图所示，作者观察到前台应用发出的读IO请求远少于后台应用，并且在大部分情况下前台应用的L2P
+cache命中率比后台应用更低。</p>
+<p>作者解释了这一现象：一方面，现有的HPB管理策略基于引用计数确定缓存的L2P项，而后台应用的IO请求数量多，引用计数相对也更高，导致前台应用相关的L2P项更容易被逐出；
+另一方面，现有HPB管理策略在内存足够时，也会定期逐出L2P项，并未考虑用户的使用习惯：用户可能使用一会前台应用，切换到另一个应用，再返回前台应用。此时前台应用的L2P项已经因为超时被逐出，导致用户感知到的时延增加。</p>
+<p>除此之外，作者还观察到应用程序启动时会导致大量的随机IO（图见原文），它们跨越了更多的逻辑地址，因此会导致大量的L2P
+cache miss，并且HPB在这种情况下并不能起到很大作用。
+作者认为，在内存紧张的移动设备上，可同时打开的应用程序数量是受限的，因此应用程序启动，乃至随机IO是不可避免的，HPB的策略设计应该充分考虑这一点。</p>
+<h3 id="impact-of-hpb-size-on-ux">Impact of HPB Size on UX</h3>
+<p><img src="/images/HPBvalve/obs-3.png" /></p>
+<p>如图所示，HPB占用的内存大小会影响对Flash的IO次数：HPB越大，缓存的L2P条目越多，减少了Flash
+IO；但与此同时，HPB占用的内存也越多，可能导致更多的页面换出和更频繁的Flash
+IO，甚至导致应用被杀死。
+因此，HPB大小的选择需要在两个极端之间权衡，并且在不同应用下，HPB最佳大小也不同。</p>
+<p>作者认为，HPB的大小应该感知到当前的内存压力，并进行动态调整。这是当前基于定时器的HPB策略所做不到的。</p>
+<h2 id="design-implementation">Design &amp; Implementation</h2>
+<p>基于以上观察，作者提出了HPBvalve，这是一种集成的Host-SSD映射管理方案。HPBvalve利用了Android中其他模块采集的信息，使得它可以低成本垂直集成到现有设备中。</p>
+<p><img src="/images/HPBvalve/arch.jpg" /></p>
+<p>上图是HPBvalve的总体架构，它包括Android
+Platform层的App-Detector和Mem-Detector，以及内核中的FG-Profiler,
+HPB-Regulator和L2P-Manager。</p>
+<h3 id="fgbg-classification">FG/BG classification</h3>
+<p>HPBvalve修改了内核，让IO请求带上应用ID信息。App-Detector能感知到当前的前台应用，并传递给修改过的内核。</p>
+<h3 id="l2p-management">L2P management</h3>
+<p>L2P-Manager维护3个LRU链表：AFG(Active FG)，IFG(Inactive
+FG)和BG，逐出时BG链表中的条目会最先被换出，其次是IFG；AFG中的条目从不被换出。</p>
+<blockquote>
+<p>IFG代表用户先前交互的前台程序，当用户启动新的前台程序时，原来的AFG会被降级为IFG。</p>
+</blockquote>
+<h3 id="caching-policy-of-hpbvalve">Caching policy of HPBvalve</h3>
+<p>Hvavle保留了基于引用计数的缓存策略。除此之外：</p>
+<ul>
+<li>来自当前前台应用的L2P miss会导致对应L2P entry立刻被缓存进HPB。</li>
+<li>FG-Profiler会记录应用启动/运行时请求LBA的模式，并在用户启动新应用时根据此信息预取L2P条目。</li>
+</ul>
+<h3 id="dynamic-hpb-size-adjustment">Dynamic HPB Size Adjustment</h3>
+<p>借助于HPB-Regulator和Mem-Detector，HPBvalve可以动态调整HPB的大小，在提高L2P
+cache命中率和减少Host内存占用之间达到平衡。这一过程的具体流程如下图所示。</p>
+<p><img src="/images/HPBvalve/size-adjust.jpg" /></p>
+<p>初始，HPBvalve尽可能多得使用Host内存，以期缓存最多的L2P条目，直到出现内存压力，LMKD被启动：
+1. Mem-Detector将LMKD即将杀死的应用ID传递给HPB-Regulator。 2.
+HPB-Regulator检查该应用的重要性（即是否被最近使用，这是通过FG-Profiler收集的信息实现的），如果不重要，则终止流程，让LMKD杀死该应用。
+3.
+否则，HPB-Regulator告知L2P-Manager，需要释放多少内存避免该应用被LMKD杀死。
+4.
+L2P-Manager按优先级从3个LRU链表中逐出条目，以满足Host内存需求，使该应用不被杀死。</p>
+<h2 id="evaluation">Evaluation</h2>
+<p><img src="/images/HPBvalve/eval-setting.jpg" /></p>
+<p>Evaluation
+Settings已在Observation一节描述，实验平台参数如图所示。</p>
+<blockquote>
+<p>图中Camera是一台高速摄像头，作用是直接对显示屏采样，以精确测量应用启动时间。</p>
+</blockquote>
+<p><img src="/images/HPBvalve/eval-res1.jpg" />
+如上图，相比Baseline（UFS+HPB），HPBvalve取得了最多43%的时延下降，达到了接近Optimal的效果。这归因于HPBvalve提高了L2P缓存命中率。</p>
+<blockquote>
+<p>Optimal是假设UFS有充足的空间存下整个L2P映射表的理想情况。</p>
+</blockquote>
+<p><img src="/images/HPBvalve/eval-res2.jpg" />
+如上图，HPBvalve相较于UFS+HPB，应用更不容易因为内存不足被杀死。这是因为HPBvalve能够动态调整HPB占用的Host内存大小。</p>
+<h3 id="overhead">Overhead</h3>
+<ul>
+<li>FG-Profiler分析应用启动模式所消耗的内存被限定为1MB，基本可以忽略不计。</li>
+<li>3个LRU链表用哈希表管理，在链表之间查找并移动L2P缓存条目可以O(1)时间实现。</li>
+<li>HPB-Regulator会在LMKD中插入额外的逻辑，但这部分时延（约1.8ms）相对LMKD的整体时延（数百ms）影响很小。</li>
+<li>使用HPBvalve不会引入额外的电量消耗，甚至相对UFS+HPB，耗电量有所降低（3.51%）。</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>本文具体分析了现有的，基于HPB的L2P条目缓存方案面临的问题和挑战，并提出了HPBvalve，一种关注用户体验的改进解决方案。
+该方案区分了前台和后台应用，并且能够根据Host内存压力动态调整HPB的内存占用。
+实验证明，HPBvalve能够有效地减少应用启动/切换时的时延，提高了用户体验。</p>
+<h2 id="links">Links</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://www.usenix.org/system/files/fast23-kim-yoona.pdf">Kim
+PDF</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.usenix.org/sites/default/files/conference/protected-files/fast23_slides_kim-yoona.pdf">Kim
+Slides</a></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://stopire.github.io">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://stopire.github.io/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/">https://stopire.github.io/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://stopire.github.io" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SSD/">SSD</a><a class="post-meta__tags" href="/tags/HPB/">HPB</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover5.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"><img class="cover" src="/images/post-cover/cover4.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices</div></div></a></div><div class="next-post pull-right"><a href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report"><img class="cover" src="/images/post-cover/cover4.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MIT 6.S081 Lab Report</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#background"><span class="toc-number">1.</span> <span class="toc-text">Background</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#motivation"><span class="toc-number">2.</span> <span class="toc-text">Motivation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#observation"><span class="toc-number">3.</span> <span class="toc-text">Observation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#impact-of-l2p-cache-misses-on-ux"><span class="toc-number">3.1.</span> <span class="toc-text">Impact of L2P Cache Misses on
+UX</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#impact-of-hpb-management-policy-on-ux"><span class="toc-number">3.2.</span> <span class="toc-text">Impact of HPB Management
+Policy on UX</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#impact-of-hpb-size-on-ux"><span class="toc-number">3.3.</span> <span class="toc-text">Impact of HPB Size on UX</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#design-implementation"><span class="toc-number">4.</span> <span class="toc-text">Design &amp; Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fgbg-classification"><span class="toc-number">4.1.</span> <span class="toc-text">FG&#x2F;BG classification</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#l2p-management"><span class="toc-number">4.2.</span> <span class="toc-text">L2P management</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#caching-policy-of-hpbvalve"><span class="toc-number">4.3.</span> <span class="toc-text">Caching policy of HPBvalve</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamic-hpb-size-adjustment"><span class="toc-number">4.4.</span> <span class="toc-text">Dynamic HPB Size Adjustment</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#evaluation"><span class="toc-number">5.</span> <span class="toc-text">Evaluation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overhead"><span class="toc-number">5.1.</span> <span class="toc-text">Overhead</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#conclusion"><span class="toc-number">6.</span> <span class="toc-text">Conclusion</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#links"><span class="toc-number">7.</span> <span class="toc-text">Links</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS压缩文件格式和读取流程分析"/></a><div class="content"><a class="title" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析">EROFS压缩文件格式和读取流程分析</a><time datetime="2023-07-05T10:42:52.000Z" title="发表于 2023-07-05 18:42:52">2023-07-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"/></a><div class="content"><a class="title" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices">EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices</a><time datetime="2023-05-07T14:14:04.000Z" title="发表于 2023-05-07 22:14:04">2023-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"/></a><div class="content"><a class="title" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones">Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones</a><time datetime="2023-03-23T05:51:24.000Z" title="发表于 2023-03-23 13:51:24">2023-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MIT 6.S081 Lab Report"/></a><div class="content"><a class="title" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report">MIT 6.S081 Lab Report</a><time datetime="2022-12-01T18:01:19.000Z" title="发表于 2022-12-02 02:01:19">2022-12-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CS149 Lab Report"/></a><div class="content"><a class="title" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report">CS149 Lab Report</a><time datetime="2022-11-20T17:08:17.000Z" title="发表于 2022-11-21 01:08:17">2022-11-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

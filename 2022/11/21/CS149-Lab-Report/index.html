@@ -1,0 +1,641 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CS149 Lab Report | Do not touch fish!</title><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Programming Assignment of Stanford CS149 (former CMU 15-418) Fall 2022.  Lab1 第一个实验主要让学生体验并行计算的优势（多线程，SIMD，ispc），要写的代码不多。 Prog1 本实验用多线程计算Mandelbrot Se"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="https://stopire.github.io/2022/11/21/CS149-Lab-Report/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CS149 Lab Report',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-25 08:47:21'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover4.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Do not touch fish!"><span class="site-name">Do not touch fish!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">CS149 Lab Report</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-20T17:08:17.000Z" title="发表于 2022-11-21 01:08:17">2022-11-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-25T00:47:21.519Z" title="更新于 2023-03-25 08:47:21">2023-03-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Notes/">Notes</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CS149 Lab Report"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>Programming Assignment of Stanford CS149 (former CMU 15-418) Fall
+2022.</p>
+<hr />
+<h2 id="lab1">Lab1</h2>
+<p>第一个实验主要让学生体验并行计算的优势（多线程，SIMD，ispc），要写的代码不多。</p>
+<h3 id="prog1">Prog1</h3>
+<p>本实验用多线程计算Mandelbrot
+Set，并与单线程进行性能比较。对于Mandelbrot Set，我们需要知道的是：</p>
+<ol type="1">
+<li>每个像素的计算是独立进行的，和其他像素无关。</li>
+<li>不同像素的计算代价不一样。从图上看，越亮的点计算代价越大。</li>
+</ol>
+<p>因此，问题的关键在于如何把计算任务分配给各线程。</p>
+<p>最直接的想法是把整个区域横向平均分割成<span
+class="math inline">\(n\)</span>块，每个线程按顺序取自己的一部分进行计算。从图1可以看出，中间部分的亮点数量更多，因此需要的计算代价也更大。因此线程号在中间的线程需要更长时间完成任务，成为性能瓶颈。</p>
+<p>一种改进方法是让两侧的线程处理更多的行，中间的线程处理更少的行。但是如何取不同分割比例不是一个简单问题，而且不适用于图2。</p>
+<p>因此，我让线程<span class="math inline">\(i\)</span>处理$Row% n == i
+$的那些行，这样做实现简单，需要修改一下<code>mandelbrotSerial</code>函数。</p>
+<h4 id="测试结果">测试结果</h4>
+<p>测试在i7-12700平台（8P4E）上进行，用<code>taskset</code>绑定到8个大核。</p>
+<p>Naive实现：</p>
+<table>
+<thead>
+<tr class="header">
+<th>线程数</th>
+<th>view1</th>
+<th>view2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1.00</td>
+<td>1.00</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>1.95</td>
+<td>1.66</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>1.62</td>
+<td>2.13</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>2.39</td>
+<td>2.51</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>2.42</td>
+<td>2.84</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>3.17</td>
+<td>3.23</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>3.30</td>
+<td>3.61</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>3.90</td>
+<td>4.00</td>
+</tr>
+</tbody>
+</table>
+<p>Step实现：</p>
+<table>
+<thead>
+<tr class="header">
+<th>线程数</th>
+<th>view1</th>
+<th>view2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0.99</td>
+<td>0.99</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>1.95</td>
+<td>1.94</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>2.86</td>
+<td>2.84</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>3.81</td>
+<td>3.78</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>4.66</td>
+<td>4.63</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>5.58</td>
+<td>5.51</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>6.35</td>
+<td>6.31</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>7.27</td>
+<td>7.20</td>
+</tr>
+</tbody>
+</table>
+<p>继续增加线程数对性能提升没有帮助，因为只有8个核。</p>
+<hr />
+<h3 id="prog2">Prog2</h3>
+<p>本实验旨在介绍SIMD指令的使用方式，需要使用框架提供的“模拟”SIMD指令完成一些功能。</p>
+<h4 id="clampedexpvector">clampedExpVector</h4>
+<p>该函数需要计算<span class="math inline">\(\max (9.999999, value[i] ^
+{exp[i]})\)</span>，由于每个分量的结果只和该分量的参数有关，不涉及不同分量之间的运算，因此只需要用SIMD指令模拟一下串行执行的逻辑即可。框架已经给出了一个<code>absVector</code>作为示例。</p>
+<p>注意正确使用mask，为了处理<code>VECTOR_WIDTH</code>不能整除<code>N</code>的情况，应该用<code>_cs149_init_ones(min(VECTOR_WIDTH, *N* - i))</code>来设置全局的mask。示例代码<code>absVector</code>不能处理这种情况，也是因为这个原因。</p>
+<h4 id="arraysumvector">arraySumVector</h4>
+<p>该函数需要计算<span
+class="math inline">\(\sum\nolimits_{i=0}^NV_i\)</span>，这个函数的串行实现非常直接，但是使用SIMD进行计算的逻辑却完全不同，因为涉及到不同分量之间的运算。</p>
+<p>做法是用<code>hdd</code>指令把相邻的分量加到一起，再用<code>interleave</code>指令把结果换到一起，再用<code>hdd</code>指令累加，重复这个过程直到得到最终结果，类似于一个归并过程。</p>
+<p>这里假设了<code>VECTOR_WIDTH</code>是2的幂次，且<code>N</code>能被<code>VECTOR_WIDTH</code>整除。</p>
+<h4 id="测试结果-1">测试结果</h4>
+<p>测试<span
+class="math inline">\(N=10000\)</span>时，改变SIMD指令操作的向量宽度，向量利用率的变化情况。向量利用率越低，说明运算过程中有越多的分量被mask屏蔽而没有参与计算。</p>
+<table>
+<thead>
+<tr class="header">
+<th>向量宽度</th>
+<th>向量利用率</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>86.4%</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>81.8%</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>79.4%</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td>78.2%</td>
+</tr>
+<tr class="odd">
+<td>32</td>
+<td>77.7%</td>
+</tr>
+<tr class="even">
+<td>64</td>
+<td>77.5%</td>
+</tr>
+<tr class="odd">
+<td>128</td>
+<td>77.1%</td>
+</tr>
+<tr class="even">
+<td>256</td>
+<td>76.5%</td>
+</tr>
+</tbody>
+</table>
+<p>可以看出，向量宽度越高，利用率也越低，因为高维向量意味着处理一个进入了不同分支的分量会阻塞更多的分量。</p>
+<hr />
+<h3 id="prog3">Prog3</h3>
+<p>本实验主要分析ispc程序的性能。ispc会使用SIMD指令加速执行（仍然是单核），ispc
+task还会启动多个task（类似于线程），跑在多个核上。</p>
+<p>由于ispc使用宽度为8的AVX2指令，我们期望的理想性能提升是8倍，实际上只有2-4倍，这还是因为不同像素的计算开销不同导致的。和实验1不同的是，simd指令处理的向量对应到一组邻近的像素点，因此如果白点分布的比较离散，一个白点就会拖慢周围的其他黑点。因此图2比图1的提升幅度还要少一点。</p>
+<p>在使用了ispc
+task后，我观测到task数目为16时性能提升达到峰值。这个行为有些奇怪，因为物理核数是8。</p>
+<hr />
+<h3 id="prog4">Prog4</h3>
+<p>本实验以牛顿迭代法求平方根为例，分析SIMD的best/worst
+case。在baseline中，需要开方的输入数组是随机生成的。</p>
+<p>对于best
+case，把所有输入置为2.99999，因为接近3的数迭代次数最多，计算代价最大，SIMD最能体现出针对串行程序的优势。此外，整个输入数组相同意味着控制流不会进入不同分支，屏蔽了SIMD的劣势。</p>
+<p>对于worst case：</p>
+<ul>
+<li>思路1：所有输入置为1，此时只需要1次迭代，瓶颈不在计算而在访存上，SIMD优势不明显。</li>
+<li>思路2：对于每组8个输入，设置其中1个为2.99999，其他都设为1。此时SIMD的执行速度被拖慢到对2.99999开方的速度，因此可能比串行还要慢。</li>
+</ul>
+<h4 id="测试结果-2">测试结果</h4>
+<table>
+<thead>
+<tr class="header">
+<th>测试</th>
+<th>ISPC提升比例</th>
+<th>带task的ISPC提升比例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>baseline</td>
+<td>3.77</td>
+<td>30.49</td>
+</tr>
+<tr class="even">
+<td>best</td>
+<td>5.15</td>
+<td>37.92</td>
+</tr>
+<tr class="odd">
+<td>worst1</td>
+<td>1.38</td>
+<td>1.96</td>
+</tr>
+<tr class="even">
+<td>worst2</td>
+<td>0.89</td>
+<td>6.67</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="prog5">Prog5</h3>
+<p>本实验分析SIMD对于一个简单计算任务的性能提升。在这个场景中，ispc几乎没有任何提升，而ispc
+task的提升也只有1.2倍左右，因为此时的瓶颈在内存读取上。</p>
+<p>在计算访存次数时，框架认为每个元素对应4次访存操作。这是因为除了读取两个原数据以外，写回时会带来2次访存操作：</p>
+<ul>
+<li>write-back：cache未命中时，将需要修改的数据复制到cache，修改cache中的数据。写回时会带来另一次内存访问，共两次。</li>
+<li>write-through：cache未命中时，直接写入内存，同时将修改后的数据读进cache，也是两次。</li>
+</ul>
+<hr />
+<h3 id="prog4-extra">Prog4 Extra</h3>
+<p>本实验要求自己用SIMD指令实现一个浮点数开方运算。Intel为AVX指令集提供了一系列内置函数，编程者不需要手写汇编。</p>
+<p>虽然实验要求用AVX2指令集进行实现，但似乎AVX2涉及的大部分是整型数运算，我用到的函数都来自AVX.</p>
+<p>实现中，我模仿了标量运算的牛顿迭代法，用到的都是比较基本的AVX函数。</p>
+<p>一些注意点：</p>
+<ol type="1">
+<li>AVX内置的算术运算函数不像proj2中的那些函数一样，有一个mask参数，因此分支操作比较麻烦，要依赖<code>_mm256_blendv_ps</code>（也可能是我没找到正确用法）。</li>
+<li>比较操作<code>_mm256_cmp_ps</code>的第三个参数，可以参考<a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/16988199/how-to-choose-avx-compare-predicate-variants">这里</a>。我使用的是ordered,
+non-signaling的版本。</li>
+<li>我使用的都是宽度为256位的AVX函数，即同时处理8个单精度浮点数。</li>
+</ol>
+<h4 id="测试结果-3">测试结果</h4>
+<p>我的实现性能比不上ispc，AVX内置的开方函数<code>_mm256_sqrt_ps</code>性能远胜ispc.</p>
+<table>
+<thead>
+<tr class="header">
+<th>测试</th>
+<th>执行时间/ms</th>
+<th>提升比例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>serial</td>
+<td>1658.965</td>
+<td>1x</td>
+</tr>
+<tr class="even">
+<td>ispc</td>
+<td>428.850</td>
+<td>3.87x</td>
+</tr>
+<tr class="odd">
+<td>ispc task</td>
+<td>58.057</td>
+<td>28.57x</td>
+</tr>
+<tr class="even">
+<td>my AVX</td>
+<td>686.149</td>
+<td>2.42x</td>
+</tr>
+<tr class="odd">
+<td>AVX native</td>
+<td>19.576</td>
+<td>84.75x</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lab2">Lab2</h2>
+<p>第二个实验要求实现一个并行执行任务的c++库，以充分利用多核性能。</p>
+<h3 id="part-a">Part A</h3>
+<p>A部分会实现同步执行任务的语义，即用户通过<code>ITaskSystem::run(IRunnable* runnable, int num_total_tasks)</code>指定一个可执行对象<code>runnable</code>，task
+system会执行该对象的<code>num_total_tasks</code>个实例，并在这些实例都执行完成后同步地从<code>run()</code>返回。</p>
+<p>具体来说，实验要求了3种实现：</p>
+<ul>
+<li><code>TaskSystemParallelSpawn</code>，每次调用<code>run()</code>时创建线程来执行task，<code>run()</code>返回时销毁线程。</li>
+<li><code>TaskSystemParallelThreadPoolSpinning</code>，task
+system初始化时创建线程池执行task，空闲时这些线程自旋等待。</li>
+<li><code>TaskSystemParallelThreadPoolSleeping</code>，同上，但是空闲时这些线程进入睡眠。</li>
+</ul>
+<h4 id="tasksystemparallelspawn">TaskSystemParallelSpawn</h4>
+<p>流程：</p>
+<ol type="1">
+<li>每次调用<code>run()</code>时，通过<code>std::thread()</code>创建新线程，并在参数中传入一个全局计数器。</li>
+<li>每个worker线程会fetch-and-add该计数器的值。如果取到的值是合法的task
+index则执行任务，否则该线程结束运行。</li>
+<li><code>run()</code>返回前通过<code>join()</code>操作等待所有worker线程结束运行。</li>
+</ol>
+<p>以上流程是动态将任务分配给进程的。第2步的fetch-and-add可以通过互斥锁实现，也可以更方便地使用<code>std::atomic</code>。</p>
+<h4
+id="tasksystemparallelthreadpoolspinning">TaskSystemParallelThreadPoolSpinning</h4>
+<p>流程：</p>
+<ol type="1">
+<li>在TaskSystem的构造函数中创建线程池。</li>
+<li>每个worker线程执行一个无限循环，试图通过fetch-and-add获取当前task
+index。如果合法则执行任务，否则继续自旋等待。</li>
+<li>每个worker线程执行完任务后，需要原子递增一个计数器<code>_done_cnt</code>。</li>
+<li><code>run()</code>会在设置好有关状态后自旋等待，直到<code>_done_cnt == num_total_tasks</code>。</li>
+<li>TaskSystem的析构函数需要让所有worker线程退出循环，并使用<code>join()</code>等待它们结束运行。</li>
+</ol>
+<p>主线程会在第4步中设置一些状态，worker线程会读取这些状态；类似地，worker线程设置<code>_done_cnt</code>，并由主线程读取。对这些状态的读写需要拿互斥锁以保证原子性。</p>
+<h5 id="stdatomic">std::atomic</h5>
+<p>我尝试通过<code>std::atomic</code>修改状态，但是不能保证正确性。因为有些状态的修改涉及多个原子变量，<code>std::atomic</code>只能保证对单个变量的修改是原子的。比如我的实现是：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TaskSystemParallelThreadPoolSpinningAtomic::thread_task</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> index;</span><br><span class="line">    <span class="keyword">while</span> (!_endThreads) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!_haveTasks) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        index = _doing_cnt.<span class="built_in">fetch_add</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="comment">/* Buggy! What if _ntask is modified in run()? */</span></span><br><span class="line">        <span class="keyword">if</span> (index &gt;= _ntask) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        _runnable-&gt;<span class="built_in">runTask</span>(index, _ntask);</span><br><span class="line"></span><br><span class="line">        _done_cnt.<span class="built_in">fetch_add</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">TaskSystemParallelThreadPoolSpinningAtomic::run</span><span class="params">(IRunnable *runnable,</span></span></span><br><span class="line"><span class="params"><span class="function">                                                     <span class="type">int</span> num_total_tasks)</span> </span>&#123;</span><br><span class="line">    _ntask = num_total_tasks;</span><br><span class="line">    _runnable = runnable;</span><br><span class="line"></span><br><span class="line">    _doing_cnt = _done_cnt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    _haveTasks = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (_done_cnt != _ntask)</span><br><span class="line">        ;</span><br><span class="line">    _haveTasks = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>考虑<code>run()</code>被连续调用两次，且<code>num_total_tasks</code>分别为3和100。在第一次调用中，<code>_doing_cnt</code>可能被worker线程在第8行中增加到一个<span
+class="math inline">\(\ge
+3\)</span>的值。当然，只有小于3的值是合法的task index并被执行。</p>
+<p>如果一个worker线程执行完第8行，读到<code>index=50</code>并被调度走。第一次调用完成后紧接着第二次调用，主线程在21行将<code>_ntask</code>修改为100，此时上述worker线程恢复运行。它会通过第10行的检查，并执行task
+index为50的任务。这种行为是错误的，因为index是一个上一轮<code>run()</code>调用中遗留下来的值。</p>
+<p>这种情况出现的本质原因是index变量存在一个TOCTOU的问题，要通过互斥锁防止该变量在”读取之后，比较之前“被修改。</p>
+<h4
+id="tasksystemparallelthreadpoolsleeping">TaskSystemParallelThreadPoolSleeping</h4>
+<p>流程：</p>
+<ol type="1">
+<li>在TaskSystem的构造函数中创建线程池。</li>
+<li>每个worker线程执行一个无限循环，试图通过fetch-and-add获取当前task
+index。如果合法则执行任务，否则进入睡眠。</li>
+<li>每个worker线程执行完任务后，原子递增<code>_done_cnt</code>。如果<code>_done_cnt == _ntask</code>则唤醒主线程。</li>
+<li><code>run()</code>在设置好状态后进入睡眠，等待被worker线程唤醒。</li>
+<li>TaskSystem的析构函数需要让所有worker线程退出循环（可能还需要唤醒它们），并使用<code>join()</code>等待它们结束运行。</li>
+</ol>
+<p>睡眠和唤醒可以通过条件变量实现。主线程和worker线程都需要用互斥锁保护，worker线程只在实际执行任务时放锁，执行完了重新拿锁。</p>
+<p>一些注意点：</p>
+<ol type="1">
+<li>析构时，主线程需要保证所有worker线程都能退出循环，因此析构函数也必须获取互斥锁。否则主线程可能在某些worker线程即将进入睡眠之前调用<code>notify_all()</code>，导致这些worker线程睡眠后永远无法被唤醒。</li>
+<li>在每轮循环中，worker线程的临界区开始于任务执行完成时，终止于即将执行任务时。因此worker线程不能在每轮循环的起始处拿锁，结束处放锁，而是在循环外面拿锁，在<code>runTask()</code>前后分别进行<code>unlock()</code>和<code>lock()</code>操作。</li>
+</ol>
+<h3 id="part-b">Part B</h3>
+<p>本部分实现异步执行的语义，同时引入dependency的概念。<code>ITaskSystem::runAsyncWithDeps(IRunnable* runnable, int num_total_tasks, const std::vector&lt;TaskID&gt;&amp; deps</code>会立刻返回，无需等待任务完成。同时该任务与一个<code>deps</code>关联，只有该数组中所有任务都已完成后，当前任务才能被执行。<code>ITaskSystem::sync()</code>会在当前存在的所有任务执行完成后返回。</p>
+<p>以下将每次<code>run()</code>或者<code>runAsyncWithDeps()</code>中指定的任务称为bulk，每个bulk中包含<code>num_total_tasks</code>个task。</p>
+<p>本实验只实现<code>TaskSystemParallelThreadPoolSleeping</code>。与Part
+A的区别在于：</p>
+<ol type="1">
+<li>task
+system中可能有多个bulk等待执行，若bulk中task数目少于worker线程数，多个bulk需要同时被执行。</li>
+<li>需要处理bulk之间的依赖问题。</li>
+</ol>
+<p>因此我的做法是：</p>
+<ol type="1">
+<li>将<code>_doing_cnt</code> <code>_done_cnt</code>等变量变为per
+bulk的元数据，将每个bulk的元数据存入一个队列。worker线程发现某个bulk中的所有task都已经/正在被执行后，会寻找队列中的下一个bulk并执行，找不到则进入睡眠。执行每个bulk中最后一个task的worker线程需要将该bulk的元数据从队列中移除。</li>
+<li>将新创建的bulk加入等待队列，并维护已经完成的bulk集合。每当有bulk完成时，检查是否有等待队列中bulk可以被执行，并将其移入执行队列。这样做会有越来越高的内存占用，但对实验中的测试用例是足够的。</li>
+</ol>
+<h3 id="性能">性能</h3>
+<p>在我的测试中，所有用例单独运行时都能满足性能要求，但是由<code>run_test_harness.py</code>一起运行时不能保证全部通过。此外，用例的执行时间在多次运行时波动较大。</p>
+<hr />
+<h2 id="lab3">Lab3</h2>
+<p>Lab3是一个使用CUDA的实验。</p>
+<h3 id="part-a-1">Part A</h3>
+<p>本部分需要补全CUDA版本的saxpy程序并计时，只需要补充其中有关显存的代码。</p>
+<p>测试结果可以看出，saxpy程序中，在CPU和GPU之间拷贝数据的开销远大于GPU执行计算的开销。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Effective BW by CUDA saxpy: 387.895 ms (kernel: 17.200 ms)              [2.881 GB/s]</span><br><span class="line">Effective BW by CUDA saxpy: 341.220 ms (kernel: 17.204 ms)              [3.275 GB/s]</span><br><span class="line">Effective BW by CUDA saxpy: 356.739 ms (kernel: 17.177 ms)              [3.133 GB/s]</span><br></pre></td></tr></table></figure>
+<h3 id="part-b-1">Part B</h3>
+<p>本部分实现一个并行的find_repeaet算法，返回数组中A满足<span
+class="math inline">\(A[i] = A[i+1]\)</span>的下标<span
+class="math inline">\(i\)</span>。</p>
+<h4 id="exclusive-scan">exclusive scan</h4>
+<p>文档提示，通过课件中介绍的<a
+target="_blank" rel="noopener" href="http://cs149.stanford.edu/fall22/lecture/dataparallel/slide_17">exclusive
+scan算法</a>来实现find_repeat。因此首先要实现work-efficient exclusive
+scan的并行版，串行版本如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">void exclusive_scan_iterative(int* start, int* end, int* output) &#123;</span><br><span class="line"></span><br><span class="line">    int N = end - start;</span><br><span class="line">    memmove(output, start, N*sizeof(int));</span><br><span class="line">    </span><br><span class="line">    // upsweep phase</span><br><span class="line">    for (int two_d = 1; two_d &lt;= N/2; two_d*=2) &#123;</span><br><span class="line">        int two_dplus1 = 2*two_d;</span><br><span class="line">        parallel_for (int i = 0; i &lt; N; i += two_dplus1) &#123;</span><br><span class="line">            output[i+two_dplus1-1] += output[i+two_d-1];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    output[N-1] = 0;</span><br><span class="line"></span><br><span class="line">    // downsweep phase</span><br><span class="line">    for (int two_d = N/2; two_d &gt;= 1; two_d /= 2) &#123;</span><br><span class="line">        int two_dplus1 = 2*two_d;</span><br><span class="line">        parallel_for (int i = 0; i &lt; N; i += two_dplus1) &#123;</span><br><span class="line">            int t = output[i+two_d-1];</span><br><span class="line">            output[i+two_d-1] = output[i+two_dplus1-1];</span><br><span class="line">            output[i+two_dplus1-1] += t;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只需要做简单的伪代码翻译，把parallel_for的部分替换为cuda
+kernel调用即可，即每次parallel_for会启动N个cuda线程，每个线程判断自己的下标<span
+class="math inline">\(idx\)</span>是否满足<code>idx % two_dplus1 == 0</code>，如果是则执行循环体内的操作。</p>
+<p>一种优化的实现是在每轮循环中不开N个线程，只开对应数目的线程执行循环体中的操作，在线程中就不用判断下标了。这样做需要控制最后一个thread
+block中的线程数目，不能简单地开满<code>THREAD_PER_BLOCK</code>个，编程复杂度更高。因此我没有采用这种做法。</p>
+<h4 id="find-repeat">find repeat</h4>
+<p>基于exclusive scan可以实现find
+repeat，流程如下，以<code>A=&#123;1, 2, 2, 1, 1, 1, 3, 5, 3, 3&#125;</code>为例：</p>
+<ol type="1">
+<li>计算数组B，标记满足<code>A[i] == A[i+1]</code>的元素，赋值为1，否则赋值0，得到<code>B = &#123;0, 1, 0, 1, 1, 0, 0, 0, 1, 0&#125;</code>。</li>
+<li>对数组B计算exclusive
+scan，得到<code>C = &#123;0, 0, 1, 1, 2, 3, 3, 3, 3, 4&#125;</code>。</li>
+<li>再次判断<span class="math inline">\(A[i] ==
+A[i+1]\)</span>，令<code>output[c[i]] = i</code>。</li>
+<li>重复元素的数目可以从数组C的最后一个元素获得。</li>
+</ol>
+<h3 id="partc">PartC</h3>
+<p>PartC要求实现一个并行版本的圆形渲染算法。在框架提供的CUDA实现中，每个CUDA线程负责渲染一个圆，更新其覆盖的每个像素的颜色。这样做不能保证：</p>
+<ol type="1">
+<li>原子性。每个像素的属性由RGBA四个值表示，对它们的更新必须是原子的，不能只更新一半。</li>
+<li>更新顺序，像素颜色的更新不具备交换性。如果多个圆覆盖了同一个像素，对该像素的更新必须严格按照圆的顺序进行。</li>
+</ol>
+<p>然而，如果每个像素的属性由且仅由一个CUDA线程进行更新，就可以轻而易举地满足这些要求。因此，我们为图片中每个像素分配一个CUDA线程，并在kernel函数中遍历所有的圆，判断当前像素是否在圆中并更新颜色即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__global__ <span class="type">void</span> <span class="title">kernelRenderPixels</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> pixelX = blockIdx.x * blockDim.x + threadIdx.x;</span><br><span class="line">    <span class="type">int</span> pixelY = blockIdx.y * blockDim.y + threadIdx.y;</span><br><span class="line"></span><br><span class="line">    <span class="type">short</span> imageWidth = cuConstRendererParams.imageWidth;</span><br><span class="line">    <span class="type">short</span> imageHeight = cuConstRendererParams.imageHeight;</span><br><span class="line">    <span class="type">float</span> invWidth = <span class="number">1.f</span> / imageWidth;</span><br><span class="line">    <span class="type">float</span> invHeight = <span class="number">1.f</span> / imageHeight;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pixelX &gt; imageWidth || pixelY &gt; imageHeight) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    float2 pixelCenterNorm =</span><br><span class="line">        <span class="built_in">make_float2</span>(invWidth * (<span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(pixelX) + <span class="number">0.5f</span>),</span><br><span class="line">                    invHeight * (<span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(pixelY) + <span class="number">0.5f</span>));</span><br><span class="line">    float4 *imgPtr =</span><br><span class="line">        (float4 *)(&amp;cuConstRendererParams</span><br><span class="line">                        .imageData[<span class="number">4</span> * (pixelY * imageWidth + pixelX)]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; cuConstRendererParams.numCircles; i++) &#123;</span><br><span class="line">        float3 p = *(float3 *)(&amp;cuConstRendererParams.position[i * <span class="number">3</span>]);</span><br><span class="line">        <span class="built_in">shadePixel</span>(i, pixelCenterNorm, p, imgPtr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从实验描述看来，这是一个相当复杂的实验。因此这个做法应该不是实验设计者所期望的，不过性能确实远远优于参考实现。</p>
+<hr />
+<h2 id="lab4">Lab4</h2>
+<p>Lab4是一个使用OpenMP的实验。</p>
+<h3 id="parta">PartA</h3>
+<p>本部分利用openMP实现一个基础的pagerank算法。框架给出了伪代码，只需要翻译成单线程版的代码，再用<code>#pragma omp parallel for</code>修饰for循环即可，需要注意：</p>
+<ol type="1">
+<li>操作并发不安全的数据结构（如<code>std::vector</code>）的for循环不能并行。</li>
+<li>遍历图中每个节点是相互独立的，可以并行。</li>
+<li>遍历每个节点的所有入边的for循环如果并行，会导致性能很差。根据<a
+target="_blank" rel="noopener" href="https://ppc.cs.aalto.fi/ch3/nested/">这里</a>，嵌套两层<code>#pragma omp parallel for</code>时，第二层是无效的，并不会创建更多子线程来执行第二层循环，同时还会引入额外的overhead。</li>
+</ol>
+<h3 id="partb">PartB</h3>
+<p>本部分实现传统的，自上而下的BFS算法的并行版本。除了使用OpenMP对for循环并行化以外，还需要进行其他优化才能达到参考性能。参考了<a
+target="_blank" rel="noopener" href="https://github.com/wangdh15/cs149/tree/master/asst4">wangdh15的实现</a>，还需要做：</p>
+<ol type="1">
+<li>通过CAS操作修改<code>distances[node]</code>，确保只有每个新节点只被一个线程加入<code>new_frontier</code>数组。（测试表明，即使节点被重复加入，性能也不会受到很大影响）</li>
+<li>每个线程只写入自己的局部<code>new_frontier</code>数组，循环结束后再合并到全局<code>new_frontier</code>中去。</li>
+</ol>
+<h3 id="partc-1">PartC</h3>
+<p>本部分实现自下而上的BFS，伪代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for each vertex v in graph:</span><br><span class="line">    if v has not been visited AND </span><br><span class="line">       v shares an incoming edge with a vertex u on the frontier:</span><br><span class="line">          add vertex v to frontier;</span><br></pre></td></tr></table></figure>
+<p>在实现中并不需要维护frontier，通过判断节点u的距离是否等于BFS的深度，即可得知节点u是否属于frontier。看起来除了<code>#pragma omp parallel for</code>也没有其他的优化点。即便如此，Part
+C的参考实现快的离谱，我的实现也无法获得全部分数。</p>
+<h3 id="partd">PartD</h3>
+<p>Part
+D要求混合B和C两部分的实现来优化BFS性能，方法也十分显然：自上而下和自下而上的BFS分别适用于frontier中节点较少和较多的情形。因此根据frontier中节点数目占图中总节点数的比例（我使用了10%），来判断每一步搜索应采用自上而下/自下而上的BFS即可。</p>
+<hr />
+<h2 id="extra">Extra</h2>
+<p>在最后一个实验中，我简单用AVX指令实现了GEMM(General matrix
+multiply)。AVX指令为256位，矩阵元素为双精度浮点数，因此一条avx指令可以操作4个元素。</p>
+<p>在朴素的想法中，我们将矩阵A的第<span
+class="math inline">\(i\)</span>行和矩阵B的第<span
+class="math inline">\(j\)</span>列作为向量相乘，得到矩阵C的<span
+class="math inline">\((i, j)\)</span>元素，如下图。</p>
+<p><img src="/images/CS149/gemm-1.jpg" />
+这样做是没法利用AVX指令的，因为矩阵B的那一列在内存中并不连续存储。正确做法是把矩阵B中的相邻<span
+class="math inline">\(n\)</span>列联合起来考虑，如下图。其中<span
+class="math inline">\(n\)</span>为avx指令能够同时操作的矩阵元素数目，这里为4。
+<img src="/images/CS149/gemm-2.jpg" /></p>
+<p>这样一来，我们就可以对绿色标出的，同行不同列的元素使用AVX指令，一次性计算出矩阵C中的4个元素。</p>
+<p>我的实现性能大约是ISPC参考实现的三分之一。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://stopire.github.io">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://stopire.github.io/2022/11/21/CS149-Lab-Report/">https://stopire.github.io/2022/11/21/CS149-Lab-Report/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://stopire.github.io" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/course/">course</a><a class="post-meta__tags" href="/tags/parallel-computing/">parallel computing</a><a class="post-meta__tags" href="/tags/CS149/">CS149</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover4.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report"><img class="cover" src="/images/post-cover/cover4.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MIT 6.S081 Lab Report</div></div></a></div><div class="next-post pull-right"><a href="/2022/11/16/CS144-Lab-Report/" title="CS144 Lab Report"><img class="cover" src="/images/post-cover/cover2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CS144 Lab Report</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/04/05/15-445-Lab-Report/" title="15-445 Lab Report"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-05</div><div class="title">15-445 Lab Report</div></div></a></div><div><a href="/2021/12/15/CMU-15-445-Notes/" title="CMU 15-445 Notes(1)"><img class="cover" src="/images/post-cover/cover3.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-15</div><div class="title">CMU 15-445 Notes(1)</div></div></a></div><div><a href="/2022/11/16/CS144-Lab-Report/" title="CS144 Lab Report"><img class="cover" src="/images/post-cover/cover2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-16</div><div class="title">CS144 Lab Report</div></div></a></div><div><a href="/2022/04/11/CMU-15-445-Notes-3/" title="CMU 15-445 Notes(3)"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-04-11</div><div class="title">CMU 15-445 Notes(3)</div></div></a></div><div><a href="/2022/01/23/CMU-15-445-Notes-2/" title="CMU 15-445 Notes(2)"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-23</div><div class="title">CMU 15-445 Notes(2)</div></div></a></div><div><a href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-02</div><div class="title">MIT 6.S081 Lab Report</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#lab1"><span class="toc-number">1.</span> <span class="toc-text">Lab1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#prog1"><span class="toc-number">1.1.</span> <span class="toc-text">Prog1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="toc-number">1.1.1.</span> <span class="toc-text">测试结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prog2"><span class="toc-number">1.2.</span> <span class="toc-text">Prog2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#clampedexpvector"><span class="toc-number">1.2.1.</span> <span class="toc-text">clampedExpVector</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#arraysumvector"><span class="toc-number">1.2.2.</span> <span class="toc-text">arraySumVector</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">测试结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prog3"><span class="toc-number">1.3.</span> <span class="toc-text">Prog3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prog4"><span class="toc-number">1.4.</span> <span class="toc-text">Prog4</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C-2"><span class="toc-number">1.4.1.</span> <span class="toc-text">测试结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prog5"><span class="toc-number">1.5.</span> <span class="toc-text">Prog5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prog4-extra"><span class="toc-number">1.6.</span> <span class="toc-text">Prog4 Extra</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C-3"><span class="toc-number">1.6.1.</span> <span class="toc-text">测试结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lab2"><span class="toc-number">2.</span> <span class="toc-text">Lab2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#part-a"><span class="toc-number">2.1.</span> <span class="toc-text">Part A</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tasksystemparallelspawn"><span class="toc-number">2.1.1.</span> <span class="toc-text">TaskSystemParallelSpawn</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tasksystemparallelthreadpoolspinning"><span class="toc-number">2.1.2.</span> <span class="toc-text">TaskSystemParallelThreadPoolSpinning</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#stdatomic"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">std::atomic</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tasksystemparallelthreadpoolsleeping"><span class="toc-number">2.1.3.</span> <span class="toc-text">TaskSystemParallelThreadPoolSleeping</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#part-b"><span class="toc-number">2.2.</span> <span class="toc-text">Part B</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD"><span class="toc-number">2.3.</span> <span class="toc-text">性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lab3"><span class="toc-number">3.</span> <span class="toc-text">Lab3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#part-a-1"><span class="toc-number">3.1.</span> <span class="toc-text">Part A</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#part-b-1"><span class="toc-number">3.2.</span> <span class="toc-text">Part B</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#exclusive-scan"><span class="toc-number">3.2.1.</span> <span class="toc-text">exclusive scan</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#find-repeat"><span class="toc-number">3.2.2.</span> <span class="toc-text">find repeat</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#partc"><span class="toc-number">3.3.</span> <span class="toc-text">PartC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lab4"><span class="toc-number">4.</span> <span class="toc-text">Lab4</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#parta"><span class="toc-number">4.1.</span> <span class="toc-text">PartA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#partb"><span class="toc-number">4.2.</span> <span class="toc-text">PartB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#partc-1"><span class="toc-number">4.3.</span> <span class="toc-text">PartC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#partd"><span class="toc-number">4.4.</span> <span class="toc-text">PartD</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#extra"><span class="toc-number">5.</span> <span class="toc-text">Extra</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS压缩文件格式和读取流程分析"/></a><div class="content"><a class="title" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析">EROFS压缩文件格式和读取流程分析</a><time datetime="2023-07-05T10:42:52.000Z" title="发表于 2023-07-05 18:42:52">2023-07-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"/></a><div class="content"><a class="title" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices">EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices</a><time datetime="2023-05-07T14:14:04.000Z" title="发表于 2023-05-07 22:14:04">2023-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"/></a><div class="content"><a class="title" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones">Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones</a><time datetime="2023-03-23T05:51:24.000Z" title="发表于 2023-03-23 13:51:24">2023-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MIT 6.S081 Lab Report"/></a><div class="content"><a class="title" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report">MIT 6.S081 Lab Report</a><time datetime="2022-12-01T18:01:19.000Z" title="发表于 2022-12-02 02:01:19">2022-12-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CS149 Lab Report"/></a><div class="content"><a class="title" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report">CS149 Lab Report</a><time datetime="2022-11-20T17:08:17.000Z" title="发表于 2022-11-21 01:08:17">2022-11-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

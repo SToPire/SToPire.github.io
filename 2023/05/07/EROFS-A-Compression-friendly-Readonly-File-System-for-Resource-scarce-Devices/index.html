@@ -1,0 +1,335 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices | Do not touch fish!</title><meta name="author" content="SToPire"><meta name="copyright" content="SToPire"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文描述了EROFS，这是一种只读压缩文件系统，已经合入Linux主线，并在Android中有相当大规模的应用。该工作由华为和IPADS合作完成，第一作者高翔现于（2023.5）阿里工作，仍然在积极维护EROFS。 Background 问题：安卓系统占用的空间与日俱增，挤占了智能手机上的存储空间"><link rel="shortcut icon" href="/images/favicon.png"><link rel="canonical" href="https://stopire.github.io/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-07 19:30:33'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/images/post-cover/cover4.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Do not touch fish!"><span class="site-name">Do not touch fish!</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-07T14:14:04.000Z" title="发表于 2023-05-07 22:14:04">2023-05-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-07T11:30:33.002Z" title="更新于 2023-07-07 19:30:33">2023-07-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Papers/">Papers</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="/images/EROFS/header.png" /></p>
+<p>本文描述了EROFS，这是一种只读压缩文件系统，已经合入Linux主线，并在Android中有相当大规模的<a
+target="_blank" rel="noopener" href="https://blog.esper.io/android-dessert-bites-25-erofs-in-android-13-47987123/">应用</a>。该工作由华为和IPADS合作完成，第一作者高翔现于（2023.5）阿里工作，仍然在积极维护EROFS。</p>
+<h3 id="background">Background</h3>
+<p>问题：安卓系统占用的空间与日俱增，挤占了智能手机上的存储空间，对于低端设备尤甚。</p>
+<p>一种优化方式是使用带压缩支持的文件系统（例如btrfs），它们在写入/读取数据时会透明地对数据进行压缩/解压缩，以节约存储空间。然而作者声称，它们不适合在资源受限的智能手机上使用，因为（解）压缩会消耗计算资源，而btrfs无法同时满足压缩率和资源消耗两方面的需求。</p>
+<p>考虑到系统分区存储只读数据，如果使用仅支持只读的文件系统，可以简化掉修改文件的逻辑和数据结构以提升性能。现有的系统分区往往使用只读挂载的ext4，没有利用这一优势；此外，ext4也不支持压缩，没有充分节约存储空间。</p>
+<h3 id="motivation">Motivation</h3>
+<p>现有一些只读压缩文件系统的工作，例如Squashfs。它支持多种压缩算法和多种压缩输入大小，同时压缩数据和元数据。然而，作者将Squashfs用于Android只读分区，发现启动相机应用需要数十秒，性能无法接受。</p>
+<p>作者分析了Squashfs表现不佳的原因：</p>
+<ol type="1">
+<li><p>I/O放大。作者使用FIO从Squashfs中读取16MB的数据。如图所示，在使用128KB的压缩输入大小时，Squashfs尽管在顺序读时减少了I/O大小，但是在随机读（165.27MB）和跳跃读（203.91MB）时都经历了一个数量级的I/O放大。</p>
+<blockquote>
+<p>跳跃读：从每个128KB块中读取前4KB。这是一个最坏情况，因为每个128KB块都必须被解压才能读取。</p>
+</blockquote>
+<p><img src="/images/EROFS/ioampli.jpg" /></p></li>
+<li><p>额外的内存消耗。作者指出，在Squashfs中顺序读取1GB数据后实际消耗了1.35GB的内存。这可能导致页面换出，影响系统其它部分的性能。</p></li>
+</ol>
+<p>接着，作者分析了Squashfs的设计，并指出导致这些问题的原因：</p>
+<ol type="1">
+<li>压缩输入大小是固定的。Squashfs将固定大小（可配置，如128KB）的输入进行压缩，生成长度不固定的压缩数据，然后将压缩后的数据紧凑存储。这样的设计会造成I/O放大，如下图所示，压缩数据分布在3个物理块中，因此读取1字节的原始数据需要读入3个物理块进行解压。减少压缩输入大小（如4KB）可以改善这个问题，但同时也会导致压缩率下降和CPU使用率上升。</li>
+<li>频繁的数据移动导致了较大的内存占用。如图所示，为了处理文件读取请求，Squashfs需要：
+<ul>
+<li>查找元数据，获知压缩块的数量。</li>
+<li>为每个压缩块分配缓存并读入数据。</li>
+<li>这些缓存的虚拟地址不连续，不满足解压的需求，因此需要将待解压数据拷贝到一个连续缓冲区中。</li>
+<li>解压缩，输出被存入一个输出缓冲区。</li>
+<li>从输出缓冲区将需要的原始数据拷贝到文件对应的page cache。</li>
+</ul></li>
+</ol>
+<p>这个过程涉及大量内存分配和多次内存拷贝，使得内存访问成为压缩/解压过程中的瓶颈。</p>
+<p><img src="/images/EROFS/squashfs.png" /></p>
+<p>因此，一种好的只读压缩文件系统应该能够在保证压缩率的前提下降低I/O放大，在保证解压性能的前提下降低内存占用。</p>
+<h3 id="design">Design</h3>
+<h4 id="固定输出大小">固定输出大小</h4>
+<p>EROFS的压缩输出大小是固定的（4KB）。压缩时，EROFS将不定长的输入数据压缩为固定大小的压缩数据块。其优点是：</p>
+<blockquote>
+<p>Q：这个压缩过程具体是怎么工作的？</p>
+</blockquote>
+<ul>
+<li><p>压缩率高，因为相较于固定输入大小，压缩时可以尽可能地消耗输入数据直到满足输出大小限制。</p>
+<ul>
+<li>减少读放大，因为压缩数据块一定是对齐到块大小的，解压时不需要读取不必要的压缩数据。</li>
+</ul></li>
+<li><p>固定的压缩输出大小支持就地解压。这也许是因为块对齐的压缩块可以直接被放到page
+cache中，然后就地解压并返回原始数据。如果不对齐，会把不需要的脏数据带进page
+cache。</p></li>
+</ul>
+<h4 id="io缓存策略">I/O缓存策略</h4>
+<p>EROFS支持两种读取策略，分别称为cached I/O和in-place I/O：</p>
+<ul>
+<li>cached
+I/O：如果一个压缩数据块只需要被部分解压就能满足读取请求（例如只读取了几个字节），它会被缓存在erofs中一个专用inode的page
+cache中，以便需要解压同一个块的后续读取请求复用。</li>
+<li>in-place
+I/O：如果一个压缩数据块已经被全部解压，它就不需要被缓存了，因为解压后的数据已经在page
+cache中。这种情况下该压缩块不会被缓存在内存中。在这种情况下，压缩数据块被直接存放在VFS分配的page
+cache中（这也是应该存放解压后的文件数据的地方），因此称为in-place
+I/O。</li>
+</ul>
+<h4 id="解压方式">解压方式</h4>
+<p>EROFS支持多种解压方式，其中基于vmap解压是通用情况，其他方式都是不同场景下的优化。</p>
+<p>如图所示假设数据块D0-D8被压缩为C0-C1：</p>
+<p><img src="/images/EROFS/compression.png" /></p>
+<ol type="1">
+<li><p>使用vmap：假设需要读取数据块D3和D4。</p>
+<p><img src="/images/EROFS/vmap.png" /></p>
+<ul>
+<li>获取解压后的数据大小并分配一段足够大的虚拟地址空间。在上例中，由于不需要D5中的数据，解压时获得D0-D4的数据后就能停止，不需要完整解压C0。</li>
+<li>根据该大小分配额外的物理页。由于需要读取D3和D4中的数据，它们可以直接复用VFS为page
+cache分配的物理页，只需要额外分配D0-D2即可。</li>
+<li>对于in-place I/O，需要把C0（位于应存放解压后数据的page
+cache中）拷贝到另一个per-cpu缓存中，防止解压后的数据覆写未解压的压缩数据（该过程可优化）</li>
+<li>解压C0，然后回收D0-D2对应的物理页。需要读取的数据已经进入了page
+cache。</li>
+</ul></li>
+<li><p>使用per-cpu
+buffer。EROFS为每个CPU预先分配4个页面的缓存，用于满足解压后数据大小不超过4页的读取请求，然后将需要的数据拷贝到page
+cache。这样做省去了vmap中分配和回收临时页面的开销。</p></li>
+<li><p>滚动解压。由于EROFS使用的lz4算法最多需要当前位置之前64KB的数据，解压时对于读取请求不需要的数据，维护一个大小为16页的滑动窗口即可。如图所示，EROFS为每个CPU预先分配16个物理页和足够大（典型值：256个物理页）的虚拟地址空间。对不需要的数据，让虚拟页复用这16个物理页；对需要的数据，让虚拟页映射到page
+cache物理页。</p>
+<p>使用该虚拟地址空间进行解压，可以在保证lz4算法正确性、没有解压后大小限制的同时，省去页面分配和回收的开销。</p>
+<p><img src="/images/EROFS/roll.png" /></p></li>
+<li><p>就地解压。如图所示，在in-place
+I/O中之所以要将压缩页拷贝走，是因为解压后的数据可能覆盖尚未解压的数据，导致错误。作者观察到99.6%的压缩页都不存在这种情况。因此，EROFS在压缩时模拟解压过程，并标记该压缩页是否可以就地解压。如果可以，EROFS可以直接就地解压被读取到page
+cache中的压缩页，进一步减少了内存拷贝。</p>
+<p><img src="/images/EROFS/inplace.png" /></p></li>
+</ol>
+<h3 id="implementation">Implementation</h3>
+<p>本文实现部分提及了两个版本的EROFS，在EMUI上实际部署的版本需要更严苛的测试，因此特性没有最新版丰富。</p>
+<h4 id="内存布局">内存布局</h4>
+<p>如图所示，EROFS的superblock位于image开头。文件的元数据和数据连续存储在一起，但只有数据部分会被压缩。文件inode号可以根据偏移量计算出来，以便于快速寻址到inode。</p>
+<p><img src="/images/EROFS/layout.png" /></p>
+<p>每个文件都有一个block
+index数组，索引所有的原始数据块。称被压缩到同一压缩块的原始数据为一组。各字段含义如下表所示：</p>
+<table>
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>head</td>
+<td>是否为一组原始数据中的第一个块</td>
+</tr>
+<tr class="even">
+<td>offset</td>
+<td>该组原始数据的起始位置在块中的偏移量</td>
+</tr>
+<tr class="odd">
+<td>blkaddr</td>
+<td>该组原始数据对应的压缩块的下标</td>
+</tr>
+<tr class="even">
+<td>cmpr</td>
+<td>该组原始数据是否被压缩（如果压缩后大小超过原始大小，EROFS会直接存储原始数据）</td>
+</tr>
+<tr class="odd">
+<td>dip</td>
+<td>该组原始数据是否可以就地解压</td>
+</tr>
+<tr class="even">
+<td>dist</td>
+<td>当前数据块离该组原始数据中起始块的距离</td>
+</tr>
+</tbody>
+</table>
+<h4 id="解压策略">解压策略</h4>
+<p>文中描述的EROFS的解压策略：</p>
+<ol type="1">
+<li><p>如果解压后原始数据大小小于块大小，使用per-cpu
+buffer进行解压。</p>
+<blockquote>
+<p>不能就地解压，因为原始数据无法完全覆盖压缩数据块，会带来脏数据。</p>
+</blockquote></li>
+<li><p>否则，如果该压缩块可以被就地解压，使用就地解压策略。</p></li>
+<li><p>否则，如果解压后原始数据大小小于滚动解压中分配的per-cpu虚拟地址空间大小，使用滚动解压策略。</p></li>
+<li><p>否则，fall back到基于vmap的解压策略。</p></li>
+</ol>
+<h4 id="优化点">优化点</h4>
+<ol type="1">
+<li><p>Index memory
+optimization，看起来是说如果EROFS把数百个页压缩到一个页中，读取时需要在内存中维护几百个指针，来追踪这几百个页要被解压到哪里。该优化利用VFS分配的page
+cache中的空闲页来暂存这些指针，以节约内存。</p>
+<blockquote>
+<p>几百个指针好像也占不了多少空间？</p>
+</blockquote></li>
+<li><p>Scheduling
+optimization，解压需要时间，不适合在（读请求的）中断上下文中完成。Btrfs有专用的解压线程负责解压读取到内存中的压缩数据，然后唤醒reader线程。为了减少调度开销，EROFS没有解压线程，就是由reader线程负责解压数据并直接读取。</p></li>
+<li><p>Cohort
+optimization，多个请求如果需要解压同一个压缩块，不需要重复进行。一个线程完成解压后，其他线程直接读取解压后的原始数据即可。</p></li>
+<li><p>Image
+patching，只读文件系统在系统升级时仍然有一些更改需求。EROFS为这种情况提供了一些有限的支持：将修改部分的新数据放在镜像末尾，不改动原始数据，读取的时候用新数据覆盖解压后的旧数据。</p>
+<blockquote>
+<p>这应该只是一种适用于极少量修改的临时方案。</p>
+</blockquote></li>
+</ol>
+<p>​</p>
+<h3 id="comments">Comments</h3>
+<ol type="1">
+<li>现版本(Linux v6.3)中的<a
+target="_blank" rel="noopener" href="https://docs.kernel.org/filesystems/erofs.html">EROFS</a>已经和论文中描述的版本有着很大变化。</li>
+<li>虽然文章中没有明确说明，但是一些设计选择表明，压缩算法有着如下的性质：
+<ol type="1">
+<li><p>待解压的数据必须位于一段连续（虚拟）内存中。</p></li>
+<li><p>单次压缩输入数据越多，压缩率越高。</p></li>
+<li><p>解压时，位于读取位置前的所有原始数据必须被全部解压出来，不能直接从压缩块中间某个位置开始解压。</p></li>
+</ol></li>
+</ol>
+<h3 id="references">References</h3>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://www.usenix.org/system/files/atc19-gao.pdf">Gao
+PDF</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.usenix.org/sites/default/files/conference/protected-files/atc19_slides_gao.pdf">Gao
+Slides</a></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://stopire.github.io">SToPire</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://stopire.github.io/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/">https://stopire.github.io/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://stopire.github.io" target="_blank">Do not touch fish!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/file-system/">file system</a><a class="post-meta__tags" href="/tags/EROFS/">EROFS</a></div><div class="post_share"><div class="social-share" data-image="/images/post-cover/cover4.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析"><img class="cover" src="/images/post-cover/cover5.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">EROFS压缩文件格式和读取流程分析</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"><img class="cover" src="/images/post-cover/cover5.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-05</div><div class="title">EROFS压缩文件格式和读取流程分析</div></div></a></div><div><a href="/2022/10/08/EXT4-extent/" title="EXT4-extent"><img class="cover" src="/images/post-cover/cover2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-10-08</div><div class="title">EXT4-extent</div></div></a></div><div><a href="/2022/07/04/Efficient-Persistent-Memory-File-Systems-using-Virtual-Superpages-with-Multi-Level-Allocator/" title="Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator"><img class="cover" src="/images/post-cover/cover1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-04</div><div class="title">Efficient Persistent Memory File Systems using Virtual Superpages with Multi-Level Allocator</div></div></a></div><div><a href="/2022/06/21/NOVA-A-Log-structured-File-System-for-Hybrid-Volatile-Non-volatile-Main-Memories/" title="NOVA: A Log-structured File System for Hybrid Volatile&#x2F;Non-volatile Main Memories"><img class="cover" src="/images/post-cover/cover3.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-21</div><div class="title">NOVA: A Log-structured File System for Hybrid Volatile&#x2F;Non-volatile Main Memories</div></div></a></div><div><a href="/2022/09/25/Optimistic-crash-consistency/" title="Optimistic crash consistency"><img class="cover" src="/images/post-cover/cover4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-25</div><div class="title">Optimistic crash consistency</div></div></a></div><div><a href="/2021/06/13/Performance-and-Protection-in-the-ZoFS-User-space-NVM-File-System/" title="Performance and Protection in the ZoFS User-space NVM File System"><img class="cover" src="/images/post-cover/cover5.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-13</div><div class="title">Performance and Protection in the ZoFS User-space NVM File System</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">SToPire</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SToPire"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:stopire@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#background"><span class="toc-number">1.</span> <span class="toc-text">Background</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#motivation"><span class="toc-number">2.</span> <span class="toc-text">Motivation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#design"><span class="toc-number">3.</span> <span class="toc-text">Design</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%BA%E5%AE%9A%E8%BE%93%E5%87%BA%E5%A4%A7%E5%B0%8F"><span class="toc-number">3.1.</span> <span class="toc-text">固定输出大小</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#io%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5"><span class="toc-number">3.2.</span> <span class="toc-text">I&#x2F;O缓存策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%8E%8B%E6%96%B9%E5%BC%8F"><span class="toc-number">3.3.</span> <span class="toc-text">解压方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#implementation"><span class="toc-number">4.</span> <span class="toc-text">Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="toc-number">4.1.</span> <span class="toc-text">内存布局</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%8E%8B%E7%AD%96%E7%95%A5"><span class="toc-number">4.2.</span> <span class="toc-text">解压策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E7%82%B9"><span class="toc-number">4.3.</span> <span class="toc-text">优化点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#comments"><span class="toc-number">5.</span> <span class="toc-text">Comments</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#references"><span class="toc-number">6.</span> <span class="toc-text">References</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS压缩文件格式和读取流程分析"/></a><div class="content"><a class="title" href="/2023/07/05/EROFS%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%92%8C%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="EROFS压缩文件格式和读取流程分析">EROFS压缩文件格式和读取流程分析</a><time datetime="2023-07-05T10:42:52.000Z" title="发表于 2023-07-05 18:42:52">2023-07-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices"/></a><div class="content"><a class="title" href="/2023/05/07/EROFS-A-Compression-friendly-Readonly-File-System-for-Resource-scarce-Devices/" title="EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices">EROFS: A Compression-friendly Readonly File System for Resource-scarce Devices</a><time datetime="2023-05-07T14:14:04.000Z" title="发表于 2023-05-07 22:14:04">2023-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"><img src="/images/post-cover/cover5.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones"/></a><div class="content"><a class="title" href="/2023/03/23/Integrated-Host-SSD-Mapping-Table-Management-for-Improving-User-Experience-of-Smartphones/" title="Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones">Integrated Host-SSD Mapping Table Management for Improving User Experience of Smartphones</a><time datetime="2023-03-23T05:51:24.000Z" title="发表于 2023-03-23 13:51:24">2023-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MIT 6.S081 Lab Report"/></a><div class="content"><a class="title" href="/2022/12/02/MIT-6-S081-Lab-Report/" title="MIT 6.S081 Lab Report">MIT 6.S081 Lab Report</a><time datetime="2022-12-01T18:01:19.000Z" title="发表于 2022-12-02 02:01:19">2022-12-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report"><img src="/images/post-cover/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CS149 Lab Report"/></a><div class="content"><a class="title" href="/2022/11/21/CS149-Lab-Report/" title="CS149 Lab Report">CS149 Lab Report</a><time datetime="2022-11-20T17:08:17.000Z" title="发表于 2022-11-21 01:08:17">2022-11-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By SToPire</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
